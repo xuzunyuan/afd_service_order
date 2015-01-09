@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+        ">
+  
+    <!-- 用hessian协议暴露服务 -->
+	<!-- jetty服务时，设置server="servlet" servlet服务时，设置server="jetty" -->
+	<!-- hessian协议时要与服务启动的端口一致，此处，port与tomcat均为8080；dubbo协议不做限制 -->
+	<!-- hessian协议时，contextpath要与项目名一致 -->
+	<!-- <dubbo:protocol name="hessian" port="8081" serialization="hessian2" server="servlet" contextpath="yiwang_service_order" />  -->
+    <dubbo:protocol name="dubbo" port="9091" />
+    <!--  <dubbo:protocol name="dubbo" port="8109" server="netty" client="netty" serialization="hessian2"
+		charset="UTF-8" threadpool="fixed" threads="100" queues="0" iothreads="9" buffer="8192"
+		accepts="1000" payload="8388608" /> -->
+ 
+    <!-- 声明需要暴露的服务接口  loadbalance: random(随机);roundrobin(轮询);leastactive(最小活跃调用)-->
+    <dubbo:service owner="liubo" timeout="2000" interface="com.afd.service.order.IOrderService" loadbalance="random" ref="orderService" />
+	
+
+</beans>

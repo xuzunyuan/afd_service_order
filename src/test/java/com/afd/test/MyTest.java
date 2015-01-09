@@ -13,7 +13,7 @@ import com.alibaba.druid.filter.config.ConfigTools;
 
 @ActiveProfiles("develop")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:spring/*.xml"})
+@ContextConfiguration(locations={"classpath:spring/*.xml","classpath:spring-dubbo-consumer.xml"})
 public class MyTest {
 	@Autowired
 	@Qualifier("orderService")

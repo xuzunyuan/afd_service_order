@@ -6,6 +6,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          id="WebApp_ID" version="2.5">
 
     <display-name>afd_service_order</display-name>
+	<context-param>
+		<param-name>spring.profiles.default</param-name>
+		<param-value>develop</param-value>
+	</context-param>
     
    <!--
 		- Location of the XML file that defines the root application context.
@@ -13,7 +17,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	-->
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:spring/*.xml</param-value>
+        <param-value>classpath:spring/*.xml,classpath:spring-dubbo-consumer.xml</param-value>
     </context-param>
 
     <listener>
