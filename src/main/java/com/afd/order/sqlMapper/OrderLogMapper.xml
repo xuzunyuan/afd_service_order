@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.afd.order.dao.OrderLogMapper" >
+  <resultMap id="BaseResultMap" type="com.afd.model.order.OrderLog" >
+    <id column="order_log_id" property="orderLogId" jdbcType="BIGINT" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+    <result column="opt_by_name" property="optByName" jdbcType="VARCHAR" />
+    <result column="opt_time" property="optTime" jdbcType="TIMESTAMP" />
+    <result column="opt_content" property="optContent" jdbcType="VARCHAR" />
+    <result column="opt_ip" property="optIp" jdbcType="VARCHAR" />
+    <result column="from_order_status" property="fromOrderStatus" jdbcType="CHAR" />
+    <result column="to_order_status" property="toOrderStatus" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    order_log_id, order_id, order_code, opt_by_name, opt_time, opt_content, opt_ip, from_order_status, 
+    to_order_status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_order_log
+    where order_log_id = #{orderLogId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_order_log
+    where order_log_id = #{orderLogId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.afd.model.order.OrderLog" >
+    insert into t_order_log (order_log_id, order_id, order_code, 
+      opt_by_name, opt_time, opt_content, 
+      opt_ip, from_order_status, to_order_status
+      )
+    values (#{orderLogId,jdbcType=BIGINT}, #{orderId,jdbcType=INTEGER}, #{orderCode,jdbcType=VARCHAR}, 
+      #{optByName,jdbcType=VARCHAR}, #{optTime,jdbcType=TIMESTAMP}, #{optContent,jdbcType=VARCHAR}, 
+      #{optIp,jdbcType=VARCHAR}, #{fromOrderStatus,jdbcType=CHAR}, #{toOrderStatus,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.afd.model.order.OrderLog" >
+    insert into t_order_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderLogId != null" >
+        order_log_id,
+      </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="orderCode != null" >
+        order_code,
+      </if>
+      <if test="optByName != null" >
+        opt_by_name,
+      </if>
+      <if test="optTime != null" >
+        opt_time,
+      </if>
+      <if test="optContent != null" >
+        opt_content,
+      </if>
+      <if test="optIp != null" >
+        opt_ip,
+      </if>
+      <if test="fromOrderStatus != null" >
+        from_order_status,
+      </if>
+      <if test="toOrderStatus != null" >
+        to_order_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderLogId != null" >
+        #{orderLogId,jdbcType=BIGINT},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="orderCode != null" >
+        #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="optByName != null" >
+        #{optByName,jdbcType=VARCHAR},
+      </if>
+      <if test="optTime != null" >
+        #{optTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="optContent != null" >
+        #{optContent,jdbcType=VARCHAR},
+      </if>
+      <if test="optIp != null" >
+        #{optIp,jdbcType=VARCHAR},
+      </if>
+      <if test="fromOrderStatus != null" >
+        #{fromOrderStatus,jdbcType=CHAR},
+      </if>
+      <if test="toOrderStatus != null" >
+        #{toOrderStatus,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.afd.model.order.OrderLog" >
+    update t_order_log
+    <set >
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="orderCode != null" >
+        order_code = #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="optByName != null" >
+        opt_by_name = #{optByName,jdbcType=VARCHAR},
+      </if>
+      <if test="optTime != null" >
+        opt_time = #{optTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="optContent != null" >
+        opt_content = #{optContent,jdbcType=VARCHAR},
+      </if>
+      <if test="optIp != null" >
+        opt_ip = #{optIp,jdbcType=VARCHAR},
+      </if>
+      <if test="fromOrderStatus != null" >
+        from_order_status = #{fromOrderStatus,jdbcType=CHAR},
+      </if>
+      <if test="toOrderStatus != null" >
+        to_order_status = #{toOrderStatus,jdbcType=CHAR},
+      </if>
+    </set>
+    where order_log_id = #{orderLogId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.afd.model.order.OrderLog" >
+    update t_order_log
+    set order_id = #{orderId,jdbcType=INTEGER},
+      order_code = #{orderCode,jdbcType=VARCHAR},
+      opt_by_name = #{optByName,jdbcType=VARCHAR},
+      opt_time = #{optTime,jdbcType=TIMESTAMP},
+      opt_content = #{optContent,jdbcType=VARCHAR},
+      opt_ip = #{optIp,jdbcType=VARCHAR},
+      from_order_status = #{fromOrderStatus,jdbcType=CHAR},
+      to_order_status = #{toOrderStatus,jdbcType=CHAR}
+    where order_log_id = #{orderLogId,jdbcType=BIGINT}
+  </update>
+</mapper>

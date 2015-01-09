@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.afd.order.dao.PaymentDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.afd.model.order.PaymentDetail" >
+    <id column="p_detail_id" property="pDetailId" jdbcType="INTEGER" />
+    <result column="payment_id" property="paymentId" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="amount" property="amount" jdbcType="REAL" />
+    <result column="user_account_id" property="userAccountId" jdbcType="INTEGER" />
+    <result column="payment_type" property="paymentType" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    p_detail_id, payment_id, order_id, amount, user_account_id, payment_type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_payment_detail
+    where p_detail_id = #{pDetailId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_payment_detail
+    where p_detail_id = #{pDetailId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.afd.model.order.PaymentDetail" >
+    insert into t_payment_detail (p_detail_id, payment_id, order_id, 
+      amount, user_account_id, payment_type
+      )
+    values (#{pDetailId,jdbcType=INTEGER}, #{paymentId,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, 
+      #{amount,jdbcType=REAL}, #{userAccountId,jdbcType=INTEGER}, #{paymentType,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.afd.model.order.PaymentDetail" >
+    insert into t_payment_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="pDetailId != null" >
+        p_detail_id,
+      </if>
+      <if test="paymentId != null" >
+        payment_id,
+      </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="amount != null" >
+        amount,
+      </if>
+      <if test="userAccountId != null" >
+        user_account_id,
+      </if>
+      <if test="paymentType != null" >
+        payment_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="pDetailId != null" >
+        #{pDetailId,jdbcType=INTEGER},
+      </if>
+      <if test="paymentId != null" >
+        #{paymentId,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=REAL},
+      </if>
+      <if test="userAccountId != null" >
+        #{userAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="paymentType != null" >
+        #{paymentType,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.afd.model.order.PaymentDetail" >
+    update t_payment_detail
+    <set >
+      <if test="paymentId != null" >
+        payment_id = #{paymentId,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null" >
+        amount = #{amount,jdbcType=REAL},
+      </if>
+      <if test="userAccountId != null" >
+        user_account_id = #{userAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="paymentType != null" >
+        payment_type = #{paymentType,jdbcType=CHAR},
+      </if>
+    </set>
+    where p_detail_id = #{pDetailId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.afd.model.order.PaymentDetail" >
+    update t_payment_detail
+    set payment_id = #{paymentId,jdbcType=INTEGER},
+      order_id = #{orderId,jdbcType=INTEGER},
+      amount = #{amount,jdbcType=REAL},
+      user_account_id = #{userAccountId,jdbcType=INTEGER},
+      payment_type = #{paymentType,jdbcType=CHAR}
+    where p_detail_id = #{pDetailId,jdbcType=INTEGER}
+  </update>
+</mapper>

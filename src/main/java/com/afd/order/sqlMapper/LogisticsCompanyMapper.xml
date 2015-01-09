@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.afd.order.dao.LogisticsCompanyMapper" >
+  <resultMap id="BaseResultMap" type="com.afd.model.order.LogisticsCompany" >
+    <id column="logistics_comp_id" property="logisticsCompId" jdbcType="TINYINT" />
+    <result column="logistics_comp_name" property="logisticsCompName" jdbcType="VARCHAR" />
+    <result column="linkman" property="linkman" jdbcType="VARCHAR" />
+    <result column="tel" property="tel" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="CHAR" />
+    <result column="province" property="province" jdbcType="SMALLINT" />
+    <result column="province_name" property="provinceName" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="SMALLINT" />
+    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+    <result column="district" property="district" jdbcType="SMALLINT" />
+    <result column="district_name" property="districtName" jdbcType="VARCHAR" />
+    <result column="town" property="town" jdbcType="SMALLINT" />
+    <result column="town_name" property="townName" jdbcType="VARCHAR" />
+    <result column="addr" property="addr" jdbcType="VARCHAR" />
+    <result column="zip_code" property="zipCode" jdbcType="CHAR" />
+    <result column="lawman" property="lawman" jdbcType="VARCHAR" />
+    <result column="api_url" property="apiUrl" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by_name" property="updateByName" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    logistics_comp_id, logistics_comp_name, linkman, tel, mobile, province, province_name, 
+    city, city_name, district, district_name, town, town_name, addr, zip_code, lawman, 
+    api_url, status, create_date, update_date, update_by_name, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Byte" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_logistics_company
+    where logistics_comp_id = #{logisticsCompId,jdbcType=TINYINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Byte" >
+    delete from t_logistics_company
+    where logistics_comp_id = #{logisticsCompId,jdbcType=TINYINT}
+  </delete>
+  <insert id="insert" parameterType="com.afd.model.order.LogisticsCompany" >
+    insert into t_logistics_company (logistics_comp_id, logistics_comp_name, 
+      linkman, tel, mobile, 
+      province, province_name, city, 
+      city_name, district, district_name, 
+      town, town_name, addr, 
+      zip_code, lawman, api_url, 
+      status, create_date, update_date, 
+      update_by_name, remark)
+    values (#{logisticsCompId,jdbcType=TINYINT}, #{logisticsCompName,jdbcType=VARCHAR}, 
+      #{linkman,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, #{mobile,jdbcType=CHAR}, 
+      #{province,jdbcType=SMALLINT}, #{provinceName,jdbcType=VARCHAR}, #{city,jdbcType=SMALLINT}, 
+      #{cityName,jdbcType=VARCHAR}, #{district,jdbcType=SMALLINT}, #{districtName,jdbcType=VARCHAR}, 
+      #{town,jdbcType=SMALLINT}, #{townName,jdbcType=VARCHAR}, #{addr,jdbcType=VARCHAR}, 
+      #{zipCode,jdbcType=CHAR}, #{lawman,jdbcType=VARCHAR}, #{apiUrl,jdbcType=VARCHAR}, 
+      #{status,jdbcType=CHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateByName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.afd.model.order.LogisticsCompany" >
+    insert into t_logistics_company
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="logisticsCompId != null" >
+        logistics_comp_id,
+      </if>
+      <if test="logisticsCompName != null" >
+        logistics_comp_name,
+      </if>
+      <if test="linkman != null" >
+        linkman,
+      </if>
+      <if test="tel != null" >
+        tel,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="provinceName != null" >
+        province_name,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="cityName != null" >
+        city_name,
+      </if>
+      <if test="district != null" >
+        district,
+      </if>
+      <if test="districtName != null" >
+        district_name,
+      </if>
+      <if test="town != null" >
+        town,
+      </if>
+      <if test="townName != null" >
+        town_name,
+      </if>
+      <if test="addr != null" >
+        addr,
+      </if>
+      <if test="zipCode != null" >
+        zip_code,
+      </if>
+      <if test="lawman != null" >
+        lawman,
+      </if>
+      <if test="apiUrl != null" >
+        api_url,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="updateDate != null" >
+        update_date,
+      </if>
+      <if test="updateByName != null" >
+        update_by_name,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="logisticsCompId != null" >
+        #{logisticsCompId,jdbcType=TINYINT},
+      </if>
+      <if test="logisticsCompName != null" >
+        #{logisticsCompName,jdbcType=VARCHAR},
+      </if>
+      <if test="linkman != null" >
+        #{linkman,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=CHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=SMALLINT},
+      </if>
+      <if test="provinceName != null" >
+        #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=SMALLINT},
+      </if>
+      <if test="cityName != null" >
+        #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null" >
+        #{district,jdbcType=SMALLINT},
+      </if>
+      <if test="districtName != null" >
+        #{districtName,jdbcType=VARCHAR},
+      </if>
+      <if test="town != null" >
+        #{town,jdbcType=SMALLINT},
+      </if>
+      <if test="townName != null" >
+        #{townName,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null" >
+        #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="zipCode != null" >
+        #{zipCode,jdbcType=CHAR},
+      </if>
+      <if test="lawman != null" >
+        #{lawman,jdbcType=VARCHAR},
+      </if>
+      <if test="apiUrl != null" >
+        #{apiUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateByName != null" >
+        #{updateByName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.afd.model.order.LogisticsCompany" >
+    update t_logistics_company
+    <set >
+      <if test="logisticsCompName != null" >
+        logistics_comp_name = #{logisticsCompName,jdbcType=VARCHAR},
+      </if>
+      <if test="linkman != null" >
+        linkman = #{linkman,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        mobile = #{mobile,jdbcType=CHAR},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=SMALLINT},
+      </if>
+      <if test="provinceName != null" >
+        province_name = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=SMALLINT},
+      </if>
+      <if test="cityName != null" >
+        city_name = #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null" >
+        district = #{district,jdbcType=SMALLINT},
+      </if>
+      <if test="districtName != null" >
+        district_name = #{districtName,jdbcType=VARCHAR},
+      </if>
+      <if test="town != null" >
+        town = #{town,jdbcType=SMALLINT},
+      </if>
+      <if test="townName != null" >
+        town_name = #{townName,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null" >
+        addr = #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="zipCode != null" >
+        zip_code = #{zipCode,jdbcType=CHAR},
+      </if>
+      <if test="lawman != null" >
+        lawman = #{lawman,jdbcType=VARCHAR},
+      </if>
+      <if test="apiUrl != null" >
+        api_url = #{apiUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=CHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateByName != null" >
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where logistics_comp_id = #{logisticsCompId,jdbcType=TINYINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.afd.model.order.LogisticsCompany" >
+    update t_logistics_company
+    set logistics_comp_name = #{logisticsCompName,jdbcType=VARCHAR},
+      linkman = #{linkman,jdbcType=VARCHAR},
+      tel = #{tel,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=CHAR},
+      province = #{province,jdbcType=SMALLINT},
+      province_name = #{provinceName,jdbcType=VARCHAR},
+      city = #{city,jdbcType=SMALLINT},
+      city_name = #{cityName,jdbcType=VARCHAR},
+      district = #{district,jdbcType=SMALLINT},
+      district_name = #{districtName,jdbcType=VARCHAR},
+      town = #{town,jdbcType=SMALLINT},
+      town_name = #{townName,jdbcType=VARCHAR},
+      addr = #{addr,jdbcType=VARCHAR},
+      zip_code = #{zipCode,jdbcType=CHAR},
+      lawman = #{lawman,jdbcType=VARCHAR},
+      api_url = #{apiUrl,jdbcType=VARCHAR},
+      status = #{status,jdbcType=CHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by_name = #{updateByName,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where logistics_comp_id = #{logisticsCompId,jdbcType=TINYINT}
+  </update>
+</mapper>

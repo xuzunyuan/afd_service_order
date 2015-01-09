@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.afd.order.dao.ReturnOrderItemMapper" >
+  <resultMap id="BaseResultMap" type="com.afd.model.order.ReturnOrderItem" >
+    <id column="ret_order_item_id" property="retOrderItemId" jdbcType="INTEGER" />
+    <result column="ret_order_id" property="retOrderId" jdbcType="INTEGER" />
+    <result column="prod_id" property="prodId" jdbcType="INTEGER" />
+    <result column="seller_id" property="sellerId" jdbcType="INTEGER" />
+    <result column="item_id" property="itemId" jdbcType="INTEGER" />
+    <result column="sku_id" property="skuId" jdbcType="INTEGER" />
+    <result column="return_number" property="returnNumber" jdbcType="INTEGER" />
+    <result column="ret_fee" property="retFee" jdbcType="REAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ret_order_item_id, ret_order_id, prod_id, seller_id, item_id, sku_id, return_number, 
+    ret_fee
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_return_order_items
+    where ret_order_item_id = #{retOrderItemId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_return_order_items
+    where ret_order_item_id = #{retOrderItemId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.afd.model.order.ReturnOrderItem" >
+    insert into t_return_order_items (ret_order_item_id, ret_order_id, prod_id, 
+      seller_id, item_id, sku_id, 
+      return_number, ret_fee)
+    values (#{retOrderItemId,jdbcType=INTEGER}, #{retOrderId,jdbcType=INTEGER}, #{prodId,jdbcType=INTEGER}, 
+      #{sellerId,jdbcType=INTEGER}, #{itemId,jdbcType=INTEGER}, #{skuId,jdbcType=INTEGER}, 
+      #{returnNumber,jdbcType=INTEGER}, #{retFee,jdbcType=REAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.afd.model.order.ReturnOrderItem" >
+    insert into t_return_order_items
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="retOrderItemId != null" >
+        ret_order_item_id,
+      </if>
+      <if test="retOrderId != null" >
+        ret_order_id,
+      </if>
+      <if test="prodId != null" >
+        prod_id,
+      </if>
+      <if test="sellerId != null" >
+        seller_id,
+      </if>
+      <if test="itemId != null" >
+        item_id,
+      </if>
+      <if test="skuId != null" >
+        sku_id,
+      </if>
+      <if test="returnNumber != null" >
+        return_number,
+      </if>
+      <if test="retFee != null" >
+        ret_fee,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="retOrderItemId != null" >
+        #{retOrderItemId,jdbcType=INTEGER},
+      </if>
+      <if test="retOrderId != null" >
+        #{retOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="prodId != null" >
+        #{prodId,jdbcType=INTEGER},
+      </if>
+      <if test="sellerId != null" >
+        #{sellerId,jdbcType=INTEGER},
+      </if>
+      <if test="itemId != null" >
+        #{itemId,jdbcType=INTEGER},
+      </if>
+      <if test="skuId != null" >
+        #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="returnNumber != null" >
+        #{returnNumber,jdbcType=INTEGER},
+      </if>
+      <if test="retFee != null" >
+        #{retFee,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.afd.model.order.ReturnOrderItem" >
+    update t_return_order_items
+    <set >
+      <if test="retOrderId != null" >
+        ret_order_id = #{retOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="prodId != null" >
+        prod_id = #{prodId,jdbcType=INTEGER},
+      </if>
+      <if test="sellerId != null" >
+        seller_id = #{sellerId,jdbcType=INTEGER},
+      </if>
+      <if test="itemId != null" >
+        item_id = #{itemId,jdbcType=INTEGER},
+      </if>
+      <if test="skuId != null" >
+        sku_id = #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="returnNumber != null" >
+        return_number = #{returnNumber,jdbcType=INTEGER},
+      </if>
+      <if test="retFee != null" >
+        ret_fee = #{retFee,jdbcType=REAL},
+      </if>
+    </set>
+    where ret_order_item_id = #{retOrderItemId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.afd.model.order.ReturnOrderItem" >
+    update t_return_order_items
+    set ret_order_id = #{retOrderId,jdbcType=INTEGER},
+      prod_id = #{prodId,jdbcType=INTEGER},
+      seller_id = #{sellerId,jdbcType=INTEGER},
+      item_id = #{itemId,jdbcType=INTEGER},
+      sku_id = #{skuId,jdbcType=INTEGER},
+      return_number = #{returnNumber,jdbcType=INTEGER},
+      ret_fee = #{retFee,jdbcType=REAL}
+    where ret_order_item_id = #{retOrderItemId,jdbcType=INTEGER}
+  </update>
+</mapper>

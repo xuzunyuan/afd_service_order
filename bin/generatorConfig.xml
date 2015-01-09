@@ -10,7 +10,7 @@
 			<property name="suppressAllComments" value="true" />
 		</commentGenerator>
 
-		<jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"
+		<jdbcConnection driverClass="org.gjt.mm.mysql.Driver"
 			connectionURL="jdbc:mysql://192.168.1.17:3306/afd_order" userId="afd"
 			password="123456" />
 
@@ -30,12 +30,42 @@
 			targetProject="afd_service_order" type="XMLMAPPER">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
-		<table tableName="t_yw_prod_promotion" domainObjectName="YWProdPromotion"
+		<table tableName="t_logistics_company" domainObjectName="LogisticsCompany"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">
 		</table>
-		<table tableName="t_yw_prod_promotion_detail" domainObjectName="YWProdPromotionDetail"
+		<table tableName="t_order" domainObjectName="Order"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+		</table>
+		<table tableName="t_order_log" domainObjectName="OrderLog"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+		</table>
+		<table tableName="t_order_item" domainObjectName="YWProdPromotionDetail"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+		</table>
+		<table tableName="t_payment" domainObjectName="OrderItem"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+		</table>
+		<table tableName="t_payment_detail" domainObjectName="PaymentDetail"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+		</table>
+		<table tableName="t_return_order" domainObjectName="ReturnOrder"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+		</table>
+		<table tableName="t_return_order_items" domainObjectName="ReturnOrderItem"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">
