@@ -12,15 +12,17 @@
     http://www.springframework.org/schema/context/spring-context-4.0.xsd
     http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    
+    <context:property-placeholder location="classpath:properties/*.properties"/>
 				
 	<beans profile="develop">
 		<bean id="ds" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"> 
 		    <!-- 基本属性 url、user、password -->
 		    <property name="driverClassName" value="com.alibaba.cobar.jdbc.Driver" /> 
-		    <property name="url" value="jdbc:cobar://192.168.1.17:8066/dbAfdUser" />
-		    <property name="username" value="afdUser" />
-		    <property name="password" value="123456" />
-		    <property name="connectionProperties" value="config.decrypt=false" />
+		    <property name="url" value="${jdbc.url}" />
+		    <property name="username" value="${jdbc.user}" />
+		    <property name="password" value="${jdbc.pwd}" />
+		    <property name="connectionProperties" value="config.decrypt=true" />
 		      
 		    <!-- 配置初始化大小、最小、最大 -->
 		    <property name="initialSize" value="5" />
@@ -43,7 +45,9 @@
 		 
 		    <!-- PSCache，并且指定每个连接上PSCache的大小  （oracle推荐打开、mysql推荐关闭）-->
 		    <property name="poolPreparedStatements" value="false" />
-		    <property name="maxPoolPreparedStatementPerConnectionSize" value="20" />		 		   
+		    <property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+		    <!-- 配置监控统计拦截的filters -->
+		    <property name="filters" value="mergeStat,config" /> 	 		   
 		</bean>		
 	</beans>	
 </beans>
