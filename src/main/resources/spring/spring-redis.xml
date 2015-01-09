@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+    	http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+    		
+	<bean id="stringSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+	
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">  
+       <property name="maxTotal" value="${redis.pool.maxTotal}" />  
+       <property name="maxIdle" value="${redis.pool.maxIdle}" />  
+       <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}" />
+       <property name="testOnBorrow" value="${redis.pool.testOnBorrow}" />  
+    </bean> 
+    
+	<beans profile="develop">
+		<bean id="sentinelConfig" class="org.springframework.data.redis.connection.RedisSentinelConfigurationEX">  
+		   <property name="masterName" value="${master.name}" />
+	       <property name="sentinels">
+		        <set>
+			        <bean class="org.springframework.data.redis.connection.RedisNode">
+			        	<constructor-arg index="0" type="java.lang.String" value="${sentinel.ip.1}"/>
+			     		<constructor-arg index="1" type="int" value="${sentinel.port.1}"/>
+			        </bean>
+			        <bean class="org.springframework.data.redis.connection.RedisNode">
+			        	<constructor-arg index="0" type="java.lang.String" value="${sentinel.ip.2}"/>
+			     		<constructor-arg index="1" type="int" value="${sentinel.port.2}"/>
+			        </bean>
+		        </set>
+			</property>
+	    </bean> 
+    
+	    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" >  
+		     <constructor-arg index="0"  ref="sentinelConfig" />
+		     <constructor-arg index="1" ref="jedisPoolConfig" />
+		</bean> 
+		
+		<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">  
+		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
+		    <property name="keySerializer" ref="stringSerializer" />  
+		    <property name="hashKeySerializer" ref="stringSerializer" />  
+		    <property name="valueSerializer" ref="stringSerializer" />
+		</bean> 
+		
+		<bean id="redisNumber" class="org.springframework.data.redis.core.RedisTemplate">  
+		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
+		    <property name="keySerializer" ref="stringSerializer" />  
+		    <property name="hashKeySerializer" ref="stringSerializer" /> 
+		    <property name="valueSerializer" ref="stringSerializer" />
+		</bean> 
+	 
+	</beans>
+	
+	<beans profile="test">
+		<bean id="sentinelConfig" class="org.springframework.data.redis.connection.RedisSentinelConfigurationEX">  
+		   <property name="masterName" value="${test.master.name}" />
+	       <property name="sentinels">
+		        <set>
+			        <bean class="org.springframework.data.redis.connection.RedisNode">
+			        	<constructor-arg index="0" type="java.lang.String" value="${test.sentinel.ip.1}"/>
+			     		<constructor-arg index="1" type="int" value="${test.sentinel.port.1}"/>
+			        </bean>
+			        <bean class="org.springframework.data.redis.connection.RedisNode">
+			        	<constructor-arg index="0" type="java.lang.String" value="${test.sentinel.ip.2}"/>
+			     		<constructor-arg index="1" type="int" value="${test.sentinel.port.2}"/>
+			        </bean>
+		        </set>
+			</property>
+	    </bean> 
+	    
+	    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" >  
+	        <constructor-arg index="0"  ref="sentinelConfig" />
+		    <constructor-arg index="1" ref="jedisPoolConfig" />
+		</bean>  
+		
+		<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">  
+		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
+		    <property name="keySerializer" ref="stringSerializer" />  
+		    <property name="hashKeySerializer" ref="stringSerializer" />  
+		    <property name="valueSerializer" ref="stringSerializer" />
+		</bean> 
+		
+		<bean id="redisNumber" class="org.springframework.data.redis.core.RedisTemplate">  
+		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
+		    <property name="keySerializer" ref="stringSerializer" />  
+		    <property name="hashKeySerializer" ref="stringSerializer" /> 
+		    <property name="valueSerializer" ref="stringSerializer" />
+		</bean> 
+	
+	</beans>
+	
+	<beans profile="product">
+		<!-- 购物车 -->
+		<bean id="sentinelConfigCart" class="org.springframework.data.redis.connection.RedisSentinelConfigurationEX">  
+		   <property name="masterName" value="${product.cart.master.name}" />
+	       <property name="sentinels">
+		        <set>
+			        <bean class="org.springframework.data.redis.connection.RedisNode">
+			        	<constructor-arg index="0" type="java.lang.String" value="${product.cart.sentinel.ip.1}"/>
+			     		<constructor-arg index="1" type="int" value="${product.cart.sentinel.port.1}"/>
+			        </bean>
+			        <bean class="org.springframework.data.redis.connection.RedisNode">
+			        	<constructor-arg index="0" type="java.lang.String" value="${product.cart.sentinel.ip.2}"/>
+			     		<constructor-arg index="1" type="int" value="${product.cart.sentinel.port.2}"/>
+			        </bean>
+		        </set>
+			</property>
+	    </bean> 
+	    
+	    <bean id="jedisConnectionFactoryCart" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" >  
+	        <constructor-arg index="0"  ref="sentinelConfigCart" />
+		    <constructor-arg index="1" ref="jedisPoolConfig" />
+		</bean>  
+		<!-- 库存 -->
+		<bean id="sentinelConfigStock" class="org.springframework.data.redis.connection.RedisSentinelConfigurationEX">  
+		   <property name="masterName" value="${product.stock.master.name}" />
+	       <property name="sentinels">
+		        <set>
+			        <bean class="org.springframework.data.redis.connection.RedisNode">
+			        	<constructor-arg index="0" type="java.lang.String" value="${product.stock.sentinel.ip.1}"/>
+			     		<constructor-arg index="1" type="int" value="${product.stock.sentinel.port.1}"/>
+			        </bean>
+			        <bean class="org.springframework.data.redis.connection.RedisNode">
+			        	<constructor-arg index="0" type="java.lang.String" value="${product.stock.sentinel.ip.2}"/>
+			     		<constructor-arg index="1" type="int" value="${product.stock.sentinel.port.2}"/>
+			        </bean>
+		        </set>
+			</property>
+	    </bean> 
+	    
+	    <bean id="jedisConnectionFactoryStock" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" >  
+	        <constructor-arg index="0"  ref="sentinelConfigStock" />
+		    <constructor-arg index="1" ref="jedisPoolConfig" />
+		</bean>  
+		<!-- 购物车模板 -->
+		<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">  
+		    <property name="connectionFactory" ref="jedisConnectionFactoryCart"/> 
+		    <property name="keySerializer" ref="stringSerializer" />  
+		    <property name="hashKeySerializer" ref="stringSerializer" />  
+			<property name="valueSerializer" ref="stringSerializer" />
+		</bean> 
+		<!-- 库存模板 -->
+		<bean id="redisNumber" class="org.springframework.data.redis.core.RedisTemplate">  
+		    <property name="connectionFactory" ref="jedisConnectionFactoryStock"/> 
+		    <property name="keySerializer" ref="stringSerializer" />  
+		    <property name="hashKeySerializer" ref="stringSerializer" /> 
+		    <property name="valueSerializer" ref="stringSerializer" />
+		</bean> 
+	
+	</beans>
+	
+	<beans profile="beta">
+		<bean id="sentinelConfig" class="org.springframework.data.redis.connection.RedisSentinelConfigurationEX">  
+		   <property name="masterName" value="${beta.master.name}" />
+	       <property name="sentinels">
+		        <set>
+			        <bean class="org.springframework.data.redis.connection.RedisNode">
+			        	<constructor-arg index="0" type="java.lang.String" value="${beta.sentinel.ip.1}"/>
+			     		<constructor-arg index="1" type="int" value="${beta.sentinel.port.1}"/>
+			        </bean>
+			        <bean class="org.springframework.data.redis.connection.RedisNode">
+			        	<constructor-arg index="0" type="java.lang.String" value="${beta.sentinel.ip.2}"/>
+			     		<constructor-arg index="1" type="int" value="${beta.sentinel.port.2}"/>
+			        </bean>
+		        </set>
+			</property>
+	    </bean> 
+	    
+   		<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" >  
+	        <constructor-arg index="0"  ref="sentinelConfig" />
+		    <constructor-arg index="1" ref="jedisPoolConfig" />
+		</bean>
+		
+		<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">  
+		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
+		    <property name="keySerializer" ref="stringSerializer" />  
+		    <property name="hashKeySerializer" ref="stringSerializer" />  
+		    <property name="valueSerializer" ref="stringSerializer" />
+		</bean> 
+		
+		<bean id="redisNumber" class="org.springframework.data.redis.core.RedisTemplate">  
+		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
+		    <property name="keySerializer" ref="stringSerializer" />  
+		    <property name="hashKeySerializer" ref="stringSerializer" /> 
+		    <property name="valueSerializer" ref="stringSerializer" />
+		</bean> 
+   	</beans>
+</beans>
