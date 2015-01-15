@@ -2,13 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.afd.order.dao.PaymentMapper">
   <resultMap id="BaseResultMap" type="com.afd.model.order.Payment">
-    <id column="PAYMENT_ID" jdbcType="INTEGER" property="paymentId" />
-    <result column="ORIGIN_PAYMENT_ID" jdbcType="INTEGER" property="originPaymentId" />
+    <id column="PAYMENT_ID" jdbcType="DECIMAL" property="paymentId" />
+    <result column="ORIGIN_PAYMENT_ID" jdbcType="DECIMAL" property="originPaymentId" />
     <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
-    <result column="USER_ID" jdbcType="INTEGER" property="userId" />
+    <result column="USER_ID" jdbcType="DECIMAL" property="userId" />
     <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
     <result column="CREATE_BY_IP" jdbcType="VARCHAR" property="createByIp" />
-    <result column="PAY_AMOUNT" jdbcType="INTEGER" property="payAmount" />
+    <result column="PAY_AMOUNT" jdbcType="DECIMAL" property="payAmount" />
     <result column="PAY_GW" jdbcType="CHAR" property="payGw" />
     <result column="STATUS" jdbcType="CHAR" property="status" />
     <result column="TYPE" jdbcType="CHAR" property="type" />
@@ -36,7 +36,7 @@
     select 
     <include refid="Base_Column_List" />
     from T_PAYMENT
-    where PAYMENT_ID = #{paymentId,jdbcType=INTEGER}
+    where PAYMENT_ID = #{paymentId,jdbcType=DECIMAL}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     <!--
@@ -45,7 +45,7 @@
       This element was generated on Wed Aug 13 17:39:22 CST 2014.
     -->
     delete from T_PAYMENT
-    where PAYMENT_ID = #{paymentId,jdbcType=INTEGER}
+    where PAYMENT_ID = #{paymentId,jdbcType=DECIMAL}
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="paymentId" parameterType="com.yiwang.model.order.Payment">
     insert into T_PAYMENT (ORIGIN_PAYMENT_ID, CREATE_DATE, 
@@ -54,9 +54,9 @@
       TYPE, TRADE_NO, CALLBACK_DATE, 
       REAL_PAY_GW, REAL_PAY_DATE, PAYMENT_TYPE
       )
-    values (#{originPaymentId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
-      #{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{createByIp,jdbcType=VARCHAR}, 
-      #{payAmount,jdbcType=INTEGER}, #{payGw,jdbcType=CHAR}, #{status,jdbcType=CHAR}, 
+    values (#{originPaymentId,jdbcType=DECIMAL}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{userId,jdbcType=DECIMAL}, #{userName,jdbcType=VARCHAR}, #{createByIp,jdbcType=VARCHAR}, 
+      #{payAmount,jdbcType=DECIMAL}, #{payGw,jdbcType=CHAR}, #{status,jdbcType=CHAR}, 
       #{type,jdbcType=CHAR}, #{tradeNo,jdbcType=VARCHAR}, #{callbackDate,jdbcType=TIMESTAMP}, 
       #{realPayGw,jdbcType=CHAR}, #{realPayDate,jdbcType=TIMESTAMP}, #{paymentType,jdbcType=CHAR}
       )
@@ -109,13 +109,13 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="originPaymentId != null">
-        #{originPaymentId,jdbcType=INTEGER},
+        #{originPaymentId,jdbcType=DECIMAL},
       </if>
       <if test="createDate != null">
         #{createDate,jdbcType=TIMESTAMP},
       </if>
       <if test="userId != null">
-        #{userId,jdbcType=INTEGER},
+        #{userId,jdbcType=DECIMAL},
       </if>
       <if test="userName != null">
         #{userName,jdbcType=VARCHAR},
@@ -124,7 +124,7 @@
         #{createByIp,jdbcType=VARCHAR},
       </if>
       <if test="payAmount != null">
-        #{payAmount,jdbcType=INTEGER},
+        #{payAmount,jdbcType=DECIMAL},
       </if>
       <if test="payGw != null">
         #{payGw,jdbcType=CHAR},
@@ -161,13 +161,13 @@
     update T_PAYMENT
     <set>
       <if test="originPaymentId != null">
-        ORIGIN_PAYMENT_ID = #{originPaymentId,jdbcType=INTEGER},
+        ORIGIN_PAYMENT_ID = #{originPaymentId,jdbcType=DECIMAL},
       </if>
       <if test="createDate != null">
         CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
       </if>
       <if test="userId != null">
-        USER_ID = #{userId,jdbcType=INTEGER},
+        USER_ID = #{userId,jdbcType=DECIMAL},
       </if>
       <if test="userName != null">
         USER_NAME = #{userName,jdbcType=VARCHAR},
@@ -176,7 +176,7 @@
         CREATE_BY_IP = #{createByIp,jdbcType=VARCHAR},
       </if>
       <if test="payAmount != null">
-        PAY_AMOUNT = #{payAmount,jdbcType=INTEGER},
+        PAY_AMOUNT = #{payAmount,jdbcType=DECIMAL},
       </if>
       <if test="payGw != null">
         PAY_GW = #{payGw,jdbcType=CHAR},
@@ -203,7 +203,7 @@
         PAYMENT_TYPE = #{paymentType,jdbcType=CHAR},
       </if>
     </set>
-    where PAYMENT_ID = #{paymentId,jdbcType=INTEGER}
+    where PAYMENT_ID = #{paymentId,jdbcType=DECIMAL}
   </update>
   
     <update id="updateByPrimaryKeyPaying" parameterType="com.yiwang.model.order.Payment">
@@ -215,13 +215,13 @@
     update T_PAYMENT
     <set>
       <if test="originPaymentId != null">
-        ORIGIN_PAYMENT_ID = #{originPaymentId,jdbcType=INTEGER},
+        ORIGIN_PAYMENT_ID = #{originPaymentId,jdbcType=DECIMAL},
       </if>
       <if test="createDate != null">
         CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
       </if>
       <if test="userId != null">
-        USER_ID = #{userId,jdbcType=INTEGER},
+        USER_ID = #{userId,jdbcType=DECIMAL},
       </if>
       <if test="userName != null">
         USER_NAME = #{userName,jdbcType=VARCHAR},
@@ -230,7 +230,7 @@
         CREATE_BY_IP = #{createByIp,jdbcType=VARCHAR},
       </if>
       <if test="payAmount != null">
-        PAY_AMOUNT = #{payAmount,jdbcType=INTEGER},
+        PAY_AMOUNT = #{payAmount,jdbcType=DECIMAL},
       </if>
       <if test="payGw != null">
         PAY_GW = #{payGw,jdbcType=CHAR},
@@ -257,7 +257,7 @@
         PAYMENT_TYPE = #{paymentType,jdbcType=CHAR},
       </if>
     </set>
-    where PAYMENT_ID = #{paymentId,jdbcType=INTEGER} and STATUS != 2
+    where PAYMENT_ID = #{paymentId,jdbcType=DECIMAL} and STATUS != 2
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yiwang.model.order.Payment">
     <!--
@@ -266,12 +266,12 @@
       This element was generated on Wed Aug 13 17:39:22 CST 2014.
     -->
     update T_PAYMENT
-    set ORIGIN_PAYMENT_ID = #{originPaymentId,jdbcType=INTEGER},
+    set ORIGIN_PAYMENT_ID = #{originPaymentId,jdbcType=DECIMAL},
       CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
-      USER_ID = #{userId,jdbcType=INTEGER},
+      USER_ID = #{userId,jdbcType=DECIMAL},
       USER_NAME = #{userName,jdbcType=VARCHAR},
       CREATE_BY_IP = #{createByIp,jdbcType=VARCHAR},
-      PAY_AMOUNT = #{payAmount,jdbcType=INTEGER},
+      PAY_AMOUNT = #{payAmount,jdbcType=DECIMAL},
       PAY_GW = #{payGw,jdbcType=CHAR},
       STATUS = #{status,jdbcType=CHAR},
       TYPE = #{type,jdbcType=CHAR},
@@ -280,7 +280,7 @@
       REAL_PAY_GW = #{realPayGw,jdbcType=CHAR},
       REAL_PAY_DATE = #{realPayDate,jdbcType=TIMESTAMP},
       PAYMENT_TYPE = #{paymentType,jdbcType=CHAR}
-    where PAYMENT_ID = #{paymentId,jdbcType=INTEGER}
+    where PAYMENT_ID = #{paymentId,jdbcType=DECIMAL}
   </update>
   <select id="getPaymentExpired" resultMap="BaseResultMap">
 		select

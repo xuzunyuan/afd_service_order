@@ -2,32 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.afd.order.dao.PaymentDetailMapper" >
   <resultMap id="BaseResultMap" type="com.afd.model.order.PaymentDetail" >
-    <id column="p_detail_id" property="pDetailId" jdbcType="INTEGER" />
-    <result column="payment_id" property="paymentId" jdbcType="INTEGER" />
-    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <id column="p_detail_id" property="pDetailId" jdbcType="DECIMAL" />
+    <result column="payment_id" property="paymentId" jdbcType="DECIMAL" />
+    <result column="order_id" property="orderId" jdbcType="DECIMAL" />
     <result column="amount" property="amount" jdbcType="REAL" />
-    <result column="user_account_id" property="userAccountId" jdbcType="INTEGER" />
+    <result column="user_account_id" property="userAccountId" jdbcType="DECIMAL" />
     <result column="payment_type" property="paymentType" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     p_detail_id, payment_id, order_id, amount, user_account_id, payment_type
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from t_payment_detail
-    where p_detail_id = #{pDetailId,jdbcType=INTEGER}
+    where p_detail_id = #{pDetailId,jdbcType=DECIMAL}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_payment_detail
-    where p_detail_id = #{pDetailId,jdbcType=INTEGER}
+    where p_detail_id = #{pDetailId,jdbcType=DECIMAL}
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="pDetailId" parameterType="com.afd.model.order.PaymentDetail" >
     insert into t_payment_detail (payment_id, order_id, 
       amount, user_account_id, payment_type
       )
-    values (#{paymentId,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, 
-      #{amount,jdbcType=REAL}, #{userAccountId,jdbcType=INTEGER}, #{paymentType,jdbcType=CHAR}
+    values (#{paymentId,jdbcType=DECIMAL}, #{orderId,jdbcType=DECIMAL}, 
+      #{amount,jdbcType=REAL}, #{userAccountId,jdbcType=DECIMAL}, #{paymentType,jdbcType=CHAR}
       )
   </insert>
   <insert id="insertSelective" useGeneratedKeys="true" keyProperty="pDetailId" parameterType="com.afd.model.order.PaymentDetail" >
@@ -51,16 +51,16 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="paymentId != null" >
-        #{paymentId,jdbcType=INTEGER},
+        #{paymentId,jdbcType=DECIMAL},
       </if>
       <if test="orderId != null" >
-        #{orderId,jdbcType=INTEGER},
+        #{orderId,jdbcType=DECIMAL},
       </if>
       <if test="amount != null" >
         #{amount,jdbcType=REAL},
       </if>
       <if test="userAccountId != null" >
-        #{userAccountId,jdbcType=INTEGER},
+        #{userAccountId,jdbcType=DECIMAL},
       </if>
       <if test="paymentType != null" >
         #{paymentType,jdbcType=CHAR},
@@ -71,30 +71,30 @@
     update t_payment_detail
     <set >
       <if test="paymentId != null" >
-        payment_id = #{paymentId,jdbcType=INTEGER},
+        payment_id = #{paymentId,jdbcType=DECIMAL},
       </if>
       <if test="orderId != null" >
-        order_id = #{orderId,jdbcType=INTEGER},
+        order_id = #{orderId,jdbcType=DECIMAL},
       </if>
       <if test="amount != null" >
         amount = #{amount,jdbcType=REAL},
       </if>
       <if test="userAccountId != null" >
-        user_account_id = #{userAccountId,jdbcType=INTEGER},
+        user_account_id = #{userAccountId,jdbcType=DECIMAL},
       </if>
       <if test="paymentType != null" >
         payment_type = #{paymentType,jdbcType=CHAR},
       </if>
     </set>
-    where p_detail_id = #{pDetailId,jdbcType=INTEGER}
+    where p_detail_id = #{pDetailId,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.afd.model.order.PaymentDetail" >
     update t_payment_detail
-    set payment_id = #{paymentId,jdbcType=INTEGER},
-      order_id = #{orderId,jdbcType=INTEGER},
+    set payment_id = #{paymentId,jdbcType=DECIMAL},
+      order_id = #{orderId,jdbcType=DECIMAL},
       amount = #{amount,jdbcType=REAL},
-      user_account_id = #{userAccountId,jdbcType=INTEGER},
+      user_account_id = #{userAccountId,jdbcType=DECIMAL},
       payment_type = #{paymentType,jdbcType=CHAR}
-    where p_detail_id = #{pDetailId,jdbcType=INTEGER}
+    where p_detail_id = #{pDetailId,jdbcType=DECIMAL}
   </update>
 </mapper>
