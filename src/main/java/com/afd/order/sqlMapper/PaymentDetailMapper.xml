@@ -22,20 +22,17 @@
     delete from t_payment_detail
     where p_detail_id = #{pDetailId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.afd.model.order.PaymentDetail" >
-    insert into t_payment_detail (p_detail_id, payment_id, order_id, 
+  <insert id="insert" useGeneratedKeys="true" keyProperty="pDetailId" parameterType="com.afd.model.order.PaymentDetail" >
+    insert into t_payment_detail (payment_id, order_id, 
       amount, user_account_id, payment_type
       )
-    values (#{pDetailId,jdbcType=INTEGER}, #{paymentId,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, 
+    values (#{paymentId,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, 
       #{amount,jdbcType=REAL}, #{userAccountId,jdbcType=INTEGER}, #{paymentType,jdbcType=CHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.afd.model.order.PaymentDetail" >
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="pDetailId" parameterType="com.afd.model.order.PaymentDetail" >
     insert into t_payment_detail
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="pDetailId != null" >
-        p_detail_id,
-      </if>
+    <trim prefix="(" suffix=")" suffixOverrides="," >    
       <if test="paymentId != null" >
         payment_id,
       </if>
@@ -53,9 +50,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="pDetailId != null" >
-        #{pDetailId,jdbcType=INTEGER},
-      </if>
       <if test="paymentId != null" >
         #{paymentId,jdbcType=INTEGER},
       </if>

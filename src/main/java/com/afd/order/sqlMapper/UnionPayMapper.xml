@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.afd.order.dao.UnionPayMapper">
+    <resultMap id="BaseResultMap" type="com.yiwang.model.order.PaymentOrder">
+		<id column="ORDER_ID" property="orderId" jdbcType="DECIMAL" />
+		<result column="ORDER_STATUS" property="orderStatus" jdbcType="CHAR" />
+        <result column="PAY_TYPE" property="payType" jdbcType="CHAR" />
+		<result column="PAY_MODE" property="payMode" jdbcType="CHAR" />
+		<result column="PAY_STATUS" property="payStatus" jdbcType="CHAR" />
+	</resultMap>
+    <sql id="Base_Result_List">
+		ORDER_ID, ORDER_STATUS, PAY_TYPE, PAY_MODE, PAY_STATUS
+	</sql>
+    <select id="getOrderByOrderId" resultMap="BaseResultMap">
+		select
+		  <include refid="Base_Result_List" />
+		from
+          t_order t
+		where
+          t.order_id = #{orderId, jdbcType=DECIMAL}
+	</select>
+	    <update id="updatePaySuccessOrderStatus">
+		update t_order t
+		<set>
+            t.order_status = #{order.orderStatus,jdbcType=CHAR}
+		</set>
+		where t.order_id = #{order.orderId,jdbcType=DECIMAL} and t.order_status=2
+	</update>
+	
+    <update id="updatePaySuccessOrder">
+		update t_order t
+		<set>
+            t.pay_status = #{order.payStatus,jdbcType=CHAR}
+            , t.receipt_mode = #{order.receiptMode,jdbcType=CHAR}
+            , t.receipt_type = #{order.receiptType,jdbcType=CHAR}
+            , t.receipt_date = #{order.receiptDate,jdbcType=TIMESTAMP}
+            , t.last_update_date = #{order.lastUpdateDate,jdbcType=TIMESTAMP}
+            , t.last_update_by_name = #{order.lastUpdateByName,jdbcType=VARCHAR}
+		</set>
+		where t.order_id = #{order.orderId,jdbcType=DECIMAL}
+	</update>
+	
+	 <update id="updatePayingOrder">
+		update t_order t
+		<set>
+		      t.pay_status = #{order.payStatus,jdbcType=CHAR}
+            , t.receipt_mode = #{order.receiptMode,jdbcType=CHAR}
+            , t.receipt_type = #{order.receiptType,jdbcType=CHAR}
+            , t.receipt_date = #{order.receiptDate,jdbcType=TIMESTAMP}
+            , t.last_update_date = #{order.lastUpdateDate,jdbcType=TIMESTAMP}
+            , t.last_update_by_name = #{order.lastUpdateByName,jdbcType=VARCHAR}
+		</set>
+		where t.order_id = #{order.orderId,jdbcType=DECIMAL} and t.pay_status != 2
+	</update>
+	
+    <update id="updatePayFailureOrder">
+		update t_order t
+		<set>
+            t.pay_status = #{order.payStatus,jdbcType=CHAR}
+            , t.last_update_date = #{order.lastUpdateDate,jdbcType=TIMESTAMP}
+            , t.last_update_by_name = #{order.lastUpdateByName,jdbcType=VARCHAR}
+		</set>
+		where t.order_id = #{order.orderId,jdbcType=DECIMAL}
+	</update>
+</mapper>

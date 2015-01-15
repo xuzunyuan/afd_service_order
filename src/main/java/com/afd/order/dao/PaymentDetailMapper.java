@@ -1,17 +1,34 @@
 package com.afd.order.dao;
 
+import java.util.List;
+
 import com.afd.model.order.PaymentDetail;
 
 public interface PaymentDetailMapper {
-    int deleteByPrimaryKey(Integer pDetailId);
 
-    int insert(PaymentDetail record);
+	int deleteByPrimaryKey(Long pDetailId);
 
-    int insertSelective(PaymentDetail record);
+	
+	int insert(PaymentDetail record);
 
-    PaymentDetail selectByPrimaryKey(Integer pDetailId);
+	
+	int insertSelective(PaymentDetail record);
 
-    int updateByPrimaryKeySelective(PaymentDetail record);
+	
+	PaymentDetail selectByPrimaryKey(Long pDetailId);
 
-    int updateByPrimaryKey(PaymentDetail record);
+	
+	int updateByPrimaryKeySelective(PaymentDetail record);
+
+	
+	int updateByPrimaryKey(PaymentDetail record);
+	
+	
+	int selectPayedByOrderId (Long orderId);
+		
+	
+	List<PaymentDetail> selectByOrderId (Long orderId);
+	
+		
+	List<PaymentDetail> selectByPaymentId (Long PaymentId);
 }
