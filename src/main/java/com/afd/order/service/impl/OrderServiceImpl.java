@@ -1,5 +1,7 @@
 package com.afd.order.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,22 @@ public class OrderServiceImpl implements IOrderService{
 	}
 
 	@Override
-	public String helloWorld() {
-		return "hello world";
+	public Order getOrderById(Long orderId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Order> getOrdersByIdsAndUserIdNodelay(Long[] orderIds,
+			Long userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int cancelOrderByBoss(List<Long> orderIds, String optName,
+			String cancelReason) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
