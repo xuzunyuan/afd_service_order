@@ -7,25 +7,27 @@ import org.springframework.stereotype.Service;
 
 import com.afd.common.util.DateUtils;
 import com.afd.model.order.Order;
+import com.afd.model.order.OrderItem;
 import com.afd.order.dao.OrderMapper;
 import com.afd.service.order.IOrderService;
 
 @Service("orderService")
 public class OrderServiceImpl implements IOrderService{
 	@Autowired
-	private OrderMapper orderMappder;
+	private OrderMapper orderMapper;
 	
 	public int addOrder(){
 		Order order = new Order();
 		order.setUserName("liubo");
 		order.setCreatedDate(DateUtils.currentDate());
-		return orderMappder.insert(order);
+		return orderMapper.insert(order);
 	}
 
 	@Override
 	public Order getOrderById(Long orderId) {
+		Order order = this.orderMapper.getOrderById(orderId);
 		// TODO Auto-generated method stub
-		return null;
+		return order;
 	}
 
 	@Override
