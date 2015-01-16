@@ -53,6 +53,26 @@
     <result column="Last_update_date" property="lastUpdateDate" jdbcType="TIMESTAMP" />
     <result column="Last_update_by_name" property="lastUpdateByName" jdbcType="VARCHAR" />
   </resultMap>
+  <resultMap type="com.afd.model.order.Order" id="BaseResultMap2"
+		extends="BaseResultMap">
+		<collection property="orderItems" ofType="com.afd.model.order.OrderItem">
+			    <id column="payment_id" property="paymentId" jdbcType="DECIMAL" />
+			    <result column="origin_payment_id" property="originPaymentId" jdbcType="DECIMAL" />
+			    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+			    <result column="create_id" property="createId" jdbcType="DECIMAL" />
+			    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+			    <result column="create_by_ip" property="createByIp" jdbcType="VARCHAR" />
+			    <result column="pay_amount" property="payAmount" jdbcType="REAL" />
+			    <result column="pay_gw" property="payGw" jdbcType="CHAR" />
+			    <result column="status" property="status" jdbcType="CHAR" />
+			    <result column="type" property="type" jdbcType="CHAR" />
+			    <result column="trade_no" property="tradeNo" jdbcType="VARCHAR" />
+			    <result column="callback_date" property="callbackDate" jdbcType="TIMESTAMP" />
+			    <result column="real_pay_gw" property="realPayGw" jdbcType="CHAR" />
+			    <result column="real_pay_date" property="realPayDate" jdbcType="TIMESTAMP" />
+			    <result column="payment_type" property="paymentType" jdbcType="CHAR" />
+		</collection>
+	</resultMap>
   <sql id="Base_Column_List" >
     order_id, order_code, user_id, user_name, created_date, seller_id, order_type, order_status, 
     prod_fee, prod_discount_type, prod_discount_fee, deliver_fee, deliver_discount, order_fee, 
@@ -623,11 +643,13 @@
     where order_id = #{orderId,jdbcType=DECIMAL}
   </update>
   
-  <select id="getOrderByIdAndStoreId" resultMap="BaseResultMap2">
-		<include refid="All_Column_List"/>
-		and t.order_id =
-		#{orderId,jdbcType=DECIMAL}
-		and t.STORE_ID =
-		#{storeId,jdbcType=DECIMAL}
-  </select>
+  <select id="getOrdersByIdsAndUserIdNodelay" resultMap="BaseResultMap2">
+		select * from t_order t,t_order_item t1 where t.order_id = t1.order_id 
+		and t.order_id in 
+			<foreach collection="orderIds" item="orderId" open="(" separator="," close=")">
+				#{orderId}
+			</foreach>
+		and t.user_id = #{userId,jdbcType=DECIMAL}
+ </select>
+ 
 </mapper>

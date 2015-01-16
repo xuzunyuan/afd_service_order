@@ -1,5 +1,7 @@
 package com.afd.order.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.afd.model.order.Order;
@@ -18,4 +20,6 @@ public interface OrderMapper {
     int updateByPrimaryKey(Order record);
     
     Order getOrderById(@Param("orderId") Long orderId);
+    
+    List<Order> getOrdersByIdsAndUserIdNodelay(@Param("orderIds")Long[] orderIds, @Param("userId") Long userId);
 }

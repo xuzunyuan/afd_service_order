@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.afd.order.dao.OrderItemMapper" >
   <resultMap id="BaseResultMap" type="com.afd.model.order.OrderItem" >
-    <id column="payment_id" property="paymentId" jdbcType="INTEGER" />
-    <result column="origin_payment_id" property="originPaymentId" jdbcType="INTEGER" />
+    <id column="payment_id" property="paymentId" jdbcType="DECIMAL" />
+    <result column="origin_payment_id" property="originPaymentId" jdbcType="DECIMAL" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
-    <result column="create_id" property="createId" jdbcType="INTEGER" />
+    <result column="create_id" property="createId" jdbcType="DECIMAL" />
     <result column="user_name" property="userName" jdbcType="VARCHAR" />
     <result column="create_by_ip" property="createByIp" jdbcType="VARCHAR" />
     <result column="pay_amount" property="payAmount" jdbcType="REAL" />
@@ -22,15 +22,15 @@
     payment_id, origin_payment_id, create_date, create_id, user_name, create_by_ip, pay_amount, 
     pay_gw, status, type, trade_no, callback_date, real_pay_gw, real_pay_date, payment_type
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from t_payment
-    where payment_id = #{paymentId,jdbcType=INTEGER}
+    where payment_id = #{paymentId,jdbcType=DECIMAL}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_payment
-    where payment_id = #{paymentId,jdbcType=INTEGER}
+    where payment_id = #{paymentId,jdbcType=DECIMAL}
   </delete>
   <insert id="insert" parameterType="com.afd.model.order.OrderItem" >
     insert into t_payment (payment_id, origin_payment_id, create_date, 
@@ -38,8 +38,8 @@
       pay_amount, pay_gw, status, type, 
       trade_no, callback_date, real_pay_gw, 
       real_pay_date, payment_type)
-    values (#{paymentId,jdbcType=INTEGER}, #{originPaymentId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
-      #{createId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{createByIp,jdbcType=VARCHAR}, 
+    values (#{paymentId,jdbcType=DECIMAL}, #{originPaymentId,jdbcType=DECIMAL}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createId,jdbcType=DECIMAL}, #{userName,jdbcType=VARCHAR}, #{createByIp,jdbcType=VARCHAR}, 
       #{payAmount,jdbcType=REAL}, #{payGw,jdbcType=CHAR}, #{status,jdbcType=CHAR}, #{type,jdbcType=CHAR}, 
       #{tradeNo,jdbcType=VARCHAR}, #{callbackDate,jdbcType=TIMESTAMP}, #{realPayGw,jdbcType=CHAR}, 
       #{realPayDate,jdbcType=TIMESTAMP}, #{paymentType,jdbcType=CHAR})
@@ -95,16 +95,16 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="paymentId != null" >
-        #{paymentId,jdbcType=INTEGER},
+        #{paymentId,jdbcType=DECIMAL},
       </if>
       <if test="originPaymentId != null" >
-        #{originPaymentId,jdbcType=INTEGER},
+        #{originPaymentId,jdbcType=DECIMAL},
       </if>
       <if test="createDate != null" >
         #{createDate,jdbcType=TIMESTAMP},
       </if>
       <if test="createId != null" >
-        #{createId,jdbcType=INTEGER},
+        #{createId,jdbcType=DECIMAL},
       </if>
       <if test="userName != null" >
         #{userName,jdbcType=VARCHAR},
@@ -145,13 +145,13 @@
     update t_payment
     <set >
       <if test="originPaymentId != null" >
-        origin_payment_id = #{originPaymentId,jdbcType=INTEGER},
+        origin_payment_id = #{originPaymentId,jdbcType=DECIMAL},
       </if>
       <if test="createDate != null" >
         create_date = #{createDate,jdbcType=TIMESTAMP},
       </if>
       <if test="createId != null" >
-        create_id = #{createId,jdbcType=INTEGER},
+        create_id = #{createId,jdbcType=DECIMAL},
       </if>
       <if test="userName != null" >
         user_name = #{userName,jdbcType=VARCHAR},
@@ -187,13 +187,13 @@
         payment_type = #{paymentType,jdbcType=CHAR},
       </if>
     </set>
-    where payment_id = #{paymentId,jdbcType=INTEGER}
+    where payment_id = #{paymentId,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.afd.model.order.OrderItem" >
     update t_payment
-    set origin_payment_id = #{originPaymentId,jdbcType=INTEGER},
+    set origin_payment_id = #{originPaymentId,jdbcType=DECIMAL},
       create_date = #{createDate,jdbcType=TIMESTAMP},
-      create_id = #{createId,jdbcType=INTEGER},
+      create_id = #{createId,jdbcType=DECIMAL},
       user_name = #{userName,jdbcType=VARCHAR},
       create_by_ip = #{createByIp,jdbcType=VARCHAR},
       pay_amount = #{payAmount,jdbcType=REAL},
@@ -205,6 +205,6 @@
       real_pay_gw = #{realPayGw,jdbcType=CHAR},
       real_pay_date = #{realPayDate,jdbcType=TIMESTAMP},
       payment_type = #{paymentType,jdbcType=CHAR}
-    where payment_id = #{paymentId,jdbcType=INTEGER}
+    where payment_id = #{paymentId,jdbcType=DECIMAL}
   </update>
 </mapper>

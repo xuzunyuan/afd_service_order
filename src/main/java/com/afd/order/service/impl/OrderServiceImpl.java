@@ -1,6 +1,8 @@
 package com.afd.order.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,11 +12,15 @@ import com.afd.model.order.Order;
 import com.afd.model.order.OrderItem;
 import com.afd.order.dao.OrderMapper;
 import com.afd.service.order.IOrderService;
+import com.afd.service.product.ISkuService;
 
 @Service("orderService")
 public class OrderServiceImpl implements IOrderService{
 	@Autowired
 	private OrderMapper orderMapper;
+	
+	@Autowired 
+	private ISkuService skuService;
 	
 	public int addOrder(){
 		Order order = new Order();
@@ -33,8 +39,8 @@ public class OrderServiceImpl implements IOrderService{
 	@Override
 	public List<Order> getOrdersByIdsAndUserIdNodelay(Long[] orderIds,
 			Long userId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Order> orders = this.orderMapper.getOrdersByIdsAndUserIdNodelay(orderIds, userId);
+		return orders;
 	}
 
 	@Override
