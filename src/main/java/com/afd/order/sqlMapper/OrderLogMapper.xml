@@ -26,22 +26,19 @@
     delete from t_order_log
     where order_log_id = #{orderLogId,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.afd.model.order.OrderLog" >
-    insert into t_order_log (order_log_id, order_id, order_code, 
+  <insert id="insert" useGeneratedKeys="true" keyProperty="orderLogId" parameterType="com.afd.model.order.OrderLog" >
+    insert into t_order_log (order_id, order_code, 
       opt_by_name, opt_time, opt_content, 
       opt_ip, from_order_status, to_order_status
       )
-    values (#{orderLogId,jdbcType=BIGINT}, #{orderId,jdbcType=INTEGER}, #{orderCode,jdbcType=VARCHAR}, 
+    values (#{orderId,jdbcType=INTEGER}, #{orderCode,jdbcType=VARCHAR}, 
       #{optByName,jdbcType=VARCHAR}, #{optTime,jdbcType=TIMESTAMP}, #{optContent,jdbcType=VARCHAR}, 
       #{optIp,jdbcType=VARCHAR}, #{fromOrderStatus,jdbcType=CHAR}, #{toOrderStatus,jdbcType=CHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.afd.model.order.OrderLog" >
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="orderLogId" parameterType="com.afd.model.order.OrderLog" >
     insert into t_order_log
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="orderLogId != null" >
-        order_log_id,
-      </if>
       <if test="orderId != null" >
         order_id,
       </if>
@@ -68,9 +65,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="orderLogId != null" >
-        #{orderLogId,jdbcType=BIGINT},
-      </if>
       <if test="orderId != null" >
         #{orderId,jdbcType=INTEGER},
       </if>
