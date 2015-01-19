@@ -9,7 +9,7 @@ import com.afd.common.util.DateUtils;
 import com.afd.model.order.Order;
 import com.afd.order.dao.OrderMapper;
 import com.afd.service.order.IOrderService;
-import com.afd.service.product.ISkuService;
+import com.afd.service.product.IProductService;;
 
 @Service("orderService")
 public class OrderServiceImpl implements IOrderService{
@@ -17,7 +17,7 @@ public class OrderServiceImpl implements IOrderService{
 	private OrderMapper orderMapper;
 	
 	@Autowired 
-	private ISkuService skuService;
+	private IProductService productService;
 	
 	public int addOrder(){
 		Order order = new Order();
