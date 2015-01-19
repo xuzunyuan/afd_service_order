@@ -37,9 +37,9 @@ public class OrderServiceImpl implements IOrderService{
 	}
 
 	@Override
-	public List<Order> getOrdersByIdsAndUserIdNodelay(Long[] orderIds,
+	public List<Order> getOrdersByIdsAndUserId(Long[] orderIds,
 			Long userId) {
-		List<Order> orders = this.orderMapper.getOrdersByIdsAndUserIdNodelay(orderIds, userId);
+		List<Order> orders = this.orderMapper.getOrdersByIdsAndUserId(orderIds, userId);
 		return orders;
 	}
 

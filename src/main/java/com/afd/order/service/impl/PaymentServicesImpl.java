@@ -56,7 +56,7 @@ public class PaymentServicesImpl implements IPaymentServices {
 			for (Long orderId : orderids) {
 				Long[] orderId_arr = new Long[1];
 				orderId_arr[0]=orderId;
-				 List<Order> orders_back = this.orderService.getOrdersByIdsAndUserIdNodelay(orderId_arr,userId);
+				 List<Order> orders_back = this.orderService.getOrdersByIdsAndUserId(orderId_arr,userId);
 				
 				if(null==orders_back||orders_back.size()==0){
 					return -2L;
