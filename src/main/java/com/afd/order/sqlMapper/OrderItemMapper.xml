@@ -1,210 +1,259 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.afd.order.dao.OrderItemMapper" >
-  <resultMap id="BaseResultMap" type="com.afd.model.order.OrderItem" >
-    <id column="payment_id" property="paymentId" jdbcType="DECIMAL" />
-    <result column="origin_payment_id" property="originPaymentId" jdbcType="DECIMAL" />
-    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
-    <result column="create_id" property="createId" jdbcType="DECIMAL" />
-    <result column="user_name" property="userName" jdbcType="VARCHAR" />
-    <result column="create_by_ip" property="createByIp" jdbcType="VARCHAR" />
-    <result column="pay_amount" property="payAmount" jdbcType="REAL" />
-    <result column="pay_gw" property="payGw" jdbcType="CHAR" />
+<mapper namespace="com.afd.order.dao.orderItemMapper" >
+  <resultMap id="BaseResultMap" type="com.afd.model.order.orderItem" >
+    <id column="order_item_id" property="orderItemId" jdbcType="BIGINT" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+    <result column="sku_id" property="skuId" jdbcType="INTEGER" />
+    <result column="prod_id" property="prodId" jdbcType="INTEGER" />
+    <result column="prod_code" property="prodCode" jdbcType="VARCHAR" />
+    <result column="sku_code" property="skuCode" jdbcType="VARCHAR" />
+    <result column="prod_spec_id" property="prodSpecId" jdbcType="VARCHAR" />
+    <result column="prod_spec_name" property="prodSpecName" jdbcType="VARCHAR" />
+    <result column="prod_title" property="prodTitle" jdbcType="VARCHAR" />
+    <result column="bc_id" property="bcId" jdbcType="SMALLINT" />
+    <result column="seller_id" property="sellerId" jdbcType="INTEGER" />
+    <result column="sale_price" property="salePrice" jdbcType="REAL" />
+    <result column="trans_price" property="transPrice" jdbcType="REAL" />
+    <result column="number" property="number" jdbcType="SMALLINT" />
     <result column="status" property="status" jdbcType="CHAR" />
-    <result column="type" property="type" jdbcType="CHAR" />
-    <result column="trade_no" property="tradeNo" jdbcType="VARCHAR" />
-    <result column="callback_date" property="callbackDate" jdbcType="TIMESTAMP" />
-    <result column="real_pay_gw" property="realPayGw" jdbcType="CHAR" />
-    <result column="real_pay_date" property="realPayDate" jdbcType="TIMESTAMP" />
-    <result column="payment_type" property="paymentType" jdbcType="CHAR" />
+    <result column="is_comment" property="isComment" jdbcType="CHAR" />
+    <result column="brand_show_id" property="brandShowId" jdbcType="INTEGER" />
+    <result column="brand_show_title" property="brandShowTitle" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    payment_id, origin_payment_id, create_date, create_id, user_name, create_by_ip, pay_amount, 
-    pay_gw, status, type, trade_no, callback_date, real_pay_gw, real_pay_date, payment_type
+    order_item_id, order_id, order_code, sku_id, prod_id, prod_code, sku_code, prod_spec_id, 
+    prod_spec_name, prod_title, bc_id, seller_id, sale_price, trans_price, number, status, 
+    is_comment, brand_show_id, brand_show_title
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from t_payment
-    where payment_id = #{paymentId,jdbcType=DECIMAL}
+    from t_order_item
+    where order_item_id = #{orderItemId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from t_payment
-    where payment_id = #{paymentId,jdbcType=DECIMAL}
+    delete from t_order_item
+    where order_item_id = #{orderItemId,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.afd.model.order.OrderItem" >
-    insert into t_payment (payment_id, origin_payment_id, create_date, 
-      create_id, user_name, create_by_ip, 
-      pay_amount, pay_gw, status, type, 
-      trade_no, callback_date, real_pay_gw, 
-      real_pay_date, payment_type)
-    values (#{paymentId,jdbcType=DECIMAL}, #{originPaymentId,jdbcType=DECIMAL}, #{createDate,jdbcType=TIMESTAMP}, 
-      #{createId,jdbcType=DECIMAL}, #{userName,jdbcType=VARCHAR}, #{createByIp,jdbcType=VARCHAR}, 
-      #{payAmount,jdbcType=REAL}, #{payGw,jdbcType=CHAR}, #{status,jdbcType=CHAR}, #{type,jdbcType=CHAR}, 
-      #{tradeNo,jdbcType=VARCHAR}, #{callbackDate,jdbcType=TIMESTAMP}, #{realPayGw,jdbcType=CHAR}, 
-      #{realPayDate,jdbcType=TIMESTAMP}, #{paymentType,jdbcType=CHAR})
+  <insert id="insert" parameterType="com.afd.model.order.orderItem" >
+    insert into t_order_item (order_item_id, order_id, order_code, 
+      sku_id, prod_id, prod_code, 
+      sku_code, prod_spec_id, prod_spec_name, 
+      prod_title, bc_id, seller_id, 
+      sale_price, trans_price, number, 
+      status, is_comment, brand_show_id, 
+      brand_show_title)
+    values (#{orderItemId,jdbcType=BIGINT}, #{orderId,jdbcType=INTEGER}, #{orderCode,jdbcType=VARCHAR}, 
+      #{skuId,jdbcType=INTEGER}, #{prodId,jdbcType=INTEGER}, #{prodCode,jdbcType=VARCHAR}, 
+      #{skuCode,jdbcType=VARCHAR}, #{prodSpecId,jdbcType=VARCHAR}, #{prodSpecName,jdbcType=VARCHAR}, 
+      #{prodTitle,jdbcType=VARCHAR}, #{bcId,jdbcType=SMALLINT}, #{sellerId,jdbcType=INTEGER}, 
+      #{salePrice,jdbcType=REAL}, #{transPrice,jdbcType=REAL}, #{number,jdbcType=SMALLINT}, 
+      #{status,jdbcType=CHAR}, #{isComment,jdbcType=CHAR}, #{brandShowId,jdbcType=INTEGER}, 
+      #{brandShowTitle,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.afd.model.order.OrderItem" >
-    insert into t_payment
+  <insert id="insertSelective" parameterType="com.afd.model.order.orderItem" >
+    insert into t_order_item
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="paymentId != null" >
-        payment_id,
+      <if test="orderItemId != null" >
+        order_item_id,
       </if>
-      <if test="originPaymentId != null" >
-        origin_payment_id,
+      <if test="orderId != null" >
+        order_id,
       </if>
-      <if test="createDate != null" >
-        create_date,
+      <if test="orderCode != null" >
+        order_code,
       </if>
-      <if test="createId != null" >
-        create_id,
+      <if test="skuId != null" >
+        sku_id,
       </if>
-      <if test="userName != null" >
-        user_name,
+      <if test="prodId != null" >
+        prod_id,
       </if>
-      <if test="createByIp != null" >
-        create_by_ip,
+      <if test="prodCode != null" >
+        prod_code,
       </if>
-      <if test="payAmount != null" >
-        pay_amount,
+      <if test="skuCode != null" >
+        sku_code,
       </if>
-      <if test="payGw != null" >
-        pay_gw,
+      <if test="prodSpecId != null" >
+        prod_spec_id,
+      </if>
+      <if test="prodSpecName != null" >
+        prod_spec_name,
+      </if>
+      <if test="prodTitle != null" >
+        prod_title,
+      </if>
+      <if test="bcId != null" >
+        bc_id,
+      </if>
+      <if test="sellerId != null" >
+        seller_id,
+      </if>
+      <if test="salePrice != null" >
+        sale_price,
+      </if>
+      <if test="transPrice != null" >
+        trans_price,
+      </if>
+      <if test="number != null" >
+        number,
       </if>
       <if test="status != null" >
         status,
       </if>
-      <if test="type != null" >
-        type,
+      <if test="isComment != null" >
+        is_comment,
       </if>
-      <if test="tradeNo != null" >
-        trade_no,
+      <if test="brandShowId != null" >
+        brand_show_id,
       </if>
-      <if test="callbackDate != null" >
-        callback_date,
-      </if>
-      <if test="realPayGw != null" >
-        real_pay_gw,
-      </if>
-      <if test="realPayDate != null" >
-        real_pay_date,
-      </if>
-      <if test="paymentType != null" >
-        payment_type,
+      <if test="brandShowTitle != null" >
+        brand_show_title,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="paymentId != null" >
-        #{paymentId,jdbcType=DECIMAL},
+      <if test="orderItemId != null" >
+        #{orderItemId,jdbcType=BIGINT},
       </if>
-      <if test="originPaymentId != null" >
-        #{originPaymentId,jdbcType=DECIMAL},
+      <if test="orderId != null" >
+        #{orderId,jdbcType=INTEGER},
       </if>
-      <if test="createDate != null" >
-        #{createDate,jdbcType=TIMESTAMP},
+      <if test="orderCode != null" >
+        #{orderCode,jdbcType=VARCHAR},
       </if>
-      <if test="createId != null" >
-        #{createId,jdbcType=DECIMAL},
+      <if test="skuId != null" >
+        #{skuId,jdbcType=INTEGER},
       </if>
-      <if test="userName != null" >
-        #{userName,jdbcType=VARCHAR},
+      <if test="prodId != null" >
+        #{prodId,jdbcType=INTEGER},
       </if>
-      <if test="createByIp != null" >
-        #{createByIp,jdbcType=VARCHAR},
+      <if test="prodCode != null" >
+        #{prodCode,jdbcType=VARCHAR},
       </if>
-      <if test="payAmount != null" >
-        #{payAmount,jdbcType=REAL},
+      <if test="skuCode != null" >
+        #{skuCode,jdbcType=VARCHAR},
       </if>
-      <if test="payGw != null" >
-        #{payGw,jdbcType=CHAR},
+      <if test="prodSpecId != null" >
+        #{prodSpecId,jdbcType=VARCHAR},
+      </if>
+      <if test="prodSpecName != null" >
+        #{prodSpecName,jdbcType=VARCHAR},
+      </if>
+      <if test="prodTitle != null" >
+        #{prodTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="bcId != null" >
+        #{bcId,jdbcType=SMALLINT},
+      </if>
+      <if test="sellerId != null" >
+        #{sellerId,jdbcType=INTEGER},
+      </if>
+      <if test="salePrice != null" >
+        #{salePrice,jdbcType=REAL},
+      </if>
+      <if test="transPrice != null" >
+        #{transPrice,jdbcType=REAL},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=SMALLINT},
       </if>
       <if test="status != null" >
         #{status,jdbcType=CHAR},
       </if>
-      <if test="type != null" >
-        #{type,jdbcType=CHAR},
+      <if test="isComment != null" >
+        #{isComment,jdbcType=CHAR},
       </if>
-      <if test="tradeNo != null" >
-        #{tradeNo,jdbcType=VARCHAR},
+      <if test="brandShowId != null" >
+        #{brandShowId,jdbcType=INTEGER},
       </if>
-      <if test="callbackDate != null" >
-        #{callbackDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="realPayGw != null" >
-        #{realPayGw,jdbcType=CHAR},
-      </if>
-      <if test="realPayDate != null" >
-        #{realPayDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="paymentType != null" >
-        #{paymentType,jdbcType=CHAR},
+      <if test="brandShowTitle != null" >
+        #{brandShowTitle,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.afd.model.order.OrderItem" >
-    update t_payment
+  <update id="updateByPrimaryKeySelective" parameterType="com.afd.model.order.orderItem" >
+    update t_order_item
     <set >
-      <if test="originPaymentId != null" >
-        origin_payment_id = #{originPaymentId,jdbcType=DECIMAL},
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=INTEGER},
       </if>
-      <if test="createDate != null" >
-        create_date = #{createDate,jdbcType=TIMESTAMP},
+      <if test="orderCode != null" >
+        order_code = #{orderCode,jdbcType=VARCHAR},
       </if>
-      <if test="createId != null" >
-        create_id = #{createId,jdbcType=DECIMAL},
+      <if test="skuId != null" >
+        sku_id = #{skuId,jdbcType=INTEGER},
       </if>
-      <if test="userName != null" >
-        user_name = #{userName,jdbcType=VARCHAR},
+      <if test="prodId != null" >
+        prod_id = #{prodId,jdbcType=INTEGER},
       </if>
-      <if test="createByIp != null" >
-        create_by_ip = #{createByIp,jdbcType=VARCHAR},
+      <if test="prodCode != null" >
+        prod_code = #{prodCode,jdbcType=VARCHAR},
       </if>
-      <if test="payAmount != null" >
-        pay_amount = #{payAmount,jdbcType=REAL},
+      <if test="skuCode != null" >
+        sku_code = #{skuCode,jdbcType=VARCHAR},
       </if>
-      <if test="payGw != null" >
-        pay_gw = #{payGw,jdbcType=CHAR},
+      <if test="prodSpecId != null" >
+        prod_spec_id = #{prodSpecId,jdbcType=VARCHAR},
+      </if>
+      <if test="prodSpecName != null" >
+        prod_spec_name = #{prodSpecName,jdbcType=VARCHAR},
+      </if>
+      <if test="prodTitle != null" >
+        prod_title = #{prodTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="bcId != null" >
+        bc_id = #{bcId,jdbcType=SMALLINT},
+      </if>
+      <if test="sellerId != null" >
+        seller_id = #{sellerId,jdbcType=INTEGER},
+      </if>
+      <if test="salePrice != null" >
+        sale_price = #{salePrice,jdbcType=REAL},
+      </if>
+      <if test="transPrice != null" >
+        trans_price = #{transPrice,jdbcType=REAL},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=SMALLINT},
       </if>
       <if test="status != null" >
         status = #{status,jdbcType=CHAR},
       </if>
-      <if test="type != null" >
-        type = #{type,jdbcType=CHAR},
+      <if test="isComment != null" >
+        is_comment = #{isComment,jdbcType=CHAR},
       </if>
-      <if test="tradeNo != null" >
-        trade_no = #{tradeNo,jdbcType=VARCHAR},
+      <if test="brandShowId != null" >
+        brand_show_id = #{brandShowId,jdbcType=INTEGER},
       </if>
-      <if test="callbackDate != null" >
-        callback_date = #{callbackDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="realPayGw != null" >
-        real_pay_gw = #{realPayGw,jdbcType=CHAR},
-      </if>
-      <if test="realPayDate != null" >
-        real_pay_date = #{realPayDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="paymentType != null" >
-        payment_type = #{paymentType,jdbcType=CHAR},
+      <if test="brandShowTitle != null" >
+        brand_show_title = #{brandShowTitle,jdbcType=VARCHAR},
       </if>
     </set>
-    where payment_id = #{paymentId,jdbcType=DECIMAL}
+    where order_item_id = #{orderItemId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.afd.model.order.OrderItem" >
-    update t_payment
-    set origin_payment_id = #{originPaymentId,jdbcType=DECIMAL},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      create_id = #{createId,jdbcType=DECIMAL},
-      user_name = #{userName,jdbcType=VARCHAR},
-      create_by_ip = #{createByIp,jdbcType=VARCHAR},
-      pay_amount = #{payAmount,jdbcType=REAL},
-      pay_gw = #{payGw,jdbcType=CHAR},
+  <update id="updateByPrimaryKey" parameterType="com.afd.model.order.orderItem" >
+    update t_order_item
+    set order_id = #{orderId,jdbcType=INTEGER},
+      order_code = #{orderCode,jdbcType=VARCHAR},
+      sku_id = #{skuId,jdbcType=INTEGER},
+      prod_id = #{prodId,jdbcType=INTEGER},
+      prod_code = #{prodCode,jdbcType=VARCHAR},
+      sku_code = #{skuCode,jdbcType=VARCHAR},
+      prod_spec_id = #{prodSpecId,jdbcType=VARCHAR},
+      prod_spec_name = #{prodSpecName,jdbcType=VARCHAR},
+      prod_title = #{prodTitle,jdbcType=VARCHAR},
+      bc_id = #{bcId,jdbcType=SMALLINT},
+      seller_id = #{sellerId,jdbcType=INTEGER},
+      sale_price = #{salePrice,jdbcType=REAL},
+      trans_price = #{transPrice,jdbcType=REAL},
+      number = #{number,jdbcType=SMALLINT},
       status = #{status,jdbcType=CHAR},
-      type = #{type,jdbcType=CHAR},
-      trade_no = #{tradeNo,jdbcType=VARCHAR},
-      callback_date = #{callbackDate,jdbcType=TIMESTAMP},
-      real_pay_gw = #{realPayGw,jdbcType=CHAR},
-      real_pay_date = #{realPayDate,jdbcType=TIMESTAMP},
-      payment_type = #{paymentType,jdbcType=CHAR}
-    where payment_id = #{paymentId,jdbcType=DECIMAL}
+      is_comment = #{isComment,jdbcType=CHAR},
+      brand_show_id = #{brandShowId,jdbcType=INTEGER},
+      brand_show_title = #{brandShowTitle,jdbcType=VARCHAR}
+    where order_item_id = #{orderItemId,jdbcType=BIGINT}
   </update>
 </mapper>

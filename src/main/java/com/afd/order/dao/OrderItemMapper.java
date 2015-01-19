@@ -3,15 +3,16 @@ package com.afd.order.dao;
 import com.afd.model.order.OrderItem;
 
 public interface OrderItemMapper {
-    int deleteByPrimaryKey(Integer paymentId);
+    int deleteByPrimaryKey(Long orderItemId);
 
-    int insert(OrderItem record);
+	int insert(OrderItem record);
 
-    int insertSelective(OrderItem record);
+	int insertSelective(OrderItem record);
 
-    OrderItem selectByPrimaryKey(Integer paymentId);
+	OrderItem selectByPrimaryKey(Long orderItemId);
 
-    int updateByPrimaryKeySelective(OrderItem record);
+	int updateByPrimaryKeySelective(OrderItem record);
 
-    int updateByPrimaryKey(OrderItem record);
+	int updateByPrimaryKey(OrderItem record);
+
 }
