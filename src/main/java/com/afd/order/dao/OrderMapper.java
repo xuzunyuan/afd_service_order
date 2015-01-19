@@ -22,4 +22,6 @@ public interface OrderMapper {
     Order getOrderById(@Param("orderId") Long orderId);
     
     List<Order> getOrdersByIdsAndUserId(@Param("orderIds")Long[] orderIds, @Param("userId") Long userId);
+
+	List<Order> getOrdersByUserId(@Param("userId")Long userId);
 }
