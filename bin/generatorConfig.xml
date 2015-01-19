@@ -45,12 +45,12 @@
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">
 		</table>
-		<table tableName="t_order_item" domainObjectName="YWProdPromotionDetail"
+		<table tableName="t_order_item" domainObjectName="orderItem"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">
 		</table>
-		<table tableName="t_payment" domainObjectName="OrderItem"
+		<table tableName="t_payment" domainObjectName="Payment"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">
