@@ -249,7 +249,7 @@ public class CartServiceImpl implements ICartService{
 	
 	private void validCartItem(CartItem cartItem, BrandShowDetail bsDetail) {
 		if (bsDetail != null) {
-			cartItem.setProdId(Integer.parseInt(bsDetail.getProdId().toString()));
+			cartItem.setProdId(bsDetail.getProdId().intValue());
 			cartItem.setProdName(bsDetail.getProdTitle());
 			cartItem.setBrandShowDetailId(bsDetail.getbSDId());
 			cartItem.setProdImgUrl(bsDetail.getProdImg());
@@ -342,8 +342,8 @@ public class CartServiceImpl implements ICartService{
 	private void setSkuAndProdIdsByBSDetails(List<BrandShowDetail> bsDetails, Set<Integer> skuIds, Set<Integer> prodIds) {
 		if(null != bsDetails && bsDetails.size() > 0) {
 			for(BrandShowDetail bsDetail : bsDetails) {
-				skuIds.add(Integer.parseInt(bsDetail.getSkuId().toString()));
-				prodIds.add(Integer.parseInt(bsDetail.getProdId().toString()));
+				skuIds.add(bsDetail.getSkuId().intValue());
+				prodIds.add(bsDetail.getProdId().intValue());
 			}
 		}
 	}
@@ -453,6 +453,8 @@ public class CartServiceImpl implements ICartService{
 	}
 	
 	private Long checkBsDetailStatusAndStock(BrandShowDetail bsDetail, Long num) {
+		//TODO 限购
+		
 		if(this.isBrandShowDetailNormal(bsDetail) != 1) {
 			//TODO
 			return 0l;
