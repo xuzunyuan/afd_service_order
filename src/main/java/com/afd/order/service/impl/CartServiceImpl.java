@@ -53,68 +53,28 @@ public class CartServiceImpl implements ICartService{
 	private IBrandShowService brandShowService;
 	
 	@Override
-	public List<Cart> showCart(String cookieCart, boolean isLogin, long userId, int source, boolean isBuyNow) {
-		// 合并购物车（cookie + server）
-		List<CartItem> cartItems = this.combineCartItem(cookieCart, isLogin,
-				userId, isBuyNow);
+	public List<Cart> showCart(String cookieCart) {
+		List<CartItem> cartItems = this.getCartItemsByCookie(cookieCart);
 		
-		List<Cart> carts = this.validCarts(cartItems, source, isLogin, userId);
+		List<Cart> carts = this.validCarts(cartItems);
 		
 		return carts;
 	}
 	
-	List<CartItem> combineCartItem(String cookieCart, boolean isLogin, long userId, boolean isBuyNow) {
+	@Override
+	public List<CartItem> getCartItemsByCookie(String cookieCart) {
 		List<CartItem> cartItems = null;
 		if (!StringUtils.isBlank(cookieCart)) {
-			// cookie中的购物车
 			cartItems = CartTransferUtils.cookieCartToCartItem(JSON
 					.parseObject(cookieCart,
 							new TypeReference<List<CookieCartItem>>() {
 							}));
 		}
-		Set<CartItem> svCartItem = new LinkedHashSet<CartItem>();
-		
-		if (cartItems != null && cartItems.size() > 0) {
-			svCartItem.addAll(cartItems);
-		}
-		
-		// 如果用户登录并且不是立即购买，再合并server端的购物车
-		if (isLogin && !isBuyNow) {
-			// 服务器端购物车
-			String serverCart = "";
-			try {
-				serverCart = this.redisCart.opsForValue().get(
-						OrderConstants.SERVER_CART + userId);
-			} catch (Exception e) {
-				log.error(e.getMessage(), e);
-			}
-			List<CartItem> serverCartItems = CartTransferUtils
-					.cookieCartToCartItem(JSON.parseObject(serverCart,
-							new TypeReference<List<CookieCartItem>>() {
-							}));
-			
-			// 合并服务器端购物车
-			if (serverCartItems != null && serverCartItems.size() > 0) {
-				for (CartItem serverCartItem : serverCartItems) {
-					if (svCartItem.contains(serverCartItem)) {
-						if (cartItems != null && cartItems.size() > 0) {
-							CartItem ci = cartItems.get(cartItems
-									.indexOf(serverCartItem));
-							serverCartItem.setSelected(ci.isSelected());
-						}
-						svCartItem.remove(serverCartItem);
-						svCartItem.add(serverCartItem);
-					} else {
-						svCartItem.add(serverCartItem);
-					}
-				}
-			}
-		}
 
-		return new ArrayList<CartItem>(svCartItem);
+		return cartItems;
 	}
 
-	List<Cart> validCarts(List<CartItem> cartItems, int source, boolean isLogin, long userId) {
+	List<Cart> validCarts(List<CartItem> cartItems) {
 		Map<Long,Cart> cartMap = new LinkedHashMap<Long,Cart>();
 		if(null != cartItems && cartItems.size() > 0) {
 			Map<Long,BrandShowDetail> bsDetailMap = getBSDetailMap(cartItems);
@@ -151,9 +111,8 @@ public class CartServiceImpl implements ICartService{
 		return  new ArrayList<Cart>(cartMap.values());
 	}
 	
-	public List<CartItem> modifyQuantity(String cookieCart, long bsDetailId, long newQuantity, 
-			long oldQuantity, boolean isLogin, long userId, int source, boolean isBuyNow) {
-		List<CartItem> cartItems = this.combineCartItem(cookieCart, isLogin, userId, isBuyNow);
+	public List<CartItem> modifyQuantity(String cookieCart, long bsDetailId, long newQuantity, long oldQuantity) {
+		List<CartItem> cartItems = this.getCartItemsByCookie(cookieCart);
 		for(CartItem cartItem : cartItems) {
 			if(cartItem.getBrandShowDetailId() == bsDetailId) {
 				BrandShowDetail bsDetail = this.brandShowService.getBrandShowDetailById(bsDetailId);
@@ -166,8 +125,8 @@ public class CartServiceImpl implements ICartService{
 		return cartItems;
 	}
 	
-	public List<CartItem> deleteCartItems(String cookieCart,Set<Long> bsDetailIds, boolean isLogin, long userId) {
-		List<CartItem> cartItems = this.combineCartItem(cookieCart, isLogin, userId, false);
+	public List<CartItem> deleteCartItems(String cookieCart,Set<Long> bsDetailIds) {
+		List<CartItem> cartItems = this.getCartItemsByCookie(cookieCart);
 		Iterator<CartItem> cartItemIterator = cartItems.iterator();
 		while (cartItemIterator.hasNext()) {
 			CartItem cartItem = cartItemIterator.next();
@@ -183,9 +142,8 @@ public class CartServiceImpl implements ICartService{
 		return cartItems;
 	}
 
-	public List<CartItem> chgChecked(String cookieCart, Set<Long> bsDetailIds,
-			boolean checked, boolean isLogin, long userId) {
-		List<CartItem> cartItems = this.combineCartItem(cookieCart, isLogin, userId, false);
+	public List<CartItem> chgChecked(String cookieCart, Set<Long> bsDetailIds, boolean checked) {
+		List<CartItem> cartItems = this.getCartItemsByCookie(cookieCart);
 		if (cartItems != null && cartItems.size() > 0) {
 			if (bsDetailIds != null && bsDetailIds.size() > 0) {
 				for (CartItem cartItem : cartItems) {
@@ -198,8 +156,8 @@ public class CartServiceImpl implements ICartService{
 		return cartItems;
 	}
 	
-	public List<CartItem> clearFailureProduct(String cookieCart, boolean isLogin, long userId, int source) {
-		List<CartItem> cartItems = this.combineCartItem(cookieCart, isLogin, userId, false);
+	public List<CartItem> clearFailureProduct(String cookieCart) {
+		List<CartItem> cartItems = this.getCartItemsByCookie(cookieCart);
 		if(null != cartItems && cartItems.size() > 0) {
 			Map<Long,BrandShowDetail> bsDetailMap = getBSDetailMap(cartItems);
 			Iterator<CartItem> cartItemIt = cartItems.iterator();
@@ -227,9 +185,8 @@ public class CartServiceImpl implements ICartService{
 		return cartItems;
 	}
 	
-	public boolean hasErrorOnSelectedCart(List<CartItem> cartItems, int source,
-			boolean isLogin, long userId) {
-		this.validCarts(cartItems, source, isLogin, userId);
+	public boolean hasErrorOnSelectedCart(List<CartItem> cartItems) {
+		this.validCarts(cartItems);
 		return this.hasErrorOnCarts(cartItems);
 	}
 
@@ -453,7 +410,7 @@ public class CartServiceImpl implements ICartService{
 	}
 	
 	private Long checkBsDetailStatusAndStock(BrandShowDetail bsDetail, Long num) {
-		//TODO 限购
+		//TODO 过期
 		
 		if(this.isBrandShowDetailNormal(bsDetail) != 1) {
 			//TODO

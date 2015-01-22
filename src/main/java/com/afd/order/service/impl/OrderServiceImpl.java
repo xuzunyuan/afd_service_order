@@ -20,6 +20,7 @@ import com.afd.model.user.UserAddress;
 import com.afd.order.dao.OrderItemMapper;
 import com.afd.order.dao.OrderLogMapper;
 import com.afd.order.dao.OrderMapper;
+import com.afd.order.util.InventoryException;
 import com.afd.param.cart.Trade;
 import com.afd.param.order.OrderInfo;
 import com.afd.service.order.IOrderService;
@@ -30,6 +31,7 @@ import com.afd.constants.order.OrderConstants;
 import com.afd.model.order.OrderItem;
 import com.afd.param.cart.TradeItem;
 import com.afd.model.order.OrderLog;
+import com.afd.constants.product.ProductConstants;
 
 @Service("orderService")
 public class OrderServiceImpl implements IOrderService {
@@ -89,7 +91,7 @@ public class OrderServiceImpl implements IOrderService {
 	}
 
 	@Override
-	public List<OrderInfo> batchCreateOrders(List<Trade> trades) {
+	public List<OrderInfo> batchSaveOrders(List<Trade> trades) throws InventoryException, Exception {
 		List<OrderInfo> orderInfos = new ArrayList<OrderInfo>();
 		for(Trade trade : trades) {
 			OrderInfo orderInfo = this.saveOrder(trade);
@@ -98,7 +100,7 @@ public class OrderServiceImpl implements IOrderService {
 		return orderInfos;
 	}
 	
-	private OrderInfo saveOrder(Trade trade) {
+	private OrderInfo saveOrder(Trade trade) throws InventoryException, Exception {
 		OrderInfo orderInfo = new OrderInfo();
 		UserAddress addr = this.addressService.getAddressById(trade.getAddressId());
 		User user = this.userService.getUserById(trade.getUserId());
@@ -133,9 +135,63 @@ public class OrderServiceImpl implements IOrderService {
 		return orderInfo;
 	}
 	
-	private void updateRedisInventory(Map<Long, Long> stockMapMq, Map<Long, Long> brandShowStockMapMq, Long userId) {
-		// TODO Auto-generated method stub
+	private void updateRedisInventory(Map<Long, Long> stockMapMq, 
+			Map<Long, Long> brandShowStockMapMq, Long userId) throws InventoryException{
+		if(stockMapMq != null && stockMapMq.size() > 0){
+			Map<String,String> prevStock = new HashMap<String,String>();
+			boolean outOfStock = false;
+			Long outOfStockSkuId = 0l;
+			for(Map.Entry<Long, Long> entry:stockMapMq.entrySet()){
+				Long skuId = entry.getKey();
+				Long increaseNum = entry.getValue();
+				String redisKey = ProductConstants.CACHE_PERFIX_INVENTORY+skuId;
+				prevStock.put(redisKey, String.valueOf(-increaseNum));
+				Long currentInventory = this.redisNumber.opsForValue().increment(redisKey, increaseNum);
+				if(currentInventory < 0){
+					outOfStock = true;
+					outOfStockSkuId = skuId;
+					break;
+				}
+			}
+			if(outOfStock){
+				if(prevStock != null && prevStock.size() > 0){
+					for(Map.Entry<String,String> entry: prevStock.entrySet()){
+						String key = entry.getKey();
+						String num = entry.getValue();
+						this.redisNumber.opsForValue().increment(key, Long.parseLong(num));
+					}
+				}
+				throw new InventoryException("sku:"+outOfStockSkuId+"库存不足！！");
+			}
+		}
 		
+		if(brandShowStockMapMq != null && brandShowStockMapMq.size() > 0){
+			Map<String,String> prevStock = new HashMap<String,String>();
+			boolean outOfStock = false;
+			Long outOfStockBSDId = 0l;
+			for(Map.Entry<Long, Long> entry:brandShowStockMapMq.entrySet()){
+				Long brandShowDetailId = entry.getKey();
+				Long increaseNum = entry.getValue();
+				String redisKey = ProductConstants.CACHE_PERFIX_INVENTORY+brandShowDetailId;
+				prevStock.put(redisKey, String.valueOf(-increaseNum));
+				Long currentInventory = this.redisNumber.opsForValue().increment(redisKey, increaseNum);
+				if(currentInventory < 0){
+					outOfStock = true;
+					outOfStockBSDId = brandShowDetailId;
+					break;
+				}
+			}
+			if(outOfStock){
+				if(prevStock != null && prevStock.size() > 0){
+					for(Map.Entry<String,String> entry: prevStock.entrySet()){
+						String key = entry.getKey();
+						String num = entry.getValue();
+						this.redisNumber.opsForValue().increment(key, Long.parseLong(num));
+					}
+				}
+				throw new InventoryException("brandShowDetail:"+outOfStockBSDId+"库存不足！！");
+			}
+		}
 	}
 
 	private Order createOrder(Trade trade, UserAddress addr, User user) {
