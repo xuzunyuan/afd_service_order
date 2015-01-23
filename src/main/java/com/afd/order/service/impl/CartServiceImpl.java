@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -115,10 +116,16 @@ public class CartServiceImpl implements ICartService{
 		List<CartItem> cartItems = this.getCartItemsByCookie(cookieCart);
 		for(CartItem cartItem : cartItems) {
 			if(cartItem.getBrandShowDetailId() == bsDetailId) {
+				cartItem.setNum(newQuantity);
 				BrandShowDetail bsDetail = this.brandShowService.getBrandShowDetailById(bsDetailId);
 				this.validCartItem(cartItem, bsDetail);
-				if(cartItem.getStatusCode() != 1) {
-					cartItem.setNum(cartItem.getStock());//TODO
+				if(cartItem.getStatusCode() == OrderConstants.CARTITEM_BS_DETAIL_LOWSTOCK
+						|| cartItem.getStatusCode() == OrderConstants.CARTITEM_BS_DETAIL_EXCEED) {
+					if(cartItem.getStock() > 0l && cartItem.getPurchaseCountLimit() > 0) {
+						cartItem.setNum(Math.min(cartItem.getStock(), cartItem.getPurchaseCountLimit()));
+					} else if (cartItem.getStock() > 0l) {
+						cartItem.setNum(cartItem.getStock());
+					}
 				}
 			}
 		}
@@ -164,7 +171,9 @@ public class CartServiceImpl implements ICartService{
 			while (cartItemIt.hasNext()) {
 				CartItem cartItem = cartItemIt.next();
 				this.validCartItem(cartItem, bsDetailMap.get(cartItem.getBrandShowDetailId()));
-				if(cartItem.getStatusCode() < 0) {//TODO
+				if(cartItem.getStatusCode() != OrderConstants.CARTITEM_SUCCESS
+						&& cartItem.getStatusCode() != OrderConstants.CARTITEM_BS_DETAIL_LOWSTOCK
+						&& cartItem.getStatusCode() != OrderConstants.CARTITEM_BS_DETAIL_EXCEED) {
 					cartItemIt.remove();
 				}
 			}
@@ -208,41 +217,41 @@ public class CartServiceImpl implements ICartService{
 		if (bsDetail != null) {
 			cartItem.setProdId(bsDetail.getProdId().intValue());
 			cartItem.setProdName(bsDetail.getProdTitle());
+			cartItem.setProdCode(bsDetail.getProdCode());
+			cartItem.setSkuId(bsDetail.getSkuId().intValue());
+			cartItem.setSkuCode(bsDetail.getSkuCode());
 			cartItem.setBrandShowDetailId(bsDetail.getbSDId());
 			cartItem.setProdImgUrl(bsDetail.getProdImg());
 			cartItem.setSpecId(bsDetail.getSku().getSkuSpecId());
-			cartItem.setSpecId(bsDetail.getSkuSpecName());
+			cartItem.setSpecName(bsDetail.getSkuSpecName());
 			cartItem.setSpecs(this.getSpec(bsDetail.getSkuSpecName()));
 			cartItem.setMaketPrice(bsDetail.getSku().getMarketPrice());
 			cartItem.setShowPrice(bsDetail.getShowPrice());
-			cartItem.setStock((bsDetail.getShowBalance()-bsDetail.getSaleAmount() > 0) ? (bsDetail.getShowBalance()-bsDetail.getSaleAmount()) : 0l);
 			cartItem.setBcId(bsDetail.getProduct().getBcId());
-			cartItem.setWeight(bsDetail.getProduct().getWeight());
-			cartItem.setVolume(new BigDecimal(StringUtils.isNotEmpty(bsDetail
-					.getProduct().getVolume()) ? bsDetail.getProduct().getVolume()
-					: "0"));
-			cartItem.setProdCode(bsDetail.getProdCode());
-			cartItem.setSkuCode(bsDetail.getSkuCode());
-
-			long checkStatus = this.checkBsDetailStatusAndStock(bsDetail,
-					cartItem.getNum());
+			cartItem.setStock(this.getStock(bsDetail));
+			cartItem.setPurchaseCountLimit((bsDetail.getPurchaseCountLimit()!=null && bsDetail.getPurchaseCountLimit() > 0) 
+					? bsDetail.getPurchaseCountLimit() : 0);
+			
+			long checkStatus = this.checkBsDetailStatusAndStock(bsDetail, cartItem.getNum());
 
 			cartItem.setStatusCode(checkStatus);
-//			// 购物车商品异常
-//			if (cartItem.getStatusCode() != OrderConstants.CARTITEM_SUCCESS
-//					&& cartItem.getStatusCode() != OrderConstants.CARTITEM_SKU_LOWSTOCK) {
-//				cartItem.setSelected(false);
-//				cartItem.setSortWeight(OrderConstants.CARTITEM_SORTWEIGHT_3);
-//			}
-//			// 购物车商品正常
-//			else {
-//				if (cartItem.getStatusCode() == OrderConstants.CARTITEM_SUCCESS) {
-//					cartItem.setSortWeight(OrderConstants.CARTITEM_SORTWEIGHT_1);
-//				}
-//				if (cartItem.getStatusCode() == OrderConstants.CARTITEM_SKU_LOWSTOCK) {
-//					cartItem.setSortWeight(OrderConstants.CARTITEM_SORTWEIGHT_2);
-//				}
-//			}
+			// 购物车商品异常
+			if (cartItem.getStatusCode() != OrderConstants.CARTITEM_SUCCESS
+					&& cartItem.getStatusCode() != OrderConstants.CARTITEM_BS_DETAIL_LOWSTOCK
+					&& cartItem.getStatusCode() != OrderConstants.CARTITEM_BS_DETAIL_EXCEED) {
+				cartItem.setSelected(false);
+				cartItem.setSortWeight(OrderConstants.CARTITEM_SORTWEIGHT_3);
+			}
+			// 购物车商品正常
+			else {
+				if (cartItem.getStatusCode() == OrderConstants.CARTITEM_SUCCESS) {
+					cartItem.setSortWeight(OrderConstants.CARTITEM_SORTWEIGHT_1);
+				}
+				if (cartItem.getStatusCode() == OrderConstants.CARTITEM_BS_DETAIL_LOWSTOCK
+						|| cartItem.getStatusCode() == OrderConstants.CARTITEM_BS_DETAIL_EXCEED) {
+					cartItem.setSortWeight(OrderConstants.CARTITEM_SORTWEIGHT_2);
+				}
+			}
 		}
 	}
 	
@@ -254,6 +263,7 @@ public class CartServiceImpl implements ICartService{
 	private Map<Long,BrandShowDetail> getBSDetailMap(List<CartItem> cartItems) {
 		// 取得所有特卖明细ID
 		List<Long> bsdIds = this.getBSDIDsByCartItems(cartItems);
+		//TODO stock should be got by redis
 		List<BrandShowDetail> bsDetails = this.brandShowService.getBrandShowDetailsByIds(bsdIds);
 		Set<Integer> skuIds = new LinkedHashSet<Integer>();
 		Set<Integer> prodIds = new LinkedHashSet<Integer>();
@@ -410,29 +420,31 @@ public class CartServiceImpl implements ICartService{
 	}
 	
 	private Long checkBsDetailStatusAndStock(BrandShowDetail bsDetail, Long num) {
-		//TODO 过期
-		
-		if(this.isBrandShowDetailNormal(bsDetail) != 1) {
-			//TODO
-			return 0l;
+		if(null == bsDetail) {
+			return OrderConstants.CARTITEM_BS_DETAIL_IS_NULL;
+		}
+		long bsDetailStatus = this.isBrandShowDetailNormal(bsDetail);
+		if(bsDetailStatus != 1) {
+			if(bsDetailStatus == -1) {
+				return OrderConstants.CARTITEM_BS_DETAIL_STATUS_UNNORMAL;
+			} else if (bsDetailStatus == -2) {
+				return OrderConstants.CARTITEM_BS_DETAIL_EXPIRED;
+			}
+			return OrderConstants.CARTITEM_BS_DETAIL_STATUS_UNNORMAL;
 		}
 		if(!this.isSkuNormal(bsDetail.getSku())) {
-			//TODO
-			return 0l;
+			return OrderConstants.CARTITEM_SKU_STATUS_UNNORMAL;
 		}
 		if(!this.isProductNormal(bsDetail.getProduct())) {
-			//TODO
-			return 0l;
+			return OrderConstants.CARTITEM_PROD_STATUS_UNNORMAL;
 		}
-		if(bsDetail.getShowBalance() - bsDetail.getSaleAmount() <= 0l) {
-			//TODO
-			return 0l;
-		} else if(bsDetail.getShowBalance() - bsDetail.getSaleAmount() < num) {
-			//TODO
-			return 0l;
-		} else if(bsDetail.getPurchaseCountLimit() < num) {
-			//TODO
-			return 0l;
+		long stock = this.getStock(bsDetail);
+		if(stock <= 0l) {
+			return OrderConstants.CARTITEM_BS_DETAIL_OUTOFSTOCK;
+		} else if(stock < num) {
+			return OrderConstants.CARTITEM_BS_DETAIL_LOWSTOCK;
+		} else if(null != bsDetail.getPurchaseCountLimit() && bsDetail.getPurchaseCountLimit() > 0 && bsDetail.getPurchaseCountLimit() < num) {
+			return OrderConstants.CARTITEM_BS_DETAIL_EXCEED;
 		}
 		return 0l;
 	}
@@ -440,10 +452,16 @@ public class CartServiceImpl implements ICartService{
 	/**
 	 * 特卖明细状态
 	 * @param bsDetail
-	 * @return 正常/异常/过期
+	 * @return 1:正常; -1:异常; -2:过期
 	 */
 	private int isBrandShowDetailNormal(BrandShowDetail bsDetail) {
-		//TODO
+		Date now = new Date();
+		Date endDate = bsDetail.getEndDate();
+		if("1" != bsDetail.getStatus()) {//TODO 状态
+			return -1;
+		}else if(now.after(endDate)) {
+			return -2;
+		}
 		return 1;
 	}
 	
@@ -453,7 +471,21 @@ public class CartServiceImpl implements ICartService{
 	}
 	
 	private boolean isProductNormal(Product prod) {
-		//TODO
+		if("1" != prod.getStatus()) { //TODO 状态
+			return false;
+		}
 		return true;
+	}
+	
+	private long getStock(BrandShowDetail bsDetail) {
+		long stock = 0l;
+		if(null == bsDetail.getShowBalance() || bsDetail.getShowBalance() <= 0) {
+			stock = 0l;
+		} else if (null == bsDetail.getSaleAmount() || bsDetail.getSaleAmount() <= 0) {
+			stock = bsDetail.getShowBalance();
+		} else {
+			stock = bsDetail.getShowBalance() - bsDetail.getSaleAmount();
+		}
+		return stock;
 	}
 }

@@ -114,57 +114,26 @@ public class OrderServiceImpl implements IOrderService {
 		}
 		Order order = this.createOrder(trade, addr, user);
 		this.orderMapper.insert(order);
-		Map<Long,Long> stockMapMq = new HashMap<Long,Long>();
 		Map<Long,Long> brandShowStockMapMq = new HashMap<Long,Long>();
-		List<OrderItem> orderItems = this.createOrderItems(trade.getTradeItems(), order, stockMapMq, brandShowStockMapMq);
+		List<OrderItem> orderItems = this.createOrderItems(trade.getTradeItems(), order, brandShowStockMapMq);
 //		order.setOrderItems(orderItems);
 		order.setOrderFee(order.getProdFee().add(order.getDeliverFee()));
 		if(order.getOrderFee().compareTo(BigDecimal.ZERO)<=0){
 			order.setOrderFee(BigDecimal.ZERO);
 			order.setOrderStatus(OrderConstants.ORDER_STATUS_WAITDELIVERED);
 		}
-		
+
 		this.orderMapper.updateByPrimaryKeySelective(order);
 		this.createOrderLog(order,trade);
 		
-		this.updateRedisInventory(stockMapMq,brandShowStockMapMq,trade.getUserId());
-		redisNumber.convertAndSend("stock", stockMapMq);
+		this.updateRedisInventory(brandShowStockMapMq);
 		redisNumber.convertAndSend("brandShowStock", brandShowStockMapMq);
 		orderInfo.setCode(1);
 		orderInfo.setOrder(order);
 		return orderInfo;
 	}
 	
-	private void updateRedisInventory(Map<Long, Long> stockMapMq, 
-			Map<Long, Long> brandShowStockMapMq, Long userId) throws InventoryException{
-		if(stockMapMq != null && stockMapMq.size() > 0){
-			Map<String,String> prevStock = new HashMap<String,String>();
-			boolean outOfStock = false;
-			Long outOfStockSkuId = 0l;
-			for(Map.Entry<Long, Long> entry:stockMapMq.entrySet()){
-				Long skuId = entry.getKey();
-				Long increaseNum = entry.getValue();
-				String redisKey = ProductConstants.CACHE_PERFIX_INVENTORY+skuId;
-				prevStock.put(redisKey, String.valueOf(-increaseNum));
-				Long currentInventory = this.redisNumber.opsForValue().increment(redisKey, increaseNum);
-				if(currentInventory < 0){
-					outOfStock = true;
-					outOfStockSkuId = skuId;
-					break;
-				}
-			}
-			if(outOfStock){
-				if(prevStock != null && prevStock.size() > 0){
-					for(Map.Entry<String,String> entry: prevStock.entrySet()){
-						String key = entry.getKey();
-						String num = entry.getValue();
-						this.redisNumber.opsForValue().increment(key, Long.parseLong(num));
-					}
-				}
-				throw new InventoryException("sku:"+outOfStockSkuId+"库存不足！！");
-			}
-		}
-		
+	private void updateRedisInventory(Map<Long, Long> brandShowStockMapMq) throws InventoryException{
 		if(brandShowStockMapMq != null && brandShowStockMapMq.size() > 0){
 			Map<String,String> prevStock = new HashMap<String,String>();
 			boolean outOfStock = false;
@@ -208,16 +177,8 @@ public class OrderServiceImpl implements IOrderService {
 		order.setPayType(trade.getPayType());
 		order.setPayMode(trade.getPayMode());
 		order.setPayStatus(OrderConstants.PAY_STATUS_UNPAY);
-		//货到付款
-		if(order.getPayType().equals(OrderConstants.PAY_TYPE_COD)){
-			//等待发货
-			order.setOrderStatus(OrderConstants.ORDER_STATUS_WAITDELIVERED);
-		}
-		//在线支付
-		else if(order.getPayType().equals(OrderConstants.PAY_TYPE_ONLINE)){
-			//等待付款
-			order.setOrderStatus(OrderConstants.ORDER_STATUS_WAITPAYMENT);
-		}
+		order.setOrderStatus(OrderConstants.ORDER_STATUS_WAITPAYMENT);
+		
 		order.setUserRemark(trade.getUserRemark());
 		order.setSignedStatus(OrderConstants.SIGNED_STATUS_UNSIGNED);
 		order.setSellerId(trade.getSellerId());
@@ -227,25 +188,25 @@ public class OrderServiceImpl implements IOrderService {
 		order.setOrderId(null);
 		order.setProdFee(null);
 		order.setOrderFee(null);
-
+		/****地址***/
 		order.setrAddr(addr.getAddr());
 		order.setrCity(addr.getCityName());
 		order.setrCounty(addr.getDistrictName());
-		order.setrEmail(user.getEmail());
 		order.setrMobile(addr.getMobile());
 		order.setrName(addr.getReceiver());
 		order.setrPhone(addr.getTel());
 		order.setrProvince(addr.getProvinceName());
 		order.setrTown(addr.getTownName());
 		order.setrZipcode(addr.getZipCode());
-		
+		order.setrEmail(user.getEmail());
+		/****用户***/
 		order.setUserId(user.getUserId());
 		order.setUserName(user.getUserName());
 		
 		return order;
 	}
 	
-	private List<OrderItem> createOrderItems(List<TradeItem> tradeItems,Order order, Map<Long, Long> stockMapMq, Map<Long, Long> brandShowStockMapMq) {
+	private List<OrderItem> createOrderItems(List<TradeItem> tradeItems,Order order, Map<Long, Long> brandShowStockMapMq) {
 		List<OrderItem> orderItems = new ArrayList<OrderItem>();
 		if(tradeItems != null && tradeItems.size() > 0){
 			BigDecimal prodFee = BigDecimal.ZERO;
@@ -259,7 +220,6 @@ public class OrderServiceImpl implements IOrderService {
 					prodFee = prodFee.add(transPrice.multiply(new BigDecimal(orderItem.getNumber())));
 					discountFee = discountFee.add(salePrice.subtract(transPrice).multiply(new BigDecimal(orderItem.getNumber())));
 
-					stockMapMq.put(orderItem.getSkuId().longValue(), -orderItem.getNumber());
 					brandShowStockMapMq.put(tradeItem.getBrandShowDetailId(), -orderItem.getNumber());
 				}
 			}
