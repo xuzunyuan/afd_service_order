@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.afd.order.dao.orderItemMapper" >
-  <resultMap id="BaseResultMap" type="com.afd.model.order.orderItem" >
+<mapper namespace="com.afd.order.dao.OrderItemMapper" >
+  <resultMap id="BaseResultMap" type="com.afd.model.order.OrderItem" >
     <id column="order_item_id" property="orderItemId" jdbcType="BIGINT" />
     <result column="order_id" property="orderId" jdbcType="INTEGER" />
     <result column="order_code" property="orderCode" jdbcType="VARCHAR" />
@@ -37,7 +37,7 @@
     delete from t_order_item
     where order_item_id = #{orderItemId,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.afd.model.order.orderItem" >
+  <insert id="insert" parameterType="com.afd.model.order.OrderItem" >
     insert into t_order_item (order_item_id, order_id, order_code, 
       sku_id, prod_id, prod_code, 
       sku_code, prod_spec_id, prod_spec_name, 
@@ -53,7 +53,7 @@
       #{status,jdbcType=CHAR}, #{isComment,jdbcType=CHAR}, #{brandShowId,jdbcType=INTEGER}, 
       #{brandShowTitle,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.afd.model.order.orderItem" >
+  <insert id="insertSelective" parameterType="com.afd.model.order.OrderItem" >
     insert into t_order_item
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="orderItemId != null" >
@@ -174,7 +174,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.afd.model.order.orderItem" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.afd.model.order.OrderItem" >
     update t_order_item
     <set >
       <if test="orderId != null" >
@@ -234,7 +234,7 @@
     </set>
     where order_item_id = #{orderItemId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.afd.model.order.orderItem" >
+  <update id="updateByPrimaryKey" parameterType="com.afd.model.order.OrderItem" >
     update t_order_item
     set order_id = #{orderId,jdbcType=INTEGER},
       order_code = #{orderCode,jdbcType=VARCHAR},
