@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.afd.order.dao.UnionPayMapper">
-    <resultMap id="BaseResultMap" type="com.yiwang.model.order.PaymentOrder">
+    <resultMap id="BaseResultMap" type="com.afd.model.order.PaymentOrder">
 		<id column="ORDER_ID" property="orderId" jdbcType="DECIMAL" />
 		<result column="ORDER_STATUS" property="orderStatus" jdbcType="CHAR" />
         <result column="PAY_TYPE" property="payType" jdbcType="CHAR" />
