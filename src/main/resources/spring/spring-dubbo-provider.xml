@@ -20,7 +20,7 @@
  
     <!-- 声明需要暴露的服务接口  loadbalance: random(随机);roundrobin(轮询);leastactive(最小活跃调用)-->
     <dubbo:service owner="liubo" timeout="2000" interface="com.afd.service.order.IOrderService" loadbalance="random" ref="orderService" />
-    
+    <dubbo:service owner="wangxp" timeout="2000" interface="com.afd.service.order.ICartService" loadbalance="random" ref="cartService" />
     <dubbo:service owner="xiaotao" timeout="2000" interface="com.afd.service.payment.IPaymentServices"  loadbalance="random"  ref="paymentServices" />
 	
 
