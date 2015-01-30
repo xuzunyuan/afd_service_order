@@ -34,6 +34,7 @@ import com.afd.param.cart.CartItem;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.afd.constants.order.OrderConstants;
+import com.afd.constants.product.ProductConstants;
 import com.afd.param.cart.CookieCartItem;
 import com.afd.common.util.CartTransferUtils;
 
@@ -44,9 +45,6 @@ public class CartServiceImpl implements ICartService{
 	@Autowired
 	@Qualifier("redisNumber")
 	private RedisTemplate<String, String> redisStock;
-	@Autowired
-	@Qualifier("redisTemplate")
-	private RedisTemplate<String, String> redisCart;
 	@Autowired
 	private IProductService productService;
 	@Autowired
@@ -79,7 +77,7 @@ public class CartServiceImpl implements ICartService{
 		if(null != cartItems && cartItems.size() > 0) {
 			Map<Long,BrandShowDetail> bsDetailMap = getBSDetailMap(cartItems);
 			Map<Long,BrandShow> brandShowMap = this.getBrandShowMap(bsDetailMap.values());
-			
+
 			for(CartItem cartItem : cartItems) {
 				BrandShowDetail bsDetail = bsDetailMap.get(cartItem.getBrandShowDetailId());
 				if(null == bsDetail) {
@@ -221,17 +219,21 @@ public class CartServiceImpl implements ICartService{
 			cartItem.setSkuCode(bsDetail.getSkuCode());
 			cartItem.setBrandShowDetailId(bsDetail.getbSDId());
 			cartItem.setProdImgUrl(bsDetail.getProdImg());
-			cartItem.setSpecId(bsDetail.getSku().getSkuSpecId());
+			if(null != bsDetail.getSku()){
+				cartItem.setSpecId(bsDetail.getSku().getSkuSpecId());
+				cartItem.setMaketPrice(bsDetail.getSku().getMarketPrice());
+			}
 			cartItem.setSpecName(bsDetail.getSkuSpecName());
 			cartItem.setSpecs(this.getSpec(bsDetail.getSkuSpecName()));
-			cartItem.setMaketPrice(bsDetail.getSku().getMarketPrice());
 			cartItem.setShowPrice(bsDetail.getShowPrice());
-			cartItem.setBcId(bsDetail.getProduct().getBcId());
+			if(null != bsDetail.getProduct()) {
+				cartItem.setBcId(bsDetail.getProduct().getBcId());
+			}
 			cartItem.setStock(this.getStock(bsDetail));
 			cartItem.setPurchaseCountLimit((bsDetail.getPurchaseCountLimit()!=null && bsDetail.getPurchaseCountLimit() > 0) 
 					? bsDetail.getPurchaseCountLimit() : 0);
 			
-			long checkStatus = this.checkBsDetailStatusAndStock(bsDetail, cartItem.getNum());
+			long checkStatus = this.checkBsDetailStatusAndStock(bsDetail, cartItem.getStock(), cartItem.getNum());
 
 			cartItem.setStatusCode(checkStatus);
 			// 购物车商品异常
@@ -281,7 +283,13 @@ public class CartServiceImpl implements ICartService{
 		List<Long> brandShowIds = this.getBrandShowIds(bsDetails);
 		List<BrandShow> brandShows = this.brandShowService.getBrandShowByIds(brandShowIds);
 		// 取得特卖map
-		return this.getBrandShowMap(brandShows);
+		Map<Long,BrandShow> brandShowMap = new LinkedHashMap<Long,BrandShow>();
+		if(null != brandShows && brandShows.size() > 0) {
+			for(BrandShow brandShow : brandShows) {
+				brandShowMap.put(brandShow.getBrandShowId(), brandShow);
+			}
+		}
+		return brandShowMap;
 	}
 	
 	/**
@@ -380,16 +388,6 @@ public class CartServiceImpl implements ICartService{
 		}
 		return new ArrayList<Long>(brandShowIds);
 	}
-	
-	private Map<Long,BrandShow> getBrandShowMap(List<BrandShow> brandShows) {
-		Map<Long,BrandShow> brandShowMap = new LinkedHashMap<Long,BrandShow>();
-		if(null != brandShows && brandShows.size() > 0) {
-			for(BrandShow brandShow : brandShows) {
-				brandShowMap.put(brandShow.getBrandShowId(), brandShow);
-			}
-		}
-		return brandShowMap;
-	}
 
 	/**
 	 * 获取规格与规格值
@@ -418,7 +416,7 @@ public class CartServiceImpl implements ICartService{
 		return rtn;
 	}
 	
-	private Long checkBsDetailStatusAndStock(BrandShowDetail bsDetail, Long num) {
+	private Long checkBsDetailStatusAndStock(BrandShowDetail bsDetail, Long stock, Long num) {
 		if(null == bsDetail) {
 			return OrderConstants.CARTITEM_BS_DETAIL_IS_NULL;
 		}
@@ -437,7 +435,6 @@ public class CartServiceImpl implements ICartService{
 		if(!this.isProductNormal(bsDetail.getProduct())) {
 			return OrderConstants.CARTITEM_PROD_STATUS_UNNORMAL;
 		}
-		long stock = this.getStock(bsDetail);
 		if(stock <= 0l) {
 			return OrderConstants.CARTITEM_BS_DETAIL_OUTOFSTOCK;
 		} else if(stock < num) {
@@ -465,12 +462,15 @@ public class CartServiceImpl implements ICartService{
 	}
 	
 	private boolean isSkuNormal(Sku sku) {
-		//TODO
+		//TODO 状态
+		if(null == sku) {
+			return false;
+		}
 		return true;
 	}
 	
 	private boolean isProductNormal(Product prod) {
-		if("1" != prod.getStatus()) { //TODO 状态
+		if(null == prod || "1" != prod.getStatus()) { //TODO 状态
 			return false;
 		}
 		return true;
@@ -485,6 +485,19 @@ public class CartServiceImpl implements ICartService{
 		} else {
 			stock = bsDetail.getShowBalance() - bsDetail.getSaleAmount();
 		}
-		return stock;
+		String strStock = null;
+		try {
+			strStock = this.redisStock.opsForValue().get(ProductConstants.CACHE_PERFIX_BSD_STOCK + bsDetail.getbSDId());
+			if(StringUtils.isBlank(strStock) || "null".equals(strStock)) {
+				strStock = stock + "";
+				this.redisStock.opsForValue().set(ProductConstants.CACHE_PERFIX_BSD_STOCK + bsDetail.getbSDId(), strStock);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			strStock = stock + "";
+			this.redisStock.opsForValue().set(ProductConstants.CACHE_PERFIX_BSD_STOCK + bsDetail.getbSDId(), strStock);
+		}
+
+		return Long.parseLong(strStock);
 	}
 }

@@ -35,14 +35,7 @@
 		     <constructor-arg index="0"  ref="sentinelConfig" />
 		     <constructor-arg index="1" ref="jedisPoolConfig" />
 		</bean> 
-		
-		<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">  
-		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
-		    <property name="keySerializer" ref="stringSerializer" />  
-		    <property name="hashKeySerializer" ref="stringSerializer" />  
-		    <property name="valueSerializer" ref="stringSerializer" />
-		</bean> 
-		
+
 		<bean id="redisNumber" class="org.springframework.data.redis.core.RedisTemplate">  
 		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
 		    <property name="keySerializer" ref="stringSerializer" />  
@@ -73,14 +66,7 @@
 	        <constructor-arg index="0"  ref="sentinelConfig" />
 		    <constructor-arg index="1" ref="jedisPoolConfig" />
 		</bean>  
-		
-		<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">  
-		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
-		    <property name="keySerializer" ref="stringSerializer" />  
-		    <property name="hashKeySerializer" ref="stringSerializer" />  
-		    <property name="valueSerializer" ref="stringSerializer" />
-		</bean> 
-		
+
 		<bean id="redisNumber" class="org.springframework.data.redis.core.RedisTemplate">  
 		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
 		    <property name="keySerializer" ref="stringSerializer" />  
@@ -90,28 +76,7 @@
 	
 	</beans>
 	
-	<beans profile="product">
-		<!-- 购物车 -->
-		<bean id="sentinelConfigCart" class="org.springframework.data.redis.connection.RedisSentinelConfigurationEX">  
-		   <property name="masterName" value="${product.cart.master.name}" />
-	       <property name="sentinels">
-		        <set>
-			        <bean class="org.springframework.data.redis.connection.RedisNode">
-			        	<constructor-arg index="0" type="java.lang.String" value="${product.cart.sentinel.ip.1}"/>
-			     		<constructor-arg index="1" type="int" value="${product.cart.sentinel.port.1}"/>
-			        </bean>
-			        <bean class="org.springframework.data.redis.connection.RedisNode">
-			        	<constructor-arg index="0" type="java.lang.String" value="${product.cart.sentinel.ip.2}"/>
-			     		<constructor-arg index="1" type="int" value="${product.cart.sentinel.port.2}"/>
-			        </bean>
-		        </set>
-			</property>
-	    </bean> 
-	    
-	    <bean id="jedisConnectionFactoryCart" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" >  
-	        <constructor-arg index="0"  ref="sentinelConfigCart" />
-		    <constructor-arg index="1" ref="jedisPoolConfig" />
-		</bean>  
+	<beans profile="product"> 
 		<!-- 库存 -->
 		<bean id="sentinelConfigStock" class="org.springframework.data.redis.connection.RedisSentinelConfigurationEX">  
 		   <property name="masterName" value="${product.stock.master.name}" />
@@ -132,14 +97,7 @@
 	    <bean id="jedisConnectionFactoryStock" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" >  
 	        <constructor-arg index="0"  ref="sentinelConfigStock" />
 		    <constructor-arg index="1" ref="jedisPoolConfig" />
-		</bean>  
-		<!-- 购物车模板 -->
-		<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">  
-		    <property name="connectionFactory" ref="jedisConnectionFactoryCart"/> 
-		    <property name="keySerializer" ref="stringSerializer" />  
-		    <property name="hashKeySerializer" ref="stringSerializer" />  
-			<property name="valueSerializer" ref="stringSerializer" />
-		</bean> 
+		</bean>
 		<!-- 库存模板 -->
 		<bean id="redisNumber" class="org.springframework.data.redis.core.RedisTemplate">  
 		    <property name="connectionFactory" ref="jedisConnectionFactoryStock"/> 
@@ -171,13 +129,6 @@
 	        <constructor-arg index="0"  ref="sentinelConfig" />
 		    <constructor-arg index="1" ref="jedisPoolConfig" />
 		</bean>
-		
-		<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">  
-		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
-		    <property name="keySerializer" ref="stringSerializer" />  
-		    <property name="hashKeySerializer" ref="stringSerializer" />  
-		    <property name="valueSerializer" ref="stringSerializer" />
-		</bean> 
 		
 		<bean id="redisNumber" class="org.springframework.data.redis.core.RedisTemplate">  
 		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
