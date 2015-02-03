@@ -115,6 +115,8 @@ public class CartServiceImpl implements ICartService{
 			if(cartItem.getBrandShowDetailId() == bsDetailId) {
 				cartItem.setNum(newQuantity);
 				BrandShowDetail bsDetail = this.brandShowService.getBrandShowDetailById(bsDetailId);
+				bsDetail.setSku(this.productService.getSkuById(bsDetail.getSkuId().intValue()));
+				bsDetail.setProduct(this.productService.getProductById(bsDetail.getProdId().intValue()));
 				this.validCartItem(cartItem, bsDetail);
 				if(cartItem.getStatusCode() == OrderConstants.CARTITEM_BS_DETAIL_LOWSTOCK
 						|| cartItem.getStatusCode() == OrderConstants.CARTITEM_BS_DETAIL_EXCEED) {
@@ -134,9 +136,9 @@ public class CartServiceImpl implements ICartService{
 		Iterator<CartItem> cartItemIterator = cartItems.iterator();
 		while (cartItemIterator.hasNext()) {
 			CartItem cartItem = cartItemIterator.next();
-			if (bsDetailIds.contains(cartItem.getSkuId())) {
+			if (bsDetailIds.contains(cartItem.getBrandShowDetailId())) {
 				cartItemIterator.remove();
-				bsDetailIds.remove(cartItem.getSkuId());
+				bsDetailIds.remove(cartItem.getBrandShowDetailId());
 				if (cartItems.size() == 0 || bsDetailIds == null
 						|| bsDetailIds.size() == 0) {
 					break;
@@ -366,8 +368,8 @@ public class CartServiceImpl implements ICartService{
 		Map<Long,BrandShowDetail> bsDetailMap = new LinkedHashMap<Long,BrandShowDetail>();
 		if(null != bsDetails && bsDetails.size() > 0) {
 			for(BrandShowDetail bsDetail : bsDetails) {
-				bsDetail.setSku(skuMap.get(bsDetail.getSkuId()));
-				bsDetail.setProduct(prodMap.get(bsDetail.getProdId()));
+				bsDetail.setSku(skuMap.get(bsDetail.getSkuId().intValue()));
+				bsDetail.setProduct(prodMap.get(bsDetail.getProdId().intValue()));
 				bsDetailMap.put(bsDetail.getbSDId(), bsDetail);
 			}
 		}
@@ -420,7 +422,7 @@ public class CartServiceImpl implements ICartService{
 		if(null == bsDetail) {
 			return OrderConstants.CARTITEM_BS_DETAIL_IS_NULL;
 		}
-		long bsDetailStatus = this.isBrandShowDetailNormal(bsDetail);
+		int bsDetailStatus = this.isBrandShowDetailNormal(bsDetail);
 		if(bsDetailStatus != 1) {
 			if(bsDetailStatus == -1) {
 				return OrderConstants.CARTITEM_BS_DETAIL_STATUS_UNNORMAL;
@@ -453,7 +455,7 @@ public class CartServiceImpl implements ICartService{
 	private int isBrandShowDetailNormal(BrandShowDetail bsDetail) {
 		Date now = new Date();
 		Date endDate = bsDetail.getEndDate();
-		if("1" != bsDetail.getStatus()) {//TODO 状态
+		if(!"1".equals(bsDetail.getStatus())) {//TODO 状态
 			return -1;
 		}else if(now.after(endDate)) {
 			return -2;
@@ -470,13 +472,14 @@ public class CartServiceImpl implements ICartService{
 	}
 	
 	private boolean isProductNormal(Product prod) {
-		if(null == prod || "1" != prod.getStatus()) { //TODO 状态
+		if(null == prod) { //TODO 状态
 			return false;
 		}
 		return true;
 	}
 	
 	private long getStock(BrandShowDetail bsDetail) {
+		//TODO redis
 		long stock = 0l;
 		if(null == bsDetail.getShowBalance() || bsDetail.getShowBalance() <= 0) {
 			stock = 0l;
