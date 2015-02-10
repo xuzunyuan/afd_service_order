@@ -8,11 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.afd.common.mybatis.Page;
 import com.afd.common.util.DateUtils;
 import com.afd.model.order.Order;
 import com.afd.model.user.User;
@@ -33,9 +36,12 @@ import com.afd.param.cart.TradeItem;
 import com.afd.model.order.OrderLog;
 import com.afd.constants.product.ProductConstants;
 import com.alibaba.fastjson.JSON;
+import com.afd.order.service.impl.OrderServiceImpl;
 
 @Service("orderService")
 public class OrderServiceImpl implements IOrderService {
+	private final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class); 
+	
 	@Autowired
 	private OrderMapper orderMapper;
 	@Autowired
@@ -80,13 +86,6 @@ public class OrderServiceImpl implements IOrderService {
 	}
 
 	@Override
-	public int cancelOrderByBoss(List<Long> orderIds, String optName,
-			String cancelReason) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public List<Order> getOrdersByUserId(Long userId) {
 		return this.orderMapper.getOrdersByUserId(userId);
 	}
@@ -99,6 +98,40 @@ public class OrderServiceImpl implements IOrderService {
 			orderInfos.add(orderInfo);
 		}
 		return orderInfos;
+	}
+	
+	@Override
+	public int cancelOrderByIds(String optName, String cancelReason, Long... orderIds) {
+		int re = 1;
+		
+		try {
+			if(orderIds != null){
+				if(orderIds.length == 1){
+					Order order = this.orderMapper.getOrderById(orderIds[0]);
+					
+					this.cancelOrder(order, optName, cancelReason);
+				}else if(orderIds.length > 1){
+					List<Order> orders = this.orderMapper.getOrdersByIds(orderIds);
+					if(orders != null && orders.size()>0){
+						for(Order order:orders){
+							 this.cancelOrder(order, optName, cancelReason);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			re = 0;
+		}
+		
+		return re;
+	}
+	
+	@Override
+	public Page<Order> queryOrderByCondition(Map<String, ?> map, Page<Order> page) {
+		page.setResult(this.orderMapper.queryOrderByCondition(map, page));
+		
+		return page;
 	}
 	
 	private OrderInfo saveOrder(Trade trade) throws InventoryException, Exception {
@@ -283,5 +316,103 @@ public class OrderServiceImpl implements IOrderService {
 			this.orderLogMapper.insert(orderLog);
 		}
 		
+	}
+	
+	/**
+	 * 取消订单
+	 * @param order    要取消的订单
+	 * @param optName  操作人，如果为null，则默认订单创建人
+	 * @param cancelReason 取消原因
+	 * @return
+	 */
+	private int cancelOrder(Order order,String optName, String cancelReason){
+		//订单不存在
+		if(order == null){
+			return OrderConstants.ORDER_UPDATE_ORDER_NOT_EXIST;
+		}
+		//订单状态不符合要求
+		if(!OrderConstants.ORDER_STATUS_TOBEPROCESS.equals(order.getOrderStatus())
+				&& !OrderConstants.ORDER_STATUS_WAITPAYMENT.equals(order.getOrderStatus())
+				&& !OrderConstants.ORDER_STATUS_WAITDELIVERED.equals(order.getOrderStatus())
+				&& !OrderConstants.ORDER_STATUS_DELIVERED.equals(order.getOrderStatus())){
+			return OrderConstants.ORDER_UPDATE_ORDER_STATUS_UNNORMAL;
+		}
+		
+		//原订单状态
+		String oldStatus = order.getOrderStatus();
+		//新订单状态
+		order.setOrderStatus(OrderConstants.ORDER_STATUS_CANCELLED);
+		//最近更新时间
+		order.setLastUpdateDate(DateUtils.currentDate());
+		//取消时间
+		order.setCancelDate(DateUtils.currentDate());
+		//最近更新人/取消人
+		optName = StringUtils.defaultIfBlank(optName, order.getUserName());
+		order.setLastUpdateByName(optName);
+		order.setCancelByName(optName);
+		//取消原因
+		order.setCancelReason(cancelReason);
+		
+		int code = this.orderMapper.updateByPrimaryKeySelective(order);
+		if(code == 0){
+			return OrderConstants.ORDER_UPDATE_FAILURE;
+		}
+		
+		try{
+			this.restoreInventory(order.getOrderItems(), order.getUserId());
+		}catch(Exception e){
+			log.error(e.getMessage(), e);
+		}
+		
+		this.updOrderLog(order, oldStatus, "取消订单",optName);
+		
+		return OrderConstants.ORDER_UPDATE_SUCCESS;
+	}
+	
+	/**
+	 * 取消订单还原库存
+	 * @param orderItems
+	 * @throws InventoryException 
+	 */
+	private void restoreInventory(List<OrderItem> orderItems, long userId) throws InventoryException {
+		if(orderItems != null && orderItems.size() >0){
+			Map<Long,Long> stockMapMq = new HashMap<Long,Long>();
+			Map<Long,Long> promStockMapMq = new HashMap<Long,Long>();
+			Map<Long,Long> promSkusStockMapMq = new HashMap<Long,Long>();
+			
+//			for(OrderItem orderItem : orderItems){
+//				//商品没有参加促销
+//				if(StringUtils.isBlank(orderItem.getYwPPDId())){
+//					stockMapMq.put(orderItem.getSkuId(), orderItem.getNum().longValue());
+//				}else{
+//					promStockMapMq.put(Long.parseLong(orderItem.getYwPPDId()), orderItem.getNum().longValue());
+//					promSkusStockMapMq.put(orderItem.getSkuId(), orderItem.getNum().longValue());
+//				}
+//			}
+//			
+//			this.updateRedisInventory(stockMapMq,promStockMapMq, promSkusStockMapMq,userId);
+//			this.rabbitTemplate.setRoutingKey(orderKey);
+//			this.rabbitTemplate.convertAndSend(stockMapMq);
+//			this.rabbitTemplate.setRoutingKey(this.promOrderKey);
+//			this.rabbitTemplate.convertAndSend(promStockMapMq);
+		}
+	}
+	
+	/**
+	 * 更改订单日志
+	 * @param order
+	 * @param oldOrderStatus
+	 * @param optName 
+	 */
+	private void updOrderLog(Order order, String oldOrderStatus,String optMsg, String optName) {
+		OrderLog orderLog = new OrderLog();
+		orderLog.setFromOrderStatus(oldOrderStatus);
+		orderLog.setOptByName(optName);
+		orderLog.setOptContent(optMsg);
+		orderLog.setOptTime(DateUtils.currentDate());
+		orderLog.setOrderId(order.getOrderId());
+		orderLog.setToOrderStatus(order.getOrderStatus());
+		
+		this.orderLogMapper.insert(orderLog);
 	}
 }

@@ -717,4 +717,61 @@
 		and t.user_id = #{userId,jdbcType=DECIMAL}
 	</select>
 
+	<select id="queryOrderByCondition" resultMap="BaseResultMap">
+		select or.*
+		from t_order or
+		
+		<if test="conf.prodTitle != null and conf.prodTitle != ''">
+			<bind name="prodTitle" value="'%' + conf.prodTitle + '%'" />
+			
+			left outer join t_order_item oi 
+			on or.order_id = oi.order_id and oi.prod_title like #{prodTitle} 
+		</if>
+		
+		<where>
+			<if test="conf.orderCode != null and conf.orderCode != ''">
+				or.order_code = #{conf.orderCode,jdbcType=DECIMAL}
+			</if>
+			<if test="conf.userName != null and conf.userName != ''">
+				and or.user_name like '%'||'${conf.userName}'||'%'
+			</if>
+			<if test="cond.startDt != null" >
+			 	and create_date &gt;= #{cond.startDt,jdbcType=TIMESTAMP}
+		    </if>
+		    <if test="cond.endDt != null" >
+			 	and create_date &lt;= #{cond.endDt,jdbcType=TIMESTAMP}
+		    </if>
+			<if test="conf.orderStatus != null and conf.orderStatus != '-1'">
+				and or.order_status = #{conf.orderStatus,jdbcType=CHAR}
+			</if>
+			<if test="conf.orderSource != null and conf.orderSource != '-1'">
+				and or.order_source = #{conf.orderSource,jdbcType=CHAR}
+			</if>
+			<if test="conf.payType != null and conf.payType != '-1'">
+				and or.pay_type = #{conf.payType,jdbcType=CHAR}
+			</if>
+			<if test="conf.payMode != null and conf.payMode != '-1'">
+				and or.pay_mode = #{conf.payMode,jdbcType=CHAR}
+			</if>
+			<if test="conf.payStatus != null and conf.payStatus != '-1'">
+				and or.pay_status = #{conf.payStatus,jdbcType=CHAR}
+			</if>
+			<if test="conf.brandShowTitle != null and conf.brandShowTitle != ''">
+				and or.brand_show_title like '%'||'${conf.brandShowTitle}'||'%'
+			</if>
+		</where>
+		
+		order by or.ORDER_ID DESC
+	</select>
+	
+	<select id="getOrdersByIds" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_order
+		where order_id in
+		<foreach collection="orderIds" item="orderId" open="(" separator="," close=")">
+			#{orderId}
+		</foreach>
+	</select>
+	
 </mapper>
