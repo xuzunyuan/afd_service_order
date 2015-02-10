@@ -8,6 +8,8 @@
 		<result column="user_name" property="userName" jdbcType="VARCHAR" />
 		<result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
 		<result column="seller_id" property="sellerId" jdbcType="DECIMAL" />
+		<result column="brand_show_id" property="brandShowId" jdbcType="INTEGER" />
+  		<result column="brand_show_title" property="brandShowTitle" jdbcType="VARCHAR" />
 		<result column="order_type" property="orderType" jdbcType="CHAR" />
 		<result column="order_status" property="orderStatus" jdbcType="CHAR" />
 		<result column="prod_fee" property="prodFee" jdbcType="REAL" />
@@ -69,29 +71,31 @@
 	<resultMap type="com.afd.model.order.Order" id="BaseResultMap2"
 		extends="BaseResultMap">
 		<collection property="orderItems" ofType="com.afd.model.order.OrderItem">
-			<id column="payment_id" property="paymentId" jdbcType="DECIMAL" />
-			<result column="origin_payment_id" property="originPaymentId"
-				jdbcType="DECIMAL" />
-			<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
-			<result column="create_id" property="createId" jdbcType="DECIMAL" />
-			<result column="user_name" property="userName" jdbcType="VARCHAR" />
-			<result column="create_by_ip" property="createByIp" jdbcType="VARCHAR" />
-			<result column="pay_amount" property="payAmount" jdbcType="REAL" />
-			<result column="pay_gw" property="payGw" jdbcType="CHAR" />
-			<result column="status" property="status" jdbcType="CHAR" />
-			<result column="type" property="type" jdbcType="CHAR" />
-			<result column="trade_no" property="tradeNo" jdbcType="VARCHAR" />
-			<result column="callback_date" property="callbackDate"
-				jdbcType="TIMESTAMP" />
-			<result column="real_pay_gw" property="realPayGw" jdbcType="CHAR" />
-			<result column="real_pay_date" property="realPayDate"
-				jdbcType="TIMESTAMP" />
-			<result column="payment_type" property="paymentType" jdbcType="CHAR" />
+			<id column="order_item_id" property="orderItemId" jdbcType="BIGINT" />
+		    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+		    <result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+		    <result column="sku_id" property="skuId" jdbcType="INTEGER" />
+		    <result column="prod_id" property="prodId" jdbcType="INTEGER" />
+		    <result column="prod_code" property="prodCode" jdbcType="VARCHAR" />
+		    <result column="sku_code" property="skuCode" jdbcType="VARCHAR" />
+		    <result column="prod_spec_id" property="prodSpecId" jdbcType="VARCHAR" />
+		    <result column="prod_spec_name" property="prodSpecName" jdbcType="VARCHAR" />
+		    <result column="prod_title" property="prodTitle" jdbcType="VARCHAR" />
+		    <result column="bc_id" property="bcId" jdbcType="SMALLINT" />
+		    <result column="seller_id" property="sellerId" jdbcType="INTEGER" />
+		    <result column="sale_price" property="salePrice" jdbcType="REAL" />
+		    <result column="trans_price" property="transPrice" jdbcType="REAL" />
+		    <result column="number" property="number" jdbcType="SMALLINT" />
+		    <result column="status" property="status" jdbcType="CHAR" />
+		    <result column="is_comment" property="isComment" jdbcType="CHAR" />
+		    <result column="brand_show_id" property="brandShowId" jdbcType="INTEGER" />
+		    <result column="brand_show_title" property="brandShowTitle" jdbcType="VARCHAR" />
+		    <result column="bsd_id" property="bsdId" jdbcType="INTEGER" />
 		</collection>
 	</resultMap>
 	<sql id="Base_Column_List">
-		order_id, order_code, user_id, user_name, created_date, seller_id, order_type,
-		order_status,
+		order_id, order_code, user_id, user_name, created_date, seller_id, 
+		brand_show_id, brand_show_title, order_type, order_status,
 		prod_fee, prod_discount_type, prod_discount_fee, deliver_fee, deliver_discount,
 		order_fee,
 		r_name, r_province, r_city, r_county, r_town, r_addr, r_mobile, r_phone,
@@ -120,6 +124,7 @@
 	<insert id="insert" parameterType="com.afd.model.order.Order">
 		insert into t_order (order_id, order_code, user_id,
 		user_name, created_date, seller_id,
+		brand_show_id, brand_show_title,
 		order_type, order_status, prod_fee,
 		prod_discount_type, prod_discount_fee, deliver_fee,
 		deliver_discount, order_fee, r_name,
@@ -138,6 +143,7 @@
 		values (#{orderId,jdbcType=DECIMAL}, #{orderCode,jdbcType=VARCHAR},
 		#{userId,jdbcType=DECIMAL},
 		#{userName,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{sellerId,jdbcType=DECIMAL},
+		#{brandShowId,jdbcType=INTEGER}, #{brandShowTitle,jdbcType=VARCHAR}, 
 		#{orderType,jdbcType=CHAR}, #{orderStatus,jdbcType=CHAR},
 		#{prodFee,jdbcType=REAL},
 		#{prodDiscountType,jdbcType=CHAR}, #{prodDiscountFee,jdbcType=REAL}, #{deliverFee,jdbcType=REAL},
@@ -162,7 +168,8 @@
 		#{lastUpdateDate,jdbcType=TIMESTAMP},
 		#{lastUpdateByName,jdbcType=VARCHAR})
 	</insert>
-	<insert id="insertSelective" parameterType="com.afd.model.order.Order">
+	<insert id="insertSelective" keyProperty="orderId"
+		useGeneratedKeys="true" parameterType="com.afd.model.order.Order">
 		insert into t_order
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="orderId != null">
@@ -182,6 +189,12 @@
 			</if>
 			<if test="sellerId != null">
 				seller_id,
+			</if>
+			<if test="brandShowId != null" >
+			  brand_show_id,
+			</if>
+			<if test="brandShowTitle != null" >
+			  brand_show_title,
 			</if>
 			<if test="orderType != null">
 				order_type,
@@ -335,6 +348,12 @@
 			<if test="sellerId != null">
 				#{sellerId,jdbcType=DECIMAL},
 			</if>
+			<if test="brandShowId != null" >
+			  #{brandShowId,jdbcType=INTEGER},
+			</if>
+			<if test="brandShowTitle != null" >
+			  #{brandShowTitle,jdbcType=VARCHAR},
+			</if>			
 			<if test="orderType != null">
 				#{orderType,jdbcType=CHAR},
 			</if>
@@ -487,6 +506,12 @@
 			<if test="sellerId != null">
 				seller_id = #{sellerId,jdbcType=DECIMAL},
 			</if>
+			<if test="brandShowId != null" >
+			  brand_show_id = #{brandShowId,jdbcType=INTEGER},
+			</if>
+			<if test="brandShowTitle != null" >
+			  brand_show_title = #{brandShowTitle,jdbcType=VARCHAR},
+			</if>	
 			<if test="orderType != null">
 				order_type = #{orderType,jdbcType=CHAR},
 			</if>
@@ -629,6 +654,8 @@
 		user_name = #{userName,jdbcType=VARCHAR},
 		created_date = #{createdDate,jdbcType=TIMESTAMP},
 		seller_id = #{sellerId,jdbcType=DECIMAL},
+		brand_show_id = #{brandShowId,jdbcType=INTEGER},
+		brand_show_title = #{brandShowTitle,jdbcType=VARCHAR},
 		order_type = #{orderType,jdbcType=CHAR},
 		order_status = #{orderStatus,jdbcType=CHAR},
 		prod_fee = #{prodFee,jdbcType=REAL},

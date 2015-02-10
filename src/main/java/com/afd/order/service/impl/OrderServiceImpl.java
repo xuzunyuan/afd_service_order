@@ -32,6 +32,7 @@ import com.afd.model.order.OrderItem;
 import com.afd.param.cart.TradeItem;
 import com.afd.model.order.OrderLog;
 import com.afd.constants.product.ProductConstants;
+import com.alibaba.fastjson.JSON;
 
 @Service("orderService")
 public class OrderServiceImpl implements IOrderService {
@@ -113,10 +114,10 @@ public class OrderServiceImpl implements IOrderService {
 			return orderInfo;
 		}
 		Order order = this.createOrder(trade, addr, user);
-		this.orderMapper.insert(order);
+		this.orderMapper.insertSelective(order);
 		Map<Long,Long> brandShowStockMapMq = new HashMap<Long,Long>();
 		List<OrderItem> orderItems = this.createOrderItems(trade.getTradeItems(), order, brandShowStockMapMq);
-//		order.setOrderItems(orderItems);
+		order.setOrderItems(orderItems);
 		order.setOrderFee(order.getProdFee().add(order.getDeliverFee()));
 		if(order.getOrderFee().compareTo(BigDecimal.ZERO)<=0){
 			order.setOrderFee(BigDecimal.ZERO);
@@ -126,6 +127,7 @@ public class OrderServiceImpl implements IOrderService {
 		this.orderMapper.updateByPrimaryKeySelective(order);
 		this.createOrderLog(order,trade);
 		
+		//TODO
 		this.updateRedisInventory(brandShowStockMapMq);
 		redisNumber.convertAndSend("brandShowStock", brandShowStockMapMq);
 		orderInfo.setCode(1);
@@ -206,7 +208,8 @@ public class OrderServiceImpl implements IOrderService {
 		return order;
 	}
 	
-	private List<OrderItem> createOrderItems(List<TradeItem> tradeItems,Order order, Map<Long, Long> brandShowStockMapMq) {
+	private List<OrderItem> createOrderItems(List<TradeItem> tradeItems,Order order, Map<Long, Long> brandShowStockMapMq)
+			 throws InventoryException, Exception {
 		List<OrderItem> orderItems = new ArrayList<OrderItem>();
 		if(tradeItems != null && tradeItems.size() > 0){
 			BigDecimal prodFee = BigDecimal.ZERO;
@@ -230,7 +233,7 @@ public class OrderServiceImpl implements IOrderService {
 		return null;
 	}
 	
-	private OrderItem createOrderItem(TradeItem tradeItem,Order order) {
+	private OrderItem createOrderItem(TradeItem tradeItem,Order order) throws InventoryException, Exception {
 		if(tradeItem != null){
 			OrderItem orderItem = new OrderItem();
 			orderItem.setIsComment(OrderConstants.ORDERITEM_COMMENT_NO);
@@ -250,7 +253,7 @@ public class OrderServiceImpl implements IOrderService {
 			orderItem.setSellerId(tradeItem.getSellerId());
 			orderItem.setBcId(tradeItem.getBcId());
 			
-			this.orderItemMapper.insert(orderItem);
+			this.orderItemMapper.insertSelective(orderItem);
 			return orderItem;
 		}
 		return null;
