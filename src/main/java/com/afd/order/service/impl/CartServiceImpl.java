@@ -231,7 +231,8 @@ public class CartServiceImpl implements ICartService{
 			if(null != bsDetail.getProduct()) {
 				cartItem.setBcId(bsDetail.getProduct().getBcId());
 			}
-			cartItem.setStock(this.getStock(bsDetail));
+			Long stock = bsDetail.getShowBalance()-bsDetail.getSaleAmount();
+			cartItem.setStock(stock > 0 ? stock : 0l);
 			cartItem.setPurchaseCountLimit((bsDetail.getPurchaseCountLimit()!=null && bsDetail.getPurchaseCountLimit() > 0) 
 					? bsDetail.getPurchaseCountLimit() : 0);
 			
@@ -476,31 +477,5 @@ public class CartServiceImpl implements ICartService{
 			return false;
 		}
 		return true;
-	}
-	
-	private long getStock(BrandShowDetail bsDetail) {
-		//TODO redis
-		long stock = 0l;
-		if(null == bsDetail.getShowBalance() || bsDetail.getShowBalance() <= 0) {
-			stock = 0l;
-		} else if (null == bsDetail.getSaleAmount() || bsDetail.getSaleAmount() <= 0) {
-			stock = bsDetail.getShowBalance();
-		} else {
-			stock = bsDetail.getShowBalance() - bsDetail.getSaleAmount();
-		}
-		String strStock = null;
-		try {
-			strStock = this.redisStock.opsForValue().get(ProductConstants.CACHE_PERFIX_BSD_STOCK + bsDetail.getbSDId());
-			if(StringUtils.isBlank(strStock) || "null".equals(strStock)) {
-				strStock = stock + "";
-				this.redisStock.opsForValue().set(ProductConstants.CACHE_PERFIX_BSD_STOCK + bsDetail.getbSDId(), strStock);
-			}
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			strStock = stock + "";
-			this.redisStock.opsForValue().set(ProductConstants.CACHE_PERFIX_BSD_STOCK + bsDetail.getbSDId(), strStock);
-		}
-
-		return Long.parseLong(strStock);
 	}
 }
