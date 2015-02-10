@@ -110,7 +110,7 @@
 		Last_update_date,
 		Last_update_by_name
 	</sql>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+	<select id="getOrderById" resultMap="BaseResultMap"
 		parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
@@ -721,19 +721,19 @@
 		select or.*
 		from t_order or
 		
-		<if test="conf.prodTitle != null and conf.prodTitle != ''">
-			<bind name="prodTitle" value="'%' + conf.prodTitle + '%'" />
+		<if test="cond.prodTitle != null and cond.prodTitle != ''">
+			<bind name="prodTitle" value="'%' + cond.prodTitle + '%'" />
 			
 			left outer join t_order_item oi 
 			on or.order_id = oi.order_id and oi.prod_title like #{prodTitle} 
 		</if>
 		
 		<where>
-			<if test="conf.orderCode != null and conf.orderCode != ''">
-				or.order_code = #{conf.orderCode,jdbcType=DECIMAL}
+			<if test="cond.orderCode != null and cond.orderCode != ''">
+				or.order_code = #{cond.orderCode,jdbcType=DECIMAL}
 			</if>
-			<if test="conf.userName != null and conf.userName != ''">
-				and or.user_name like '%'||'${conf.userName}'||'%'
+			<if test="cond.userName != null and cond.userName != ''">
+				and or.user_name like '%'||'${cond.userName}'||'%'
 			</if>
 			<if test="cond.startDt != null" >
 			 	and create_date &gt;= #{cond.startDt,jdbcType=TIMESTAMP}
@@ -741,23 +741,23 @@
 		    <if test="cond.endDt != null" >
 			 	and create_date &lt;= #{cond.endDt,jdbcType=TIMESTAMP}
 		    </if>
-			<if test="conf.orderStatus != null and conf.orderStatus != '-1'">
-				and or.order_status = #{conf.orderStatus,jdbcType=CHAR}
+			<if test="cond.orderStatus != null and cond.orderStatus != '-1'">
+				and or.order_status = #{cond.orderStatus,jdbcType=CHAR}
 			</if>
-			<if test="conf.orderSource != null and conf.orderSource != '-1'">
-				and or.order_source = #{conf.orderSource,jdbcType=CHAR}
+			<if test="cond.orderSource != null and cond.orderSource != '-1'">
+				and or.order_source = #{cond.orderSource,jdbcType=CHAR}
 			</if>
-			<if test="conf.payType != null and conf.payType != '-1'">
-				and or.pay_type = #{conf.payType,jdbcType=CHAR}
+			<if test="cond.payType != null and cond.payType != '-1'">
+				and or.pay_type = #{cond.payType,jdbcType=CHAR}
 			</if>
-			<if test="conf.payMode != null and conf.payMode != '-1'">
-				and or.pay_mode = #{conf.payMode,jdbcType=CHAR}
+			<if test="cond.payMode != null and cond.payMode != '-1'">
+				and or.pay_mode = #{cond.payMode,jdbcType=CHAR}
 			</if>
-			<if test="conf.payStatus != null and conf.payStatus != '-1'">
-				and or.pay_status = #{conf.payStatus,jdbcType=CHAR}
+			<if test="cond.payStatus != null and cond.payStatus != '-1'">
+				and or.pay_status = #{cond.payStatus,jdbcType=CHAR}
 			</if>
-			<if test="conf.brandShowTitle != null and conf.brandShowTitle != ''">
-				and or.brand_show_title like '%'||'${conf.brandShowTitle}'||'%'
+			<if test="cond.brandShowTitle != null and cond.brandShowTitle != ''">
+				and or.brand_show_title like '%'||'${cond.brandShowTitle}'||'%'
 			</if>
 		</where>
 		
