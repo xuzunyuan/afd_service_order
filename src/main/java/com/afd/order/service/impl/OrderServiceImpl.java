@@ -184,6 +184,8 @@ public class OrderServiceImpl implements IOrderService {
 		order.setUserRemark(trade.getUserRemark());
 		order.setSignedStatus(OrderConstants.SIGNED_STATUS_UNSIGNED);
 		order.setSellerId(trade.getSellerId());
+		order.setBrandShowId(trade.getBrandShowId());
+		order.setBrandShowTitle(trade.getBrandShowTitle());
 		order.setLogisticsCompa(null);
 		order.setLogisticsName(null);
 		order.setOrderCode(null);
@@ -252,6 +254,9 @@ public class OrderServiceImpl implements IOrderService {
 			orderItem.setStatus(OrderConstants.ORDERITEM_STATUS_NORMAL);
 			orderItem.setSellerId(tradeItem.getSellerId());
 			orderItem.setBcId(tradeItem.getBcId());
+			orderItem.setBrandShowId(tradeItem.getBrandShowId());;
+			orderItem.setBrandShowTitle(tradeItem.getBrandShowTitle());
+			orderItem.setBsdId(tradeItem.getBrandShowDetailId());
 			
 			this.orderItemMapper.insertSelective(orderItem);
 			return orderItem;
