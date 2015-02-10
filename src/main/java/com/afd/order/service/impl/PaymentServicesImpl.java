@@ -305,7 +305,7 @@ public class PaymentServicesImpl implements IPaymentServices {
 				}
 			}
 			if(ids.size()>0){
-				this.orderService.cancelOrderByBoss(ids, "nopay","未支付系统自动取消！");
+				this.orderService.cancelOrderByIds("nopay","未支付系统自动取消！", ids.toArray(new Long[ids.size()]));
 			}
 		}
 	}
