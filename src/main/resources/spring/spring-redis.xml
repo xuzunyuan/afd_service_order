@@ -4,8 +4,9 @@
     xsi:schemaLocation="
     	http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
-    		
-	<bean id="stringSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+    	
+    <bean id="stringSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer"/>	
+	<bean id="jdkSerializer" class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>
 	
 	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">  
        <property name="maxTotal" value="${redis.pool.maxTotal}" />  
@@ -39,8 +40,8 @@
 		<bean id="redisNumber" class="org.springframework.data.redis.core.RedisTemplate">  
 		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
 		    <property name="keySerializer" ref="stringSerializer" />  
-		    <property name="hashKeySerializer" ref="stringSerializer" /> 
-		    <property name="valueSerializer" ref="stringSerializer" />
+		    <property name="hashKeySerializer" ref="jdkSerializer" /> 
+		    <property name="valueSerializer" ref="jdkSerializer" />
 		</bean> 
 	 
 	</beans>
@@ -70,8 +71,8 @@
 		<bean id="redisNumber" class="org.springframework.data.redis.core.RedisTemplate">  
 		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
 		    <property name="keySerializer" ref="stringSerializer" />  
-		    <property name="hashKeySerializer" ref="stringSerializer" /> 
-		    <property name="valueSerializer" ref="stringSerializer" />
+		    <property name="hashKeySerializer" ref="jdkSerializer" /> 
+		    <property name="valueSerializer" ref="jdkSerializer" />
 		</bean> 
 	
 	</beans>
@@ -102,8 +103,8 @@
 		<bean id="redisNumber" class="org.springframework.data.redis.core.RedisTemplate">  
 		    <property name="connectionFactory" ref="jedisConnectionFactoryStock"/> 
 		    <property name="keySerializer" ref="stringSerializer" />  
-		    <property name="hashKeySerializer" ref="stringSerializer" /> 
-		    <property name="valueSerializer" ref="stringSerializer" />
+		    <property name="hashKeySerializer" ref="jdkSerializer" /> 
+		    <property name="valueSerializer" ref="jdkSerializer" />
 		</bean> 
 	
 	</beans>
@@ -133,8 +134,8 @@
 		<bean id="redisNumber" class="org.springframework.data.redis.core.RedisTemplate">  
 		    <property name="connectionFactory" ref="jedisConnectionFactory"/> 
 		    <property name="keySerializer" ref="stringSerializer" />  
-		    <property name="hashKeySerializer" ref="stringSerializer" /> 
-		    <property name="valueSerializer" ref="stringSerializer" />
+		    <property name="hashKeySerializer" ref="jdkSerializer" /> 
+		    <property name="valueSerializer" ref="jdkSerializer" />
 		</bean> 
    	</beans>
 </beans>

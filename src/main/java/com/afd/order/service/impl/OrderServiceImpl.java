@@ -35,7 +35,6 @@ import com.afd.model.order.OrderItem;
 import com.afd.param.cart.TradeItem;
 import com.afd.model.order.OrderLog;
 import com.afd.constants.product.ProductConstants;
-import com.alibaba.fastjson.JSON;
 import com.afd.order.service.impl.OrderServiceImpl;
 
 @Service("orderService")
@@ -64,6 +63,8 @@ public class OrderServiceImpl implements IOrderService {
 	@Qualifier("redisNumber")
 	private RedisTemplate<String, String> redisNumber;
 
+	private final String STOCK_KEY_STR = "brandShowStock";
+	
 	public int addOrder(){
 		Order order = new Order();
 		order.setUserName("liubo");
@@ -162,7 +163,7 @@ public class OrderServiceImpl implements IOrderService {
 		
 		//TODO
 		this.updateRedisInventory(brandShowStockMapMq);
-		redisNumber.convertAndSend("brandShowStock", brandShowStockMapMq);
+		redisNumber.convertAndSend(STOCK_KEY_STR, brandShowStockMapMq);
 		orderInfo.setCode(1);
 		orderInfo.setOrder(order);
 		return orderInfo;
@@ -359,7 +360,7 @@ public class OrderServiceImpl implements IOrderService {
 		}
 		
 		try{
-			this.restoreInventory(order.getOrderItems(), order.getUserId());
+			this.restoreInventory(order.getOrderItems());
 		}catch(Exception e){
 			log.error(e.getMessage(), e);
 		}
@@ -374,27 +375,14 @@ public class OrderServiceImpl implements IOrderService {
 	 * @param orderItems
 	 * @throws InventoryException 
 	 */
-	private void restoreInventory(List<OrderItem> orderItems, long userId) throws InventoryException {
+	private void restoreInventory(List<OrderItem> orderItems) throws InventoryException {
 		if(orderItems != null && orderItems.size() >0){
 			Map<Long,Long> stockMapMq = new HashMap<Long,Long>();
-			Map<Long,Long> promStockMapMq = new HashMap<Long,Long>();
-			Map<Long,Long> promSkusStockMapMq = new HashMap<Long,Long>();
-			
-//			for(OrderItem orderItem : orderItems){
-//				//商品没有参加促销
-//				if(StringUtils.isBlank(orderItem.getYwPPDId())){
-//					stockMapMq.put(orderItem.getSkuId(), orderItem.getNum().longValue());
-//				}else{
-//					promStockMapMq.put(Long.parseLong(orderItem.getYwPPDId()), orderItem.getNum().longValue());
-//					promSkusStockMapMq.put(orderItem.getSkuId(), orderItem.getNum().longValue());
-//				}
-//			}
-//			
-//			this.updateRedisInventory(stockMapMq,promStockMapMq, promSkusStockMapMq,userId);
-//			this.rabbitTemplate.setRoutingKey(orderKey);
-//			this.rabbitTemplate.convertAndSend(stockMapMq);
-//			this.rabbitTemplate.setRoutingKey(this.promOrderKey);
-//			this.rabbitTemplate.convertAndSend(promStockMapMq);
+			for(OrderItem orderItem : orderItems){
+				stockMapMq.put(orderItem.getBsdId(), orderItem.getNumber());
+			}
+			this.updateRedisInventory(stockMapMq);
+			this.redisNumber.convertAndSend("STOCK_KEY_STR", stockMapMq);
 		}
 	}
 	
