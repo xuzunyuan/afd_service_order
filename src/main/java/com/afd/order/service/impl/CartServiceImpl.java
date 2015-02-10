@@ -1,5 +1,6 @@
 package com.afd.order.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,6 +38,7 @@ import com.afd.constants.order.OrderConstants;
 import com.afd.constants.product.ProductConstants;
 import com.afd.param.cart.CookieCartItem;
 import com.afd.common.util.CartTransferUtils;
+import com.afd.param.cart.MiniCart;
 
 @Service("cartService")
 public class CartServiceImpl implements ICartService{
@@ -50,6 +52,9 @@ public class CartServiceImpl implements ICartService{
 	@Autowired
 	private IBrandShowService brandShowService;
 	
+	// 迷你购物车返回条目限制
+	private final int limitMiniCartCount = 5;
+
 	@Override
 	public List<Cart> showCart(String cookieCart) {
 		List<CartItem> cartItems = this.getCartItemsByCookie(cookieCart);
@@ -72,6 +77,50 @@ public class CartServiceImpl implements ICartService{
 		return cartItems;
 	}
 
+	@Override
+	public MiniCart showMiniCart(String cookieCart) {
+		List<Cart> carts = this.showCart(cookieCart);
+		long totalNum = 0;
+		BigDecimal totalMoney = BigDecimal.ZERO;
+		if (carts != null && carts.size() > 0) {
+			int count = 0;
+			Iterator<Cart> cartIterator = carts.iterator();
+			while (cartIterator.hasNext()) {
+				Cart cart = cartIterator.next();
+				List<CartItem> cartItems = cart.getCartItems();
+				if (cartItems != null && cartItems.size() > 0) {
+					Iterator<CartItem> ciIterator = cartItems.iterator();
+					while (ciIterator.hasNext()) {
+						CartItem cartItem = ciIterator.next();
+						if (cartItem.getStatusCode() == OrderConstants.CARTITEM_SUCCESS
+								|| cartItem.getStatusCode() == OrderConstants.CARTITEM_BS_DETAIL_LOWSTOCK) {
+							totalMoney = totalMoney
+									.add(cartItem.getShowPrice().multiply(
+											new BigDecimal(cartItem.getNum())));
+							totalNum++;
+						} else {
+							ciIterator.remove();
+							continue;
+						}
+						if (count >= limitMiniCartCount) {
+							ciIterator.remove();
+						}
+						count++;
+					}
+				}
+				if (cartItems == null || cartItems.size() == 0) {
+					cartIterator.remove();
+				}
+			}
+		}
+		MiniCart miniCart = new MiniCart();
+		miniCart.setCarts(carts);
+		miniCart.setTotalMoney(totalMoney);
+		miniCart.setTotalNum(totalNum);
+		return miniCart;
+
+	}
+	
 	List<Cart> validCarts(List<CartItem> cartItems) {
 		Map<Long,Cart> cartMap = new LinkedHashMap<Long,Cart>();
 		if(null != cartItems && cartItems.size() > 0) {
@@ -235,7 +284,6 @@ public class CartServiceImpl implements ICartService{
 			cartItem.setStock(stock > 0 ? stock : 0l);
 			cartItem.setPurchaseCountLimit((bsDetail.getPurchaseCountLimit()!=null && bsDetail.getPurchaseCountLimit() > 0) 
 					? bsDetail.getPurchaseCountLimit() : 0);
-			
 			long checkStatus = this.checkBsDetailStatusAndStock(bsDetail, cartItem.getStock(), cartItem.getNum());
 
 			cartItem.setStatusCode(checkStatus);
