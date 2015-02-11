@@ -97,4 +97,62 @@
       payment_type = #{paymentType,jdbcType=CHAR}
     where p_detail_id = #{pDetailId,jdbcType=DECIMAL}
   </update>
+  <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_PAYMENT_DETAIL
+    where ORDER_ID = #{orderId,jdbcType=DECIMAL} and PAYMENT_TYPE = 1
+  </select>
+  
+   <select id="selectPayedByOrderId" resultType="java.lang.Integer"  parameterType="java.lang.Long" >
+    select 
+    count(*) 
+    from T_PAYMENT_DETAIL t1, T_PAYMENT t2
+    where t1.PAYMENT_ID=t2.PAYMENT_ID and t1.ORDER_ID = #{orderId,jdbcType=DECIMAL} 
+    and  t2.STATUS in('2','3')
+  </select>
+  <select id="selectByPaymentId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_PAYMENT_DETAIL
+    where PAYMENT_ID = #{paymentId,jdbcType=DECIMAL}
+  </select>
+  <select id="getPaymentByOrderId" resultMap="BaseResultMap2" parameterType="java.lang.Long">
+  	select 
+  		t1.P_DETAIL_ID, 
+  		t1.PAYMENT_ID, 
+  		t1.ORDER_ID, 
+  		t1.AMOUNT, 
+  		t1.USER_ACCOUNT_ID, 
+  		t1.PAYMENT_TYPE,
+  		t2.PAYMENT_ID, 
+  		t2.ORIGIN_PAYMENT_ID, 
+  		t2.CREATE_DATE, 
+  		t2.USER_ID, 
+  		t2.USER_NAME, 
+  		t2.CREATE_BY_IP, 
+  		t2.PAY_AMOUNT, 
+    	t2.PAY_GW, 
+    	t2.STATUS, 
+    	t2.TYPE, 
+    	t2.TRADE_NO, 
+    	t2.CALLBACK_DATE, 
+    	t2.REAL_PAY_GW, 
+    	t2.REAL_PAY_DATE, 
+    	t2.PAYMENT_TYPE
+  	from T_PAYMENT_DETAIL t1, T_PAYMENT t2
+  	<where>
+  		t1.PAYMENT_ID = t2.PAYMENT_ID
+  		and t1.ORDER_ID = #{orderId,jdbcType=DECIMAL}
+  		and t2.STATUS in('2','3')
+  		and rownum = 1
+  	</where>
+  </select>
+  
+    <select id="selectPDetailByOrderId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_PAYMENT_DETAIL
+    where ORDER_ID = #{orderId,jdbcType=DECIMAL}
+  </select>
 </mapper>
