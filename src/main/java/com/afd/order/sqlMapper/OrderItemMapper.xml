@@ -89,7 +89,7 @@
       <if test="prodTitle != null" >
         prod_title,
       </if>
-      <if test="prodTitle != null" >
+      <if test="prodImg != null" >
         prod_img,
       </if>
       <if test="bcId != null" >
