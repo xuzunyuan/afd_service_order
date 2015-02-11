@@ -74,9 +74,7 @@ public class OrderServiceImpl implements IOrderService {
 
 	@Override
 	public Order getOrderById(Long orderId) {
-		Order order = this.orderMapper.getOrderById(orderId);
-		// TODO Auto-generated method stub
-		return order;
+		return this.orderMapper.getOrderById(orderId);
 	}
 
 	@Override
@@ -135,6 +133,11 @@ public class OrderServiceImpl implements IOrderService {
 		return page;
 	}
 	
+	@Override
+	public List<OrderItem> getOrderItemsByOrderId(Integer orderId) {
+		return this.orderItemMapper.getOrderItemsByOrderId(orderId);
+	}
+
 	private OrderInfo saveOrder(Trade trade) throws InventoryException, Exception {
 		OrderInfo orderInfo = new OrderInfo();
 		UserAddress addr = this.addressService.getAddressById(trade.getAddressId());
