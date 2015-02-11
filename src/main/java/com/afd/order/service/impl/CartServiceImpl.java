@@ -93,7 +93,8 @@ public class CartServiceImpl implements ICartService{
 					while (ciIterator.hasNext()) {
 						CartItem cartItem = ciIterator.next();
 						if (cartItem.getStatusCode() == OrderConstants.CARTITEM_SUCCESS
-								|| cartItem.getStatusCode() == OrderConstants.CARTITEM_BS_DETAIL_LOWSTOCK) {
+								|| cartItem.getStatusCode() == OrderConstants.CARTITEM_BS_DETAIL_LOWSTOCK
+								|| cartItem.getStatusCode() == OrderConstants.CARTITEM_BS_DETAIL_EXCEED) {
 							totalMoney = totalMoney
 									.add(cartItem.getShowPrice().multiply(
 											new BigDecimal(cartItem.getNum())));
