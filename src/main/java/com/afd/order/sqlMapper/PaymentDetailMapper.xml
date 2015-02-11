@@ -9,6 +9,25 @@
     <result column="user_account_id" property="userAccountId" jdbcType="DECIMAL" />
     <result column="payment_type" property="paymentType" jdbcType="CHAR" />
   </resultMap>
+  <resultMap id="BaseResultMap2" type="com.afd.model.order.PaymentDetail" extends="BaseResultMap">
+    <association property="payment" javaType="com.afd.model.order.Payment">
+    	<id column="PAYMENT_ID" jdbcType="DECIMAL" property="paymentId" />
+	    <result column="ORIGIN_PAYMENT_ID" jdbcType="DECIMAL" property="originPaymentId" />
+	    <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+	    <result column="USER_ID" jdbcType="DECIMAL" property="userId" />
+	    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+	    <result column="CREATE_BY_IP" jdbcType="VARCHAR" property="createByIp" />
+	    <result column="PAY_AMOUNT" jdbcType="DECIMAL" property="payAmount" />
+	    <result column="PAY_GW" jdbcType="CHAR" property="payGw" />
+	    <result column="STATUS" jdbcType="CHAR" property="status" />
+	    <result column="TYPE" jdbcType="CHAR" property="type" />
+	    <result column="TRADE_NO" jdbcType="VARCHAR" property="tradeNo" />
+	    <result column="CALLBACK_DATE" jdbcType="TIMESTAMP" property="callbackDate" />
+	    <result column="REAL_PAY_GW" jdbcType="CHAR" property="realPayGw" />
+	    <result column="REAL_PAY_DATE" jdbcType="TIMESTAMP" property="realPayDate" />
+	    <result column="PAYMENT_TYPE" jdbcType="CHAR" property="paymentType" />
+    </association>
+  </resultMap>
   <sql id="Base_Column_List" >
     p_detail_id, payment_id, order_id, amount, user_account_id, payment_type
   </sql>

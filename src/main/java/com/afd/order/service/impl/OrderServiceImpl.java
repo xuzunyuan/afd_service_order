@@ -407,4 +407,9 @@ public class OrderServiceImpl implements IOrderService {
 		
 		this.orderLogMapper.insert(orderLog);
 	}
+	
+	@Override
+	public List<Order> getOrdersByIds(Long[] orderIds) {
+		return this.orderMapper.getOrdersByIds(orderIds);
+	}
 }

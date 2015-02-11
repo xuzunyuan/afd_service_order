@@ -43,7 +43,7 @@ public class PaymentServicesImpl implements IPaymentServices {
 	@Autowired
 	private PaymentDetailMapper paymentDetailMapper;
 
-	public Long getPaymentId(List<Long> orderids, String paytype, String ip,
+	public Long savePaymentId(List<Long> orderids, String paytype, String ip,
 			Long userId, String payGw,String paymentType) {
 		BigDecimal orderFee = new BigDecimal(0);
 		List<Order> orders = new ArrayList<Order>();
