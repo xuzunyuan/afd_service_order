@@ -283,6 +283,7 @@ public class OrderServiceImpl implements IOrderService {
 			orderItem.setProdSpecId(tradeItem.getProdSpecId());
 			orderItem.setProdSpecName(tradeItem.getProdSpecName());
 			orderItem.setProdTitle(tradeItem.getProdTitle());
+			orderItem.setProdImg(tradeItem.getProdImg());
 			orderItem.setSalePrice(tradeItem.getMarketPrice());
 			orderItem.setTransPrice(tradeItem.getShowPrice());
 			orderItem.setStatus(OrderConstants.ORDERITEM_STATUS_NORMAL);

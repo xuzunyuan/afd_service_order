@@ -12,6 +12,7 @@
     <result column="prod_spec_id" property="prodSpecId" jdbcType="VARCHAR" />
     <result column="prod_spec_name" property="prodSpecName" jdbcType="VARCHAR" />
     <result column="prod_title" property="prodTitle" jdbcType="VARCHAR" />
+    <result column="prod_img" property="prodImg" jdbcType="VARCHAR" />
     <result column="bc_id" property="bcId" jdbcType="SMALLINT" />
     <result column="seller_id" property="sellerId" jdbcType="INTEGER" />
     <result column="sale_price" property="salePrice" jdbcType="REAL" />
@@ -25,7 +26,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     order_item_id, order_id, order_code, sku_id, prod_id, prod_code, sku_code, prod_spec_id, 
-    prod_spec_name, prod_title, bc_id, seller_id, sale_price, trans_price, number, status, 
+    prod_spec_name, prod_title, prod_img, bc_id, seller_id, sale_price, trans_price, number, status, 
     is_comment, brand_show_id, brand_show_title, bsd_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -42,14 +43,14 @@
     insert into t_order_item (order_item_id, order_id, order_code, 
       sku_id, prod_id, prod_code, 
       sku_code, prod_spec_id, prod_spec_name, 
-      prod_title, bc_id, seller_id, 
+      prod_title, prod_img, bc_id, seller_id, 
       sale_price, trans_price, number, 
       status, is_comment, brand_show_id, 
       brand_show_title, bsd_id)
     values (#{orderItemId,jdbcType=BIGINT}, #{orderId,jdbcType=INTEGER}, #{orderCode,jdbcType=VARCHAR}, 
       #{skuId,jdbcType=INTEGER}, #{prodId,jdbcType=INTEGER}, #{prodCode,jdbcType=VARCHAR}, 
       #{skuCode,jdbcType=VARCHAR}, #{prodSpecId,jdbcType=VARCHAR}, #{prodSpecName,jdbcType=VARCHAR}, 
-      #{prodTitle,jdbcType=VARCHAR}, #{bcId,jdbcType=SMALLINT}, #{sellerId,jdbcType=INTEGER}, 
+      #{prodTitle,jdbcType=VARCHAR}, #{prodImg,jdbcType=VARCHAR}, #{bcId,jdbcType=SMALLINT}, #{sellerId,jdbcType=INTEGER}, 
       #{salePrice,jdbcType=REAL}, #{transPrice,jdbcType=REAL}, #{number,jdbcType=SMALLINT}, 
       #{status,jdbcType=CHAR}, #{isComment,jdbcType=CHAR}, #{brandShowId,jdbcType=INTEGER}, 
       #{brandShowTitle,jdbcType=VARCHAR}, #{bsdId,jdbcType=INTEGER})
@@ -87,6 +88,9 @@
       </if>
       <if test="prodTitle != null" >
         prod_title,
+      </if>
+      <if test="prodTitle != null" >
+        prod_img,
       </if>
       <if test="bcId != null" >
         bc_id,
@@ -150,6 +154,9 @@
       <if test="prodTitle != null" >
         #{prodTitle,jdbcType=VARCHAR},
       </if>
+      <if test="prodImg != null" >
+        #{prodImg,jdbcType=VARCHAR},
+      </if>
       <if test="bcId != null" >
         #{bcId,jdbcType=SMALLINT},
       </if>
@@ -212,6 +219,9 @@
       <if test="prodTitle != null" >
         prod_title = #{prodTitle,jdbcType=VARCHAR},
       </if>
+      <if test="prodImg != null" >
+        prod_img = #{prodTitle,jdbcType=VARCHAR},
+      </if>
       <if test="bcId != null" >
         bc_id = #{bcId,jdbcType=SMALLINT},
       </if>
@@ -256,6 +266,7 @@
       prod_spec_id = #{prodSpecId,jdbcType=VARCHAR},
       prod_spec_name = #{prodSpecName,jdbcType=VARCHAR},
       prod_title = #{prodTitle,jdbcType=VARCHAR},
+      prod_img = #{prodImg,jdbcType=VARCHAR},
       bc_id = #{bcId,jdbcType=SMALLINT},
       seller_id = #{sellerId,jdbcType=INTEGER},
       sale_price = #{salePrice,jdbcType=REAL},
