@@ -27,6 +27,7 @@ import com.afd.order.util.InventoryException;
 import com.afd.param.cart.Trade;
 import com.afd.param.order.OrderInfo;
 import com.afd.service.order.IOrderService;
+import com.afd.service.product.IBrandShowService;
 import com.afd.service.product.IProductService;
 import com.afd.service.user.IAddressService;
 import com.afd.service.user.IUserService;
@@ -54,6 +55,8 @@ public class OrderServiceImpl implements IOrderService {
 	private IAddressService addressService;
 	@Autowired
 	private IUserService userService;
+	@Autowired
+	private IBrandShowService brandShowService;
 	
 	@Autowired
 	@Qualifier("redisNumber")
@@ -163,10 +166,9 @@ public class OrderServiceImpl implements IOrderService {
 
 		this.orderMapper.updateByPrimaryKeySelective(order);
 		this.createOrderLog(order,trade);
-		
-		//TODO
+
 		this.updateRedisInventory(brandShowStockMapMq);
-		redisNumber.convertAndSend(STOCK_KEY_STR, brandShowStockMapMq);
+		this.brandShowService.addStock(brandShowStockMapMq);
 		orderInfo.setCode(1);
 		orderInfo.setOrder(order);
 		return orderInfo;
@@ -386,7 +388,7 @@ public class OrderServiceImpl implements IOrderService {
 				stockMapMq.put(orderItem.getBsdId(), orderItem.getNumber());
 			}
 			this.updateRedisInventory(stockMapMq);
-			this.redisNumber.convertAndSend("STOCK_KEY_STR", stockMapMq);
+			this.brandShowService.addStock(stockMapMq);
 		}
 	}
 	
