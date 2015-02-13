@@ -140,11 +140,11 @@ public class CartServiceImpl implements ICartService{
 				} else {
 					Cart cart = new Cart();
 					BrandShow brandShow = brandShowMap.get(bsDetail.getBrandShowId());
-					cart.setBrandShowId(brandShow.getBrandShowId());
+					cart.setBrandShowId(brandShow.getBrandShowId().longValue());
 					cart.setBrandShowTitle(brandShow.getTitle());
-					cart.setSellerId(brandShow.getSellerId());
+					cart.setSellerId(brandShow.getSellerId().longValue());
 					cart.getCartItems().add(cartItem);
-					cartMap.put(brandShow.getBrandShowId(), cart);
+					cartMap.put(brandShow.getBrandShowId().longValue(), cart);
 				}
 			}
 		}
@@ -159,12 +159,12 @@ public class CartServiceImpl implements ICartService{
 		return  new ArrayList<Cart>(cartMap.values());
 	}
 	
-	public List<CartItem> modifyQuantity(String cookieCart, long bsDetailId, long newQuantity, long oldQuantity) {
+	public List<CartItem> modifyQuantity(String cookieCart, Long bsDetailId, long newQuantity, long oldQuantity) {
 		List<CartItem> cartItems = this.getCartItemsByCookie(cookieCart);
 		for(CartItem cartItem : cartItems) {
 			if(cartItem.getBrandShowDetailId() == bsDetailId) {
 				cartItem.setNum(newQuantity);
-				BrandShowDetail bsDetail = this.brandShowService.getBrandShowDetailById(bsDetailId);
+				BrandShowDetail bsDetail = this.brandShowService.getBrandShowDetailById(bsDetailId.intValue());
 				bsDetail.setSku(this.productService.getSkuById(bsDetail.getSkuId().intValue()));
 				bsDetail.setProduct(this.productService.getProductById(bsDetail.getProdId().intValue()));
 				this.validCartItem(cartItem, bsDetail);
@@ -269,7 +269,7 @@ public class CartServiceImpl implements ICartService{
 			cartItem.setProdCode(bsDetail.getProdCode());
 			cartItem.setSkuId(bsDetail.getSkuId().intValue());
 			cartItem.setSkuCode(bsDetail.getSkuCode());
-			cartItem.setBrandShowDetailId(bsDetail.getbSDId());
+			cartItem.setBrandShowDetailId(bsDetail.getbSDId().longValue());
 			cartItem.setProdImgUrl(bsDetail.getProdImg());
 			if(null != bsDetail.getSku()){
 				cartItem.setSpecId(bsDetail.getSku().getSkuSpecId());
@@ -281,7 +281,7 @@ public class CartServiceImpl implements ICartService{
 			if(null != bsDetail.getProduct()) {
 				cartItem.setBcId(bsDetail.getProduct().getBcId());
 			}
-			Long stock = bsDetail.getShowBalance()-bsDetail.getSaleAmount();
+			Long stock = bsDetail.getShowBalance().longValue()-bsDetail.getSaleAmount().longValue();
 			cartItem.setStock(stock > 0 ? stock : 0l);
 			cartItem.setPurchaseCountLimit((bsDetail.getPurchaseCountLimit()!=null && bsDetail.getPurchaseCountLimit() > 0) 
 					? bsDetail.getPurchaseCountLimit() : 0);
@@ -315,7 +315,7 @@ public class CartServiceImpl implements ICartService{
 	 */
 	private Map<Long,BrandShowDetail> getBSDetailMap(List<CartItem> cartItems) {
 		// 取得所有特卖明细ID
-		List<Long> bsdIds = this.getBSDIDsByCartItems(cartItems);
+		List<Integer> bsdIds = this.getBSDIDsByCartItems(cartItems);
 		//TODO stock should be got by redis
 		List<BrandShowDetail> bsDetails = this.brandShowService.getBrandShowDetailsByIds(bsdIds);
 		Set<Integer> skuIds = new LinkedHashSet<Integer>();
@@ -332,13 +332,13 @@ public class CartServiceImpl implements ICartService{
 	
 	private Map<Long,BrandShow> getBrandShowMap(Collection<BrandShowDetail> bsDetails) {
 		// 取得所有特卖ID
-		List<Long> brandShowIds = this.getBrandShowIds(bsDetails);
+		List<Integer> brandShowIds = this.getBrandShowIds(bsDetails);
 		List<BrandShow> brandShows = this.brandShowService.getBrandShowByIds(brandShowIds);
 		// 取得特卖map
 		Map<Long,BrandShow> brandShowMap = new LinkedHashMap<Long,BrandShow>();
 		if(null != brandShows && brandShows.size() > 0) {
 			for(BrandShow brandShow : brandShows) {
-				brandShowMap.put(brandShow.getBrandShowId(), brandShow);
+				brandShowMap.put(brandShow.getBrandShowId().longValue(), brandShow);
 			}
 		}
 		return brandShowMap;
@@ -349,11 +349,11 @@ public class CartServiceImpl implements ICartService{
 	 * @param cartItems
 	 * @return
 	 */
-	private List<Long> getBSDIDsByCartItems(List<CartItem> cartItems) {
-		List<Long> bsdIds = new ArrayList<Long>();
+	private List<Integer> getBSDIDsByCartItems(List<CartItem> cartItems) {
+		List<Integer> bsdIds = new ArrayList<Integer>();
 		if(null != cartItems && cartItems.size() > 0) {
 			for(CartItem cartItem : cartItems) {
-				bsdIds.add(cartItem.getBrandShowDetailId());
+				bsdIds.add(cartItem.getBrandShowDetailId().intValue());
 			}
 		}
 		return bsdIds;
@@ -420,7 +420,7 @@ public class CartServiceImpl implements ICartService{
 			for(BrandShowDetail bsDetail : bsDetails) {
 				bsDetail.setSku(skuMap.get(bsDetail.getSkuId().intValue()));
 				bsDetail.setProduct(prodMap.get(bsDetail.getProdId().intValue()));
-				bsDetailMap.put(bsDetail.getbSDId(), bsDetail);
+				bsDetailMap.put(bsDetail.getbSDId().longValue(), bsDetail);
 			}
 		}
 		return bsDetailMap;
@@ -431,14 +431,14 @@ public class CartServiceImpl implements ICartService{
 	 * @param bsDetails
 	 * @return
 	 */
-	private List<Long> getBrandShowIds(Collection<BrandShowDetail> bsDetails) {
-		Set<Long> brandShowIds = new LinkedHashSet<Long>();
+	private List<Integer> getBrandShowIds(Collection<BrandShowDetail> bsDetails) {
+		Set<Integer> brandShowIds = new LinkedHashSet<Integer>();
 		if(null != bsDetails && bsDetails.size() > 0) {
 			for(BrandShowDetail bsDetail : bsDetails) {
 				brandShowIds.add(bsDetail.getBrandShowId());
 			}
 		}
-		return new ArrayList<Long>(brandShowIds);
+		return new ArrayList<Integer>(brandShowIds);
 	}
 
 	/**
