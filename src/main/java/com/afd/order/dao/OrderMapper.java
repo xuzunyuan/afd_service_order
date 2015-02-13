@@ -28,4 +28,6 @@ public interface OrderMapper {
 	public List<Order> queryOrderByCondition(@Param("cond") Map<String, ?> map, @Param("page") Page<Order> page);
 	
 	public List<Order> getOrdersByIds(@Param("orderIds")Long[] orderIds);
+
+	public List<Order> getOrdersByUserIdAndStatus(@Param("userId") Long userId,@Param("status") String status);
 }

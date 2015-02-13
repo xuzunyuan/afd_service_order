@@ -93,6 +93,11 @@ public class OrderServiceImpl implements IOrderService {
 	}
 
 	@Override
+	public List<Order> getOrdersByUserIdAndStatus(Long userId, String status) {
+		return this.orderMapper.getOrdersByUserIdAndStatus(userId,status);
+	}
+
+	@Override
 	public List<OrderInfo> batchSaveOrders(List<Trade> trades) throws InventoryException, Exception {
 		List<OrderInfo> orderInfos = new ArrayList<OrderInfo>();
 		for(Trade trade : trades) {
@@ -159,6 +164,7 @@ public class OrderServiceImpl implements IOrderService {
 		List<OrderItem> orderItems = this.createOrderItems(trade.getTradeItems(), order, brandShowStockMapMq);
 		order.setOrderItems(orderItems);
 		order.setOrderFee(order.getProdFee().add(order.getDeliverFee()));
+		order.setOrderCode(order.getOrderId().toString());
 		if(order.getOrderFee().compareTo(BigDecimal.ZERO)<=0){
 			order.setOrderFee(BigDecimal.ZERO);
 			order.setOrderStatus(OrderConstants.ORDER_STATUS_WAITDELIVERED);
@@ -414,4 +420,5 @@ public class OrderServiceImpl implements IOrderService {
 	public List<Order> getOrdersByIds(Long[] orderIds) {
 		return this.orderMapper.getOrdersByIds(orderIds);
 	}
+
 }
