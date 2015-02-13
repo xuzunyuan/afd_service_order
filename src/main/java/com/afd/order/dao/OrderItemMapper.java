@@ -13,10 +13,12 @@ public interface OrderItemMapper {
 
 	OrderItem selectByPrimaryKey(Long orderItemId);
 
-	public List<OrderItem> getOrderItemsByOrderId(Integer orderId);
-	
 	int updateByPrimaryKeySelective(OrderItem record);
 
 	int updateByPrimaryKey(OrderItem record);
+	
+	public List<OrderItem> getOrderItemsByOrderId(Integer orderId);
+	
+	public List<OrderItem> getOrderItemsByOrderIds(List<Long> orderIds);
 
 }

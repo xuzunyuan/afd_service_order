@@ -25,6 +25,7 @@ import com.afd.order.dao.OrderLogMapper;
 import com.afd.order.dao.OrderMapper;
 import com.afd.order.util.InventoryException;
 import com.afd.param.cart.Trade;
+import com.afd.param.order.OrderCondition;
 import com.afd.param.order.OrderInfo;
 import com.afd.service.order.IOrderService;
 import com.afd.service.product.IBrandShowService;
@@ -136,7 +137,7 @@ public class OrderServiceImpl implements IOrderService {
 	
 	@Override
 	public Page<Order> queryOrderByCondition(Map<String, ?> map, Page<Order> page) {
-		page.setResult(this.orderMapper.queryOrderByCondition(map, page));
+		page.setResult(this.orderMapper.queryOrderByPage(map, page));
 		
 		return page;
 	}
@@ -146,6 +147,42 @@ public class OrderServiceImpl implements IOrderService {
 		return this.orderItemMapper.getOrderItemsByOrderId(orderId);
 	}
 
+	/**
+	 * 根据检索条件查询订单
+	 */
+	public Page<Order> getOrdersByOrderConditon(OrderCondition orderCondition, Page<Order> page) {
+		List<Order> orders = this.orderMapper.getOrdersByConditionPage(orderCondition, page);
+		
+		if(orders!=null && orders.size()>0){
+			page.setResult(orders);
+			
+			this.getOrderItems(orders);
+		}
+		
+		return page;
+	}
+	
+	private void getOrderItems(List<Order> orders) {
+		List<Long> orderIds = new ArrayList<Long>(orders.size());
+		for(Order order : orders){
+			orderIds.add(order.getOrderId());
+		}
+		
+		List<OrderItem> orderItems = this.orderItemMapper.getOrderItemsByOrderIds(orderIds);
+		
+		Map<Integer, List<OrderItem>> orderItemsMap = new HashMap<Integer, List<OrderItem>>(orderItems.size());
+		for(OrderItem orderItem : orderItems){
+			if(!orderItemsMap.containsKey(orderItem.getOrderId())){
+				orderItemsMap.put(orderItem.getOrderId(), new ArrayList<OrderItem>());
+			}
+			orderItemsMap.get(orderItem.getOrderId()).add(orderItem);
+		}
+		
+		for(Order order : orders){
+			order.setOrderItems(orderItemsMap.get(order.getOrderId()));
+		}
+	}
+	
 	private OrderInfo saveOrder(Trade trade) throws InventoryException, Exception {
 		OrderInfo orderInfo = new OrderInfo();
 		UserAddress addr = this.addressService.getAddressById(trade.getAddressId());

@@ -286,4 +286,16 @@
     from t_order_item
     where order_id = #{orderId,jdbcType=BIGINT} and status='1'
   </select>
+  
+  <select id="getOrderItemsByOrderIds" parameterType="java.util.List" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_order_item
+		<where>
+			order_id in
+			<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+  </select>
 </mapper>

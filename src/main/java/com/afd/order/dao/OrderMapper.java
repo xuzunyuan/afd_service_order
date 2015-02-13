@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.afd.common.mybatis.Page;
 import com.afd.model.order.Order;
+import com.afd.param.order.OrderCondition;
 
 public interface OrderMapper {
     int deleteByPrimaryKey(Long orderId);
@@ -25,7 +26,9 @@ public interface OrderMapper {
 
 	List<Order> getOrdersByUserId(@Param("userId")Long userId);
 	
-	public List<Order> queryOrderByCondition(@Param("cond") Map<String, ?> map, @Param("page") Page<Order> page);
+	public List<Order> queryOrderByPage(@Param("cond") Map<String, ?> map, @Param("page") Page<Order> page);
+	
+	public List<Order> getOrdersByConditionPage(@Param("cond") OrderCondition cond, @Param("page") Page<Order> page);
 	
 	public List<Order> getOrdersByIds(@Param("orderIds")Long[] orderIds);
 
