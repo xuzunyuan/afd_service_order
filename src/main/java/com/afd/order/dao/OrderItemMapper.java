@@ -2,6 +2,8 @@ package com.afd.order.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.afd.model.order.OrderItem;
 
 public interface OrderItemMapper {
@@ -20,5 +22,7 @@ public interface OrderItemMapper {
 	public List<OrderItem> getOrderItemsByOrderId(Integer orderId);
 	
 	public List<OrderItem> getOrderItemsByOrderIds(List<Long> orderIds);
+
+	OrderItem getOrderItemById(@Param("orderItemId") Long orderItemId);
 
 }

@@ -19,4 +19,10 @@ public class RetOrderServiceImpl implements IRetOrderService {
 		return this.retOrderMapper.getRetOrdersByUserId(userId);
 	}
 
+	@Override
+	public int addRetOrder(ReturnOrder retOrder) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

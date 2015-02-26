@@ -8,6 +8,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.afd.model.order.OrderItem;
+import com.afd.order.dao.OrderItemMapper;
 import com.afd.order.service.impl.OrderServiceImpl;
 import com.alibaba.druid.filter.config.ConfigTools;
 
@@ -18,10 +20,13 @@ public class MyTest {
 	@Autowired
 	@Qualifier("orderService")
 	private OrderServiceImpl orderService;
+	@Autowired
+	private OrderItemMapper oiMapper;
 
 	@Test
 	public void aaa(){
-		System.out.println(this.orderService.addOrder());
+		OrderItem oi = oiMapper.getOrderItemById(5l);
+		System.out.println(oi.getOrder().getrName());
 	}
 	
 	public static void main(String[] args) {

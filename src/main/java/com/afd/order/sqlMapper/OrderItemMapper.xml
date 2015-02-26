@@ -1,301 +1,392 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.afd.order.dao.OrderItemMapper" >
-  <resultMap id="BaseResultMap" type="com.afd.model.order.OrderItem" >
-    <id column="order_item_id" property="orderItemId" jdbcType="BIGINT" />
-    <result column="order_id" property="orderId" jdbcType="INTEGER" />
-    <result column="order_code" property="orderCode" jdbcType="VARCHAR" />
-    <result column="sku_id" property="skuId" jdbcType="INTEGER" />
-    <result column="prod_id" property="prodId" jdbcType="INTEGER" />
-    <result column="prod_code" property="prodCode" jdbcType="VARCHAR" />
-    <result column="sku_code" property="skuCode" jdbcType="VARCHAR" />
-    <result column="prod_spec_id" property="prodSpecId" jdbcType="VARCHAR" />
-    <result column="prod_spec_name" property="prodSpecName" jdbcType="VARCHAR" />
-    <result column="prod_title" property="prodTitle" jdbcType="VARCHAR" />
-    <result column="prod_img" property="prodImg" jdbcType="VARCHAR" />
-    <result column="bc_id" property="bcId" jdbcType="SMALLINT" />
-    <result column="seller_id" property="sellerId" jdbcType="INTEGER" />
-    <result column="sale_price" property="salePrice" jdbcType="REAL" />
-    <result column="trans_price" property="transPrice" jdbcType="REAL" />
-    <result column="number" property="number" jdbcType="SMALLINT" />
-    <result column="status" property="status" jdbcType="CHAR" />
-    <result column="is_comment" property="isComment" jdbcType="CHAR" />
-    <result column="brand_show_id" property="brandShowId" jdbcType="INTEGER" />
-    <result column="brand_show_title" property="brandShowTitle" jdbcType="VARCHAR" />
-    <result column="bsd_id" property="bsdId" jdbcType="INTEGER" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    order_item_id, order_id, order_code, sku_id, prod_id, prod_code, sku_code, prod_spec_id, 
-    prod_spec_name, prod_title, prod_img, bc_id, seller_id, sale_price, trans_price, number, status, 
-    is_comment, brand_show_id, brand_show_title, bsd_id
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_order_item
-    where order_item_id = #{orderItemId,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from t_order_item
-    where order_item_id = #{orderItemId,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.afd.model.order.OrderItem" >
-    insert into t_order_item (order_item_id, order_id, order_code, 
-      sku_id, prod_id, prod_code, 
-      sku_code, prod_spec_id, prod_spec_name, 
-      prod_title, prod_img, bc_id, seller_id, 
-      sale_price, trans_price, number, 
-      status, is_comment, brand_show_id, 
-      brand_show_title, bsd_id)
-    values (#{orderItemId,jdbcType=BIGINT}, #{orderId,jdbcType=INTEGER}, #{orderCode,jdbcType=VARCHAR}, 
-      #{skuId,jdbcType=INTEGER}, #{prodId,jdbcType=INTEGER}, #{prodCode,jdbcType=VARCHAR}, 
-      #{skuCode,jdbcType=VARCHAR}, #{prodSpecId,jdbcType=VARCHAR}, #{prodSpecName,jdbcType=VARCHAR}, 
-      #{prodTitle,jdbcType=VARCHAR}, #{prodImg,jdbcType=VARCHAR}, #{bcId,jdbcType=SMALLINT}, #{sellerId,jdbcType=INTEGER}, 
-      #{salePrice,jdbcType=REAL}, #{transPrice,jdbcType=REAL}, #{number,jdbcType=SMALLINT}, 
-      #{status,jdbcType=CHAR}, #{isComment,jdbcType=CHAR}, #{brandShowId,jdbcType=INTEGER}, 
-      #{brandShowTitle,jdbcType=VARCHAR}, #{bsdId,jdbcType=INTEGER})
-  </insert>
-  <insert id="insertSelective" keyProperty="orderItemId"
-		useGeneratedKeys="true" parameterType="com.afd.model.order.OrderItem" >
-    insert into t_order_item
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="orderItemId != null" >
-        order_item_id,
-      </if>
-      <if test="orderId != null" >
-        order_id,
-      </if>
-      <if test="orderCode != null" >
-        order_code,
-      </if>
-      <if test="skuId != null" >
-        sku_id,
-      </if>
-      <if test="prodId != null" >
-        prod_id,
-      </if>
-      <if test="prodCode != null" >
-        prod_code,
-      </if>
-      <if test="skuCode != null" >
-        sku_code,
-      </if>
-      <if test="prodSpecId != null" >
-        prod_spec_id,
-      </if>
-      <if test="prodSpecName != null" >
-        prod_spec_name,
-      </if>
-      <if test="prodTitle != null" >
-        prod_title,
-      </if>
-      <if test="prodImg != null" >
-        prod_img,
-      </if>
-      <if test="bcId != null" >
-        bc_id,
-      </if>
-      <if test="sellerId != null" >
-        seller_id,
-      </if>
-      <if test="salePrice != null" >
-        sale_price,
-      </if>
-      <if test="transPrice != null" >
-        trans_price,
-      </if>
-      <if test="number != null" >
-        number,
-      </if>
-      <if test="status != null" >
-        status,
-      </if>
-      <if test="isComment != null" >
-        is_comment,
-      </if>
-      <if test="brandShowId != null" >
-        brand_show_id,
-      </if>
-      <if test="brandShowTitle != null" >
-        brand_show_title,
-      </if>
-      <if test="bsdId != null" >
-        bsd_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="orderItemId != null" >
-        #{orderItemId,jdbcType=BIGINT},
-      </if>
-      <if test="orderId != null" >
-        #{orderId,jdbcType=INTEGER},
-      </if>
-      <if test="orderCode != null" >
-        #{orderCode,jdbcType=VARCHAR},
-      </if>
-      <if test="skuId != null" >
-        #{skuId,jdbcType=INTEGER},
-      </if>
-      <if test="prodId != null" >
-        #{prodId,jdbcType=INTEGER},
-      </if>
-      <if test="prodCode != null" >
-        #{prodCode,jdbcType=VARCHAR},
-      </if>
-      <if test="skuCode != null" >
-        #{skuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="prodSpecId != null" >
-        #{prodSpecId,jdbcType=VARCHAR},
-      </if>
-      <if test="prodSpecName != null" >
-        #{prodSpecName,jdbcType=VARCHAR},
-      </if>
-      <if test="prodTitle != null" >
-        #{prodTitle,jdbcType=VARCHAR},
-      </if>
-      <if test="prodImg != null" >
-        #{prodImg,jdbcType=VARCHAR},
-      </if>
-      <if test="bcId != null" >
-        #{bcId,jdbcType=SMALLINT},
-      </if>
-      <if test="sellerId != null" >
-        #{sellerId,jdbcType=INTEGER},
-      </if>
-      <if test="salePrice != null" >
-        #{salePrice,jdbcType=REAL},
-      </if>
-      <if test="transPrice != null" >
-        #{transPrice,jdbcType=REAL},
-      </if>
-      <if test="number != null" >
-        #{number,jdbcType=SMALLINT},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=CHAR},
-      </if>
-      <if test="isComment != null" >
-        #{isComment,jdbcType=CHAR},
-      </if>
-      <if test="brandShowId != null" >
-        #{brandShowId,jdbcType=INTEGER},
-      </if>
-      <if test="brandShowTitle != null" >
-        #{brandShowTitle,jdbcType=VARCHAR},
-      </if>
-      <if test="bsdId != null" >
-        #{bsdId,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.afd.model.order.OrderItem" >
-    update t_order_item
-    <set >
-      <if test="orderId != null" >
-        order_id = #{orderId,jdbcType=INTEGER},
-      </if>
-      <if test="orderCode != null" >
-        order_code = #{orderCode,jdbcType=VARCHAR},
-      </if>
-      <if test="skuId != null" >
-        sku_id = #{skuId,jdbcType=INTEGER},
-      </if>
-      <if test="prodId != null" >
-        prod_id = #{prodId,jdbcType=INTEGER},
-      </if>
-      <if test="prodCode != null" >
-        prod_code = #{prodCode,jdbcType=VARCHAR},
-      </if>
-      <if test="skuCode != null" >
-        sku_code = #{skuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="prodSpecId != null" >
-        prod_spec_id = #{prodSpecId,jdbcType=VARCHAR},
-      </if>
-      <if test="prodSpecName != null" >
-        prod_spec_name = #{prodSpecName,jdbcType=VARCHAR},
-      </if>
-      <if test="prodTitle != null" >
-        prod_title = #{prodTitle,jdbcType=VARCHAR},
-      </if>
-      <if test="prodImg != null" >
-        prod_img = #{prodTitle,jdbcType=VARCHAR},
-      </if>
-      <if test="bcId != null" >
-        bc_id = #{bcId,jdbcType=SMALLINT},
-      </if>
-      <if test="sellerId != null" >
-        seller_id = #{sellerId,jdbcType=INTEGER},
-      </if>
-      <if test="salePrice != null" >
-        sale_price = #{salePrice,jdbcType=REAL},
-      </if>
-      <if test="transPrice != null" >
-        trans_price = #{transPrice,jdbcType=REAL},
-      </if>
-      <if test="number != null" >
-        number = #{number,jdbcType=SMALLINT},
-      </if>
-      <if test="status != null" >
-        status = #{status,jdbcType=CHAR},
-      </if>
-      <if test="isComment != null" >
-        is_comment = #{isComment,jdbcType=CHAR},
-      </if>
-      <if test="brandShowId != null" >
-        brand_show_id = #{brandShowId,jdbcType=INTEGER},
-      </if>
-      <if test="brandShowTitle != null" >
-        brand_show_title = #{brandShowTitle,jdbcType=VARCHAR},
-      </if>
-      <if test="bsdId != null" >
-        bsd_id = #{bsdId,jdbcType=INTEGER},
-      </if>
-    </set>
-    where order_item_id = #{orderItemId,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.afd.model.order.OrderItem" >
-    update t_order_item
-    set order_id = #{orderId,jdbcType=INTEGER},
-      order_code = #{orderCode,jdbcType=VARCHAR},
-      sku_id = #{skuId,jdbcType=INTEGER},
-      prod_id = #{prodId,jdbcType=INTEGER},
-      prod_code = #{prodCode,jdbcType=VARCHAR},
-      sku_code = #{skuCode,jdbcType=VARCHAR},
-      prod_spec_id = #{prodSpecId,jdbcType=VARCHAR},
-      prod_spec_name = #{prodSpecName,jdbcType=VARCHAR},
-      prod_title = #{prodTitle,jdbcType=VARCHAR},
-      prod_img = #{prodImg,jdbcType=VARCHAR},
-      bc_id = #{bcId,jdbcType=SMALLINT},
-      seller_id = #{sellerId,jdbcType=INTEGER},
-      sale_price = #{salePrice,jdbcType=REAL},
-      trans_price = #{transPrice,jdbcType=REAL},
-      number = #{number,jdbcType=SMALLINT},
-      status = #{status,jdbcType=CHAR},
-      is_comment = #{isComment,jdbcType=CHAR},
-      brand_show_id = #{brandShowId,jdbcType=INTEGER},
-      brand_show_title = #{brandShowTitle,jdbcType=VARCHAR},
-      bsd_id = #{bsdId,jdbcType=INTEGER}
-    where order_item_id = #{orderItemId,jdbcType=BIGINT}
-  </update>
-  
-   <select id="getOrderItemsByOrderId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_order_item
-    where order_id = #{orderId,jdbcType=BIGINT} and status='1'
-  </select>
-  
-  <select id="getOrderItemsByOrderIds" parameterType="java.util.List" resultMap="BaseResultMap">
+<mapper namespace="com.afd.order.dao.OrderItemMapper">
+	<resultMap id="BaseResultMap" type="com.afd.model.order.OrderItem">
+		<id column="order_item_id" property="orderItemId" jdbcType="BIGINT" />
+		<result column="order_id" property="orderId" jdbcType="INTEGER" />
+		<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+		<result column="sku_id" property="skuId" jdbcType="INTEGER" />
+		<result column="prod_id" property="prodId" jdbcType="INTEGER" />
+		<result column="prod_code" property="prodCode" jdbcType="VARCHAR" />
+		<result column="sku_code" property="skuCode" jdbcType="VARCHAR" />
+		<result column="prod_spec_id" property="prodSpecId" jdbcType="VARCHAR" />
+		<result column="prod_spec_name" property="prodSpecName"
+			jdbcType="VARCHAR" />
+		<result column="prod_title" property="prodTitle" jdbcType="VARCHAR" />
+		<result column="prod_img" property="prodImg" jdbcType="VARCHAR" />
+		<result column="bc_id" property="bcId" jdbcType="SMALLINT" />
+		<result column="seller_id" property="sellerId" jdbcType="INTEGER" />
+		<result column="sale_price" property="salePrice" jdbcType="REAL" />
+		<result column="trans_price" property="transPrice" jdbcType="REAL" />
+		<result column="number" property="number" jdbcType="SMALLINT" />
+		<result column="status" property="status" jdbcType="CHAR" />
+		<result column="is_comment" property="isComment" jdbcType="CHAR" />
+		<result column="brand_show_id" property="brandShowId" jdbcType="INTEGER" />
+		<result column="brand_show_title" property="brandShowTitle"
+			jdbcType="VARCHAR" />
+		<result column="bsd_id" property="bsdId" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap type="com.afd.model.order.OrderItem" id="BaseResultMap2" extends="BaseResultMap">
+		<association property="order" javaType="com.afd.model.order.Order">
+			<id column="order_id" property="orderId" jdbcType="DECIMAL" />
+			<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+			<result column="user_id" property="userId" jdbcType="DECIMAL" />
+			<result column="user_name" property="userName" jdbcType="VARCHAR" />
+			<result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+			<result column="seller_id" property="sellerId" jdbcType="DECIMAL" />
+			<result column="brand_show_id" property="brandShowId" jdbcType="INTEGER" />
+	  		<result column="brand_show_title" property="brandShowTitle" jdbcType="VARCHAR" />
+			<result column="order_type" property="orderType" jdbcType="CHAR" />
+			<result column="order_status" property="orderStatus" jdbcType="CHAR" />
+			<result column="prod_fee" property="prodFee" jdbcType="REAL" />
+			<result column="prod_discount_type" property="prodDiscountType"
+				jdbcType="CHAR" />
+			<result column="prod_discount_fee" property="prodDiscountFee"
+				jdbcType="REAL" />
+			<result column="deliver_fee" property="deliverFee" jdbcType="REAL" />
+			<result column="deliver_discount" property="deliverDiscount"
+				jdbcType="REAL" />
+			<result column="order_fee" property="orderFee" jdbcType="DECIMAL" />
+			<result column="r_name" property="rName" jdbcType="VARCHAR" />
+			<result column="r_province" property="rProvince" jdbcType="VARCHAR" />
+			<result column="r_city" property="rCity" jdbcType="VARCHAR" />
+			<result column="r_county" property="rCounty" jdbcType="VARCHAR" />
+			<result column="r_town" property="rTown" jdbcType="VARCHAR" />
+			<result column="r_addr" property="rAddr" jdbcType="VARCHAR" />
+			<result column="r_mobile" property="rMobile" jdbcType="CHAR" />
+			<result column="r_phone" property="rPhone" jdbcType="VARCHAR" />
+			<result column="r_email" property="rEmail" jdbcType="VARCHAR" />
+			<result column="r_zipcode" property="rZipcode" jdbcType="CHAR" />
+			<result column="order_source" property="orderSource" jdbcType="VARCHAR" />
+			<result column="pay_type" property="payType" jdbcType="CHAR" />
+			<result column="pay_mode" property="payMode" jdbcType="CHAR" />
+			<result column="pay_status" property="payStatus" jdbcType="CHAR" />
+			<result column="pay_date" property="payDate" jdbcType="TIMESTAMP" />
+			<result column="logistics_compa" property="logisticsCompa"
+				jdbcType="TINYINT" />
+			<result column="logistics_name" property="logisticsName"
+				jdbcType="VARCHAR" />
+			<result column="awb_no" property="awbNo" jdbcType="VARCHAR" />
+			<result column="send_time" property="sendTime" jdbcType="TIMESTAMP" />
+			<result column="signed_status" property="signedStatus"
+				jdbcType="CHAR" />
+			<result column="signed_type" property="signedType" jdbcType="CHAR" />
+			<result column="signed_time" property="signedTime" jdbcType="TIMESTAMP" />
+			<result column="Not_signed_cause" property="notSignedCause"
+				jdbcType="VARCHAR" />
+			<result column="receipt_date" property="receiptDate" jdbcType="TIMESTAMP" />
+			<result column="receipt_type" property="receiptType" jdbcType="CHAR" />
+			<result column="receipt_mode" property="receiptMode" jdbcType="CHAR" />
+			<result column="created_by_name" property="createdByName"
+				jdbcType="VARCHAR" />
+			<result column="yw_remark" property="ywRemark" jdbcType="VARCHAR" />
+			<result column="seller_remark" property="sellerRemark"
+				jdbcType="VARCHAR" />
+			<result column="user_remark" property="userRemark" jdbcType="VARCHAR" />
+			<result column="s_s_a_id" property="sSAId" jdbcType="DECIMAL" />
+			<result column="Cancel_date" property="cancelDate" jdbcType="TIMESTAMP" />
+			<result column="Cancel_by_name" property="cancelByName"
+				jdbcType="VARCHAR" />
+			<result column="Cancel_reason" property="cancelReason"
+				jdbcType="VARCHAR" />
+			<result column="Last_update_date" property="lastUpdateDate"
+				jdbcType="TIMESTAMP" />
+			<result column="Last_update_by_name" property="lastUpdateByName"
+				jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	<sql id="Base_Column_List">
+		order_item_id, order_id, order_code, sku_id, prod_id, prod_code, sku_code,
+		prod_spec_id,
+		prod_spec_name, prod_title, prod_img, bc_id, seller_id, sale_price, trans_price,
+		number, status,
+		is_comment, brand_show_id, brand_show_title, bsd_id
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_order_item
+		where order_item_id = #{orderItemId,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from t_order_item
+		where order_item_id = #{orderItemId,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.afd.model.order.OrderItem">
+		insert into t_order_item (order_item_id, order_id, order_code,
+		sku_id, prod_id, prod_code,
+		sku_code, prod_spec_id, prod_spec_name,
+		prod_title, prod_img, bc_id, seller_id,
+		sale_price, trans_price, number,
+		status, is_comment, brand_show_id,
+		brand_show_title, bsd_id)
+		values (#{orderItemId,jdbcType=BIGINT}, #{orderId,jdbcType=INTEGER},
+		#{orderCode,jdbcType=VARCHAR},
+		#{skuId,jdbcType=INTEGER}, #{prodId,jdbcType=INTEGER}, #{prodCode,jdbcType=VARCHAR},
+		#{skuCode,jdbcType=VARCHAR}, #{prodSpecId,jdbcType=VARCHAR},
+		#{prodSpecName,jdbcType=VARCHAR},
+		#{prodTitle,jdbcType=VARCHAR}, #{prodImg,jdbcType=VARCHAR}, #{bcId,jdbcType=SMALLINT},
+		#{sellerId,jdbcType=INTEGER},
+		#{salePrice,jdbcType=REAL}, #{transPrice,jdbcType=REAL}, #{number,jdbcType=SMALLINT},
+		#{status,jdbcType=CHAR}, #{isComment,jdbcType=CHAR},
+		#{brandShowId,jdbcType=INTEGER},
+		#{brandShowTitle,jdbcType=VARCHAR}, #{bsdId,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" keyProperty="orderItemId"
+		useGeneratedKeys="true" parameterType="com.afd.model.order.OrderItem">
+		insert into t_order_item
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="orderItemId != null">
+				order_item_id,
+			</if>
+			<if test="orderId != null">
+				order_id,
+			</if>
+			<if test="orderCode != null">
+				order_code,
+			</if>
+			<if test="skuId != null">
+				sku_id,
+			</if>
+			<if test="prodId != null">
+				prod_id,
+			</if>
+			<if test="prodCode != null">
+				prod_code,
+			</if>
+			<if test="skuCode != null">
+				sku_code,
+			</if>
+			<if test="prodSpecId != null">
+				prod_spec_id,
+			</if>
+			<if test="prodSpecName != null">
+				prod_spec_name,
+			</if>
+			<if test="prodTitle != null">
+				prod_title,
+			</if>
+			<if test="prodImg != null">
+				prod_img,
+			</if>
+			<if test="bcId != null">
+				bc_id,
+			</if>
+			<if test="sellerId != null">
+				seller_id,
+			</if>
+			<if test="salePrice != null">
+				sale_price,
+			</if>
+			<if test="transPrice != null">
+				trans_price,
+			</if>
+			<if test="number != null">
+				number,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="isComment != null">
+				is_comment,
+			</if>
+			<if test="brandShowId != null">
+				brand_show_id,
+			</if>
+			<if test="brandShowTitle != null">
+				brand_show_title,
+			</if>
+			<if test="bsdId != null">
+				bsd_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="orderItemId != null">
+				#{orderItemId,jdbcType=BIGINT},
+			</if>
+			<if test="orderId != null">
+				#{orderId,jdbcType=INTEGER},
+			</if>
+			<if test="orderCode != null">
+				#{orderCode,jdbcType=VARCHAR},
+			</if>
+			<if test="skuId != null">
+				#{skuId,jdbcType=INTEGER},
+			</if>
+			<if test="prodId != null">
+				#{prodId,jdbcType=INTEGER},
+			</if>
+			<if test="prodCode != null">
+				#{prodCode,jdbcType=VARCHAR},
+			</if>
+			<if test="skuCode != null">
+				#{skuCode,jdbcType=VARCHAR},
+			</if>
+			<if test="prodSpecId != null">
+				#{prodSpecId,jdbcType=VARCHAR},
+			</if>
+			<if test="prodSpecName != null">
+				#{prodSpecName,jdbcType=VARCHAR},
+			</if>
+			<if test="prodTitle != null">
+				#{prodTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="prodImg != null">
+				#{prodImg,jdbcType=VARCHAR},
+			</if>
+			<if test="bcId != null">
+				#{bcId,jdbcType=SMALLINT},
+			</if>
+			<if test="sellerId != null">
+				#{sellerId,jdbcType=INTEGER},
+			</if>
+			<if test="salePrice != null">
+				#{salePrice,jdbcType=REAL},
+			</if>
+			<if test="transPrice != null">
+				#{transPrice,jdbcType=REAL},
+			</if>
+			<if test="number != null">
+				#{number,jdbcType=SMALLINT},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=CHAR},
+			</if>
+			<if test="isComment != null">
+				#{isComment,jdbcType=CHAR},
+			</if>
+			<if test="brandShowId != null">
+				#{brandShowId,jdbcType=INTEGER},
+			</if>
+			<if test="brandShowTitle != null">
+				#{brandShowTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="bsdId != null">
+				#{bsdId,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.afd.model.order.OrderItem">
+		update t_order_item
+		<set>
+			<if test="orderId != null">
+				order_id = #{orderId,jdbcType=INTEGER},
+			</if>
+			<if test="orderCode != null">
+				order_code = #{orderCode,jdbcType=VARCHAR},
+			</if>
+			<if test="skuId != null">
+				sku_id = #{skuId,jdbcType=INTEGER},
+			</if>
+			<if test="prodId != null">
+				prod_id = #{prodId,jdbcType=INTEGER},
+			</if>
+			<if test="prodCode != null">
+				prod_code = #{prodCode,jdbcType=VARCHAR},
+			</if>
+			<if test="skuCode != null">
+				sku_code = #{skuCode,jdbcType=VARCHAR},
+			</if>
+			<if test="prodSpecId != null">
+				prod_spec_id = #{prodSpecId,jdbcType=VARCHAR},
+			</if>
+			<if test="prodSpecName != null">
+				prod_spec_name = #{prodSpecName,jdbcType=VARCHAR},
+			</if>
+			<if test="prodTitle != null">
+				prod_title = #{prodTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="prodImg != null">
+				prod_img = #{prodTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="bcId != null">
+				bc_id = #{bcId,jdbcType=SMALLINT},
+			</if>
+			<if test="sellerId != null">
+				seller_id = #{sellerId,jdbcType=INTEGER},
+			</if>
+			<if test="salePrice != null">
+				sale_price = #{salePrice,jdbcType=REAL},
+			</if>
+			<if test="transPrice != null">
+				trans_price = #{transPrice,jdbcType=REAL},
+			</if>
+			<if test="number != null">
+				number = #{number,jdbcType=SMALLINT},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=CHAR},
+			</if>
+			<if test="isComment != null">
+				is_comment = #{isComment,jdbcType=CHAR},
+			</if>
+			<if test="brandShowId != null">
+				brand_show_id = #{brandShowId,jdbcType=INTEGER},
+			</if>
+			<if test="brandShowTitle != null">
+				brand_show_title = #{brandShowTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="bsdId != null">
+				bsd_id = #{bsdId,jdbcType=INTEGER},
+			</if>
+		</set>
+		where order_item_id = #{orderItemId,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.afd.model.order.OrderItem">
+		update t_order_item
+		set order_id = #{orderId,jdbcType=INTEGER},
+		order_code = #{orderCode,jdbcType=VARCHAR},
+		sku_id = #{skuId,jdbcType=INTEGER},
+		prod_id = #{prodId,jdbcType=INTEGER},
+		prod_code = #{prodCode,jdbcType=VARCHAR},
+		sku_code = #{skuCode,jdbcType=VARCHAR},
+		prod_spec_id = #{prodSpecId,jdbcType=VARCHAR},
+		prod_spec_name = #{prodSpecName,jdbcType=VARCHAR},
+		prod_title = #{prodTitle,jdbcType=VARCHAR},
+		prod_img = #{prodImg,jdbcType=VARCHAR},
+		bc_id = #{bcId,jdbcType=SMALLINT},
+		seller_id = #{sellerId,jdbcType=INTEGER},
+		sale_price = #{salePrice,jdbcType=REAL},
+		trans_price = #{transPrice,jdbcType=REAL},
+		number = #{number,jdbcType=SMALLINT},
+		status = #{status,jdbcType=CHAR},
+		is_comment = #{isComment,jdbcType=CHAR},
+		brand_show_id = #{brandShowId,jdbcType=INTEGER},
+		brand_show_title = #{brandShowTitle,jdbcType=VARCHAR},
+		bsd_id = #{bsdId,jdbcType=INTEGER}
+		where order_item_id = #{orderItemId,jdbcType=BIGINT}
+	</update>
+
+	<select id="getOrderItemsByOrderId" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from t_order_item
+		where order_id = #{orderId,jdbcType=BIGINT} and status='1'
+	</select>
+
+	<select id="getOrderItemsByOrderIds" parameterType="java.util.List"
+		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from t_order_item
 		<where>
 			order_id in
-			<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			<foreach item="item" index="index" collection="list" open="("
+				separator="," close=")">
 				#{item}
 			</foreach>
 		</where>
-  </select>
+	</select>
+	<select id="getOrderItemById" resultMap="BaseResultMap2">
+		select t.*,t1.*
+		from t_order t inner join t_order_item t1 on t.order_id = t1.order_id
+		<where>
+			t1.order_item_id = #{orderItemId,jdbcType=BIGINT}
+			and t.order_status = '8'
+			and t1.status = '1'
+		</where>
+
+	</select>
 </mapper>

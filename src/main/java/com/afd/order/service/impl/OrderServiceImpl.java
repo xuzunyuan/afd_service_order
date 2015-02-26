@@ -170,7 +170,7 @@ public class OrderServiceImpl implements IOrderService {
 		
 		List<OrderItem> orderItems = this.orderItemMapper.getOrderItemsByOrderIds(orderIds);
 		
-		Map<Integer, List<OrderItem>> orderItemsMap = new HashMap<Integer, List<OrderItem>>(orderItems.size());
+		Map<Long, List<OrderItem>> orderItemsMap = new HashMap<Long, List<OrderItem>>(orderItems.size());
 		for(OrderItem orderItem : orderItems){
 			if(!orderItemsMap.containsKey(orderItem.getOrderId())){
 				orderItemsMap.put(orderItem.getOrderId(), new ArrayList<OrderItem>());
@@ -323,10 +323,10 @@ public class OrderServiceImpl implements IOrderService {
 			orderItem.setIsComment(OrderConstants.ORDERITEM_COMMENT_NO);
 			orderItem.setNumber(tradeItem.getNum());
 			orderItem.setOrderCode(order.getOrderCode());
-			orderItem.setOrderId(order.getOrderId().intValue());
-			orderItem.setProdId(tradeItem.getProdId());
+			orderItem.setOrderId(order.getOrderId().longValue());
+			orderItem.setProdId(tradeItem.getProdId().longValue());
 			orderItem.setProdCode(tradeItem.getProdCode());
-			orderItem.setSkuId(tradeItem.getSkuId());
+			orderItem.setSkuId(tradeItem.getSkuId().longValue());
 			orderItem.setSkuCode(tradeItem.getSkuCode());
 			orderItem.setProdSpecId(tradeItem.getProdSpecId());
 			orderItem.setProdSpecName(tradeItem.getProdSpecName());
@@ -456,6 +456,11 @@ public class OrderServiceImpl implements IOrderService {
 	@Override
 	public List<Order> getOrdersByIds(Long[] orderIds) {
 		return this.orderMapper.getOrdersByIds(orderIds);
+	}
+
+	@Override
+	public OrderItem getOrderItemById(Long orderItemId) {
+		return this.orderItemMapper.getOrderItemById(orderItemId);
 	}
 
 }
