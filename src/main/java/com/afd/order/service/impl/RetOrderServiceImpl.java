@@ -28,5 +28,11 @@ public class RetOrderServiceImpl implements IRetOrderService {
 		}
 		return 0;
 	}
+	
+	@Override
+	public ReturnOrder getRetOrderByRetOrderId(Integer retOrderId) {
+		ReturnOrder returnOrder=this.retOrderMapper.selectByPrimaryKey(retOrderId);
+		return returnOrder;
+	}
 
 }
