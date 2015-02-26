@@ -1,5 +1,7 @@
 package com.afd.test;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +10,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.afd.model.order.OrderItem;
+import com.afd.model.order.ReturnOrder;
+import com.afd.model.order.ReturnOrderItem;
 import com.afd.order.dao.OrderItemMapper;
+import com.afd.order.dao.ReturnOrderItemMapper;
+import com.afd.order.dao.ReturnOrderMapper;
 import com.afd.order.service.impl.OrderServiceImpl;
 import com.alibaba.druid.filter.config.ConfigTools;
 
@@ -18,15 +23,25 @@ import com.alibaba.druid.filter.config.ConfigTools;
 @ContextConfiguration(locations={"classpath:spring/*.xml","classpath:spring-dubbo-consumer.xml"})
 public class MyTest {
 	@Autowired
-	@Qualifier("orderService")
-	private OrderServiceImpl orderService;
+	private ReturnOrderMapper retOrderMapper;
 	@Autowired
-	private OrderItemMapper oiMapper;
+	private ReturnOrderItemMapper retOrderItemMapper;
 
 	@Test
 	public void aaa(){
-		OrderItem oi = oiMapper.getOrderItemById(5l);
-		System.out.println(oi.getOrder().getrName());
+		List<ReturnOrder> retOrders = retOrderMapper.getRetOrdersByUserId(13l);
+		for(ReturnOrder ro : retOrders){
+			System.out.println(ro.getSellerId());
+			for(ReturnOrderItem roi : ro.getRetOrderItems()){
+				System.out.println(roi.getSellerId());
+			}
+		}
+	}
+	
+	@Test
+	public void bbb(){
+		ReturnOrderItem selectByPrimaryKey = retOrderItemMapper.selectByPrimaryKey(1);
+		System.out.println(selectByPrimaryKey.getItemId());
 	}
 	
 	public static void main(String[] args) {
