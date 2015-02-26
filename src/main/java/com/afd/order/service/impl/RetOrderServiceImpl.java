@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.afd.common.util.DateUtils;
+import com.afd.constants.order.OrderConstants;
+import com.afd.model.order.OrderItem;
 import com.afd.model.order.ReturnOrder;
 import com.afd.model.order.ReturnOrderItem;
+import com.afd.order.dao.OrderItemMapper;
 import com.afd.order.dao.ReturnOrderItemMapper;
 import com.afd.order.dao.ReturnOrderMapper;
 import com.afd.service.order.IRetOrderService;
@@ -18,6 +21,8 @@ public class RetOrderServiceImpl implements IRetOrderService {
 	private ReturnOrderMapper retOrderMapper;
 	@Autowired
 	private ReturnOrderItemMapper retOrderItemMapper;
+	@Autowired
+	private OrderItemMapper orderItemMapper;
 
 	@Override
 	public List<ReturnOrder> getRetOrdersByUserId(long userId) {
@@ -35,10 +40,21 @@ public class RetOrderServiceImpl implements IRetOrderService {
 					roi.setRetOrderId(retOrder.getRetOrderId());
 					this.retOrderItemMapper.insertSelective(roi);
 				}
+				OrderItem oi = new OrderItem();
+				oi.setOrderItemId(retOrderItems.get(0).getItemId());
+				oi.setStatus(OrderConstants.ORDERITEM_STATUS_RETURN_APPLY);
+				this.orderItemMapper.updateByPrimaryKeySelective(oi);
+				
 				return 1;
 			}
 		}
 		return 0;
+	}
+	
+	@Override
+	public ReturnOrder getRetOrderByRetOrderId(Integer retOrderId) {
+		ReturnOrder returnOrder=this.retOrderMapper.selectByPrimaryKey(retOrderId);
+		return returnOrder;
 	}
 
 }

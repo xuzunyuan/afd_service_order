@@ -95,7 +95,7 @@
 		delete from t_return_order
 		where ret_order_id = #{retOrderId,jdbcType=INTEGER}
 	</delete>
-	<insert id="insert" keyProperty="userId"
+	<insert id="insert" keyProperty="retOrderId"
 		useGeneratedKeys="true" parameterType="com.afd.model.order.ReturnOrder">
 		insert into t_return_order (ret_order_id, ret_order_code, order_id,
 		seller_id, user_id, return_type,
@@ -116,7 +116,7 @@
 		#{remarks,jdbcType=VARCHAR}, #{confirmDate,jdbcType=TIMESTAMP}, #{refundDate,jdbcType=TIMESTAMP}, #{rejectDate,jdbcType=TIMESTAMP}
 		)
 	</insert>
-	<insert id="insertSelective" keyProperty="userId"
+	<insert id="insertSelective" keyProperty="retOrderId"
 		useGeneratedKeys="true" parameterType="com.afd.model.order.ReturnOrder">
 		insert into t_return_order
 		<trim prefix="(" suffix=")" suffixOverrides=",">
