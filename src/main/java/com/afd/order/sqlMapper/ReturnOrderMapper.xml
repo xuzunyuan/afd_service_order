@@ -22,11 +22,14 @@
 			jdbcType="TINYINT" />
 		<result column="logistics_comp_name" property="logisticsCompName"
 			jdbcType="VARCHAR" />
-		<result column="audit_dit" property="auditDit" jdbcType="TIMESTAMP" />
+		<result column="audit_date" property="auditDate" jdbcType="TIMESTAMP" />
 		<result column="audit_by_name" property="auditByName" jdbcType="VARCHAR" />
 		<result column="reject_reason" property="rejectReason"
 			jdbcType="VARCHAR" />
 		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+		<result column="confirm_date" property="confirmDate" jdbcType="TIMESTAMP" />
+		<result column="refund_date" property="refundDate" jdbcType="TIMESTAMP" />
+		<result column="reject_date" property="rejectDate" jdbcType="TIMESTAMP" />
 	</resultMap>
 	<resultMap type="com.afd.model.order.ReturnOrder" id="BaseResultMap2" extends="BaseResultMap">
 		<collection property="retOrderItems" javaType="com.afd.model.order.ReturnOrderItem">
@@ -44,7 +47,7 @@
 		ret_order_id, ret_order_code, order_id, seller_id, user_id, return_type,
 		return_reason,
 		evidence_pic_url, status, create_date, create_ip, logistics_code, logistics_comp_id,
-		logistics_comp_name, audit_dit, audit_by_name, reject_reason, remarks
+		logistics_comp_name, audit_date, audit_by_name, reject_reason, remarks,confirm_date,refund_date,reject_date
 	</sql>
 	<sql id="Base_Column_List2">
 		select t.ret_order_id,
@@ -61,10 +64,13 @@
 	       t.logistics_code,
 	       t.logistics_comp_id,
 	       t.logistics_comp_name,
-	       t.audit_dit,
+	       t.audit_date,
 	       t.audit_by_name,
 	       t.reject_reason,
 	       t.remarks,
+	       t.confirm_date,
+	       t.refund_date,
+	       t.reject_date,
 	       t1.ret_order_item_id,
 	       t1.ret_order_id,
 	       t1.prod_id,
@@ -94,8 +100,8 @@
 		seller_id, user_id, return_type,
 		return_reason, evidence_pic_url, status,
 		create_date, create_ip, logistics_code,
-		logistics_comp_id, logistics_comp_name, audit_dit,
-		audit_by_name, reject_reason, remarks
+		logistics_comp_id, logistics_comp_name, audit_date,
+		audit_by_name, reject_reason, remarks,confirm_date,refund_date,reject_date
 		)
 		values (#{retOrderId,jdbcType=INTEGER}, #{retOrderCode,jdbcType=VARCHAR},
 		#{orderId,jdbcType=INTEGER},
@@ -104,9 +110,9 @@
 		#{status,jdbcType=CHAR},
 		#{createDate,jdbcType=TIMESTAMP}, #{createIp,jdbcType=VARCHAR}, #{logisticsCode,jdbcType=VARCHAR},
 		#{logisticsCompId,jdbcType=TINYINT},
-		#{logisticsCompName,jdbcType=VARCHAR}, #{auditDit,jdbcType=TIMESTAMP},
+		#{logisticsCompName,jdbcType=VARCHAR}, #{auditDate,jdbcType=TIMESTAMP},
 		#{auditByName,jdbcType=VARCHAR}, #{rejectReason,jdbcType=VARCHAR},
-		#{remarks,jdbcType=VARCHAR}
+		#{remarks,jdbcType=VARCHAR}, #{confirmDate,jdbcType=TIMESTAMP}, #{refundDate,jdbcType=TIMESTAMP}, #{rejectDate,jdbcType=TIMESTAMP}
 		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.afd.model.order.ReturnOrder">
@@ -154,8 +160,8 @@
 			<if test="logisticsCompName != null">
 				logistics_comp_name,
 			</if>
-			<if test="auditDit != null">
-				audit_dit,
+			<if test="auditDate != null">
+				audit_date,
 			</if>
 			<if test="auditByName != null">
 				audit_by_name,
@@ -165,6 +171,15 @@
 			</if>
 			<if test="remarks != null">
 				remarks,
+			</if>			
+			<if test="confirmDate != null">
+				confirm_date,
+			</if>			
+			<if test="refundDate != null">
+				refund_date,
+			</if>			
+			<if test="rejectDate != null">
+				reject_date,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -210,8 +225,8 @@
 			<if test="logisticsCompName != null">
 				#{logisticsCompName,jdbcType=VARCHAR},
 			</if>
-			<if test="auditDit != null">
-				#{auditDit,jdbcType=TIMESTAMP},
+			<if test="auditDate != null">
+				#{auditDate,jdbcType=TIMESTAMP},
 			</if>
 			<if test="auditByName != null">
 				#{auditByName,jdbcType=VARCHAR},
@@ -222,6 +237,16 @@
 			<if test="remarks != null">
 				#{remarks,jdbcType=VARCHAR},
 			</if>
+			<if test="confirmDate != null">
+				#{confirmDate,jdbcType=TIMESTAMP},
+			</if>			
+			<if test="refundDate != null">
+				#{refundDate,jdbcType=TIMESTAMP},
+			</if>			
+			<if test="rejectDate != null">
+				#{rejectDate,jdbcType=TIMESTAMP},
+			</if>
+			
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.afd.model.order.ReturnOrder">
@@ -266,8 +291,8 @@
 			<if test="logisticsCompName != null">
 				logistics_comp_name = #{logisticsCompName,jdbcType=VARCHAR},
 			</if>
-			<if test="auditDit != null">
-				audit_dit = #{auditDit,jdbcType=TIMESTAMP},
+			<if test="auditDate != null">
+				audit_date = #{auditDate,jdbcType=TIMESTAMP},
 			</if>
 			<if test="auditByName != null">
 				audit_by_name = #{auditByName,jdbcType=VARCHAR},
@@ -277,6 +302,15 @@
 			</if>
 			<if test="remarks != null">
 				remarks = #{remarks,jdbcType=VARCHAR},
+			</if>
+			<if test="confirmDate != null">
+				confirm_date = #{confirmDate,jdbcType=TIMESTAMP},
+			</if>			
+			<if test="refundDate != null">
+				refund_date = #{refundDate,jdbcType=TIMESTAMP},
+			</if>			
+			<if test="rejectDate != null">
+				reject_date = #{rejectDate,jdbcType=TIMESTAMP},
 			</if>
 		</set>
 		where ret_order_id = #{retOrderId,jdbcType=INTEGER}
@@ -296,10 +330,13 @@
 		logistics_code = #{logisticsCode,jdbcType=VARCHAR},
 		logistics_comp_id = #{logisticsCompId,jdbcType=TINYINT},
 		logistics_comp_name = #{logisticsCompName,jdbcType=VARCHAR},
-		audit_dit = #{auditDit,jdbcType=TIMESTAMP},
+		audit_date = #{auditDate,jdbcType=TIMESTAMP},
 		audit_by_name = #{auditByName,jdbcType=VARCHAR},
 		reject_reason = #{rejectReason,jdbcType=VARCHAR},
-		remarks = #{remarks,jdbcType=VARCHAR}
+		remarks = #{remarks,jdbcType=VARCHAR},
+		confirm_date = #{confirmDate,jdbcType=TIMESTAMP},
+		refund_date = #{refundDate,jdbcType=TIMESTAMP},
+		reject_date = #{rejectDate,jdbcType=TIMESTAMP}
 		where ret_order_id = #{retOrderId,jdbcType=INTEGER}
 	</update>
 	<select id="getRetOrdersByUserId">
