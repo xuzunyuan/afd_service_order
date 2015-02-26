@@ -40,8 +40,9 @@
     delete from t_logistics_company
     where logistics_comp_id = #{logisticsCompId,jdbcType=TINYINT}
   </delete>
-  <insert id="insert" parameterType="com.afd.model.order.LogisticsCompany" >
-    insert into t_logistics_company (logistics_comp_id, logistics_comp_name, 
+  <insert id="insert" parameterType="com.afd.model.order.LogisticsCompany" keyProperty="logisticsCompId"
+		useGeneratedKeys="true">
+    insert into t_logistics_company (logistics_comp_name, 
       linkman, tel, mobile, 
       province, province_name, city, 
       city_name, district, district_name, 
@@ -49,7 +50,7 @@
       zip_code, lawman, api_url, 
       status, create_date, update_date, 
       update_by_name, remark)
-    values (#{logisticsCompId,jdbcType=TINYINT}, #{logisticsCompName,jdbcType=VARCHAR}, 
+    values (#{logisticsCompName,jdbcType=VARCHAR}, 
       #{linkman,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, #{mobile,jdbcType=CHAR}, 
       #{province,jdbcType=SMALLINT}, #{provinceName,jdbcType=VARCHAR}, #{city,jdbcType=SMALLINT}, 
       #{cityName,jdbcType=VARCHAR}, #{district,jdbcType=SMALLINT}, #{districtName,jdbcType=VARCHAR}, 
@@ -58,12 +59,10 @@
       #{status,jdbcType=CHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
       #{updateByName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.afd.model.order.LogisticsCompany" >
+  <insert id="insertSelective" parameterType="com.afd.model.order.LogisticsCompany" keyProperty="logisticsCompId"
+		useGeneratedKeys="true">
     insert into t_logistics_company
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="logisticsCompId != null" >
-        logistics_comp_id,
-      </if>
+    <trim prefix="(" suffix=")" suffixOverrides="," >     
       <if test="logisticsCompName != null" >
         logistics_comp_name,
       </if>
@@ -128,10 +127,7 @@
         remark,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="logisticsCompId != null" >
-        #{logisticsCompId,jdbcType=TINYINT},
-      </if>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >      
       <if test="logisticsCompName != null" >
         #{logisticsCompName,jdbcType=VARCHAR},
       </if>
@@ -291,4 +287,21 @@
       remark = #{remark,jdbcType=VARCHAR}
     where logistics_comp_id = #{logisticsCompId,jdbcType=TINYINT}
   </update>
+  
+   <select id="selectValidLogisticsCompanyList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_logistics_company
+    where status = '1'
+  </select>
+  
+  <select id="selectLogisticsCompanyByIds" resultMap="BaseResultMap">
+	select 
+	<include refid="Base_Column_List" />
+	from t_logistics_company
+	where logistics_comp_id in 
+	<foreach close=")" collection="ids" item="id" open="(" separator=",">
+		#{id}
+	</foreach>
+  </select>
 </mapper>

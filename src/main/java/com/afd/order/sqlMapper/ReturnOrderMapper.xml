@@ -32,7 +32,7 @@
 		<result column="reject_date" property="rejectDate" jdbcType="TIMESTAMP" />
 	</resultMap>
 	<resultMap type="com.afd.model.order.ReturnOrder" id="BaseResultMap2" extends="BaseResultMap">
-		<collection property="retOrderItems" javaType="com.afd.model.order.ReturnOrderItem">
+		<collection property="retOrderItems" ofType="com.afd.model.order.ReturnOrderItem">
 			<id column="ret_order_item_id" property="retOrderItemId" jdbcType="INTEGER" />
 		    <result column="ret_order_id" property="retOrderId" jdbcType="INTEGER" />
 		    <result column="prod_id" property="prodId" jdbcType="INTEGER" />
@@ -82,7 +82,7 @@
 	  from t_return_order t
 	  LEFT OUTER JOIN t_return_order_items t1
 	    on t.ret_order_id = t1.ret_order_id
-
+		where 1=1
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -95,7 +95,8 @@
 		delete from t_return_order
 		where ret_order_id = #{retOrderId,jdbcType=INTEGER}
 	</delete>
-	<insert id="insert" parameterType="com.afd.model.order.ReturnOrder">
+	<insert id="insert" keyProperty="retOrderId"
+		useGeneratedKeys="true" parameterType="com.afd.model.order.ReturnOrder">
 		insert into t_return_order (ret_order_id, ret_order_code, order_id,
 		seller_id, user_id, return_type,
 		return_reason, evidence_pic_url, status,
@@ -115,7 +116,8 @@
 		#{remarks,jdbcType=VARCHAR}, #{confirmDate,jdbcType=TIMESTAMP}, #{refundDate,jdbcType=TIMESTAMP}, #{rejectDate,jdbcType=TIMESTAMP}
 		)
 	</insert>
-	<insert id="insertSelective" parameterType="com.afd.model.order.ReturnOrder">
+	<insert id="insertSelective" keyProperty="retOrderId"
+		useGeneratedKeys="true" parameterType="com.afd.model.order.ReturnOrder">
 		insert into t_return_order
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="retOrderId != null">
@@ -339,7 +341,7 @@
 		reject_date = #{rejectDate,jdbcType=TIMESTAMP}
 		where ret_order_id = #{retOrderId,jdbcType=INTEGER}
 	</update>
-	<select id="getRetOrdersByUserId">
+	<select id="getRetOrdersByUserId" resultMap="BaseResultMap2">
 		<include refid="Base_Column_List2"/>
 		and t.user_id = #{userId,jdbcType=INTEGER}
 	</select>
