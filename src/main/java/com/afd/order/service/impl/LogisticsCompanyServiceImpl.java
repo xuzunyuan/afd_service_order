@@ -43,7 +43,7 @@ public class LogisticsCompanyServiceImpl implements ILogisticsCompanyService {
 	 * (long[])
 	 */
 	@Override
-	public List<LogisticsCompany> getLogisticsCompanyByIds(long[] ids) {
+	public List<LogisticsCompany> getLogisticsCompanyByIds(List<Long> ids) {
 		return logisticsMapper.selectLogisticsCompanyByIds(ids);
 	}
 

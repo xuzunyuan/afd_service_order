@@ -22,7 +22,8 @@ public interface LogisticsCompanyMapper {
 
 	List<LogisticsCompany> selectValidLogisticsCompanyList();
 
-	List<LogisticsCompany> selectLogisticsCompanyByIds(@Param("ids") long[] ids);
+	List<LogisticsCompany> selectLogisticsCompanyByIds(
+			@Param("ids") List<Long> ids);
 
 	@Update("update t_logistics_company set status = #{1} where logistics_comp_id = #{0}")
 	int updateStatus(Byte logisticsCompId, String status);
