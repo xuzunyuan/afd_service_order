@@ -291,4 +291,11 @@
       remark = #{remark,jdbcType=VARCHAR}
     where logistics_comp_id = #{logisticsCompId,jdbcType=TINYINT}
   </update>
+  
+   <select id="selectValidLogisticsCompanyList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_logistics_company
+    where status = '1'
+  </select>
 </mapper>
