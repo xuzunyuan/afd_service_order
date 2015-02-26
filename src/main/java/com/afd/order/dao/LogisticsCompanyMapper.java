@@ -2,6 +2,8 @@ package com.afd.order.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.afd.model.order.LogisticsCompany;
 
 public interface LogisticsCompanyMapper {
@@ -18,4 +20,6 @@ public interface LogisticsCompanyMapper {
 	int updateByPrimaryKey(LogisticsCompany record);
 
 	List<LogisticsCompany> selectValidLogisticsCompanyList();
+
+	List<LogisticsCompany> selectLogisticsCompanyByIds(@Param("ids") long[] ids);
 }

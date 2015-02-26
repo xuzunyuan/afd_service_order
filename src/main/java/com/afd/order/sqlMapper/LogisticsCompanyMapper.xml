@@ -298,4 +298,14 @@
     from t_logistics_company
     where status = '1'
   </select>
+  
+  <select id="selectLogisticsCompanyByIds" resultMap="BaseResultMap">
+	select 
+	<include refid="Base_Column_List" />
+	from t_logistics_company
+	where logistics_comp_id in 
+	<foreach close=")" collection="ids" item="id" open="(" separator=",">
+		#{id}
+	</foreach>
+  </select>
 </mapper>
