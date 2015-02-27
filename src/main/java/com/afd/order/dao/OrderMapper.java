@@ -24,7 +24,7 @@ public interface OrderMapper {
     
     List<Order> getOrdersByIdsAndUserId(@Param("orderIds")Long[] orderIds, @Param("userId") Long userId);
 
-	List<Order> getOrdersByUserId(@Param("userId")Long userId);
+	List<Order> getOrdersByUserIdByPage(@Param("userId")Long userId, @Param("page") Page<Order> page);
 	
 	public List<Order> queryOrderByPage(@Param("cond") Map<String, ?> map, @Param("page") Page<Order> page);
 	
@@ -32,5 +32,5 @@ public interface OrderMapper {
 	
 	public List<Order> getOrdersByIds(@Param("orderIds")Long[] orderIds);
 
-	public List<Order> getOrdersByUserIdAndStatus(@Param("userId") Long userId,@Param("status") String status);
+	public List<Order> getOrdersByUserIdAndStatusByPage(@Param("userId") Long userId,@Param("status") String status, @Param("page") Page<Order> page);
 }

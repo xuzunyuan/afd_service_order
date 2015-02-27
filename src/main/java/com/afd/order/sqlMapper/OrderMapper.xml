@@ -110,6 +110,32 @@
 		Last_update_date,
 		Last_update_by_name
 	</sql>
+	<sql id="Base_Column_List2">
+	    select
+			t.order_id, t.order_code, t.user_id, t.user_name, t.created_date, t.seller_id, 
+			t.brand_show_id, t.brand_show_title, t.order_type, t.order_status,
+			t.prod_fee, t.prod_discount_type, t.prod_discount_fee, t.deliver_fee, t.deliver_discount,
+			t.order_fee,
+			t.r_name, t.r_province, t.r_city, t.r_county, t.r_town, t.r_addr, t.r_mobile, t.r_phone,
+			t.r_email,
+			t.r_zipcode, t.order_source, t.pay_type, t.pay_mode, t.pay_status, t.pay_date,
+			t.logistics_compa,
+			t.logistics_name, t.awb_no, t.send_time, t.signed_status, t.signed_type, t.signed_time,
+			t.not_signed_cause,
+			t.receipt_date, t.receipt_type, t.receipt_mode, t.created_by_name, t.yw_remark,
+			t.seller_remark,
+			t.user_remark, t.s_s_a_id, t.Cancel_date, t.Cancel_by_name, t.Cancel_reason,
+			t.last_update_date,
+			t.last_update_by_name,
+			t1.order_item_id, t1.order_id order_id2, t1.order_code order_code2, t1.sku_id, t1.prod_id, t1.prod_code, t1.sku_code,
+			t1.prod_spec_id,
+			t1.prod_spec_name, t1.prod_title, t1.prod_img, t1.bc_id, t1.seller_id seller_id2, t1.sale_price, t1.trans_price,
+			t1.number, t1.status,
+			t1.is_comment, t1.brand_show_id brand_show_id2, t1.brand_show_title brand_show_title2, t1.bsd_id
+		from t_order t 
+		LEFT OUTER JOIN t_order_item t1 
+	    on t.order_id = t1.order_id
+	</sql>
 	<select id="getOrderById" resultMap="BaseResultMap"
 		parameterType="java.lang.Long">
 		select
@@ -712,16 +738,15 @@
 		</foreach>
 		and t.user_id = #{userId,jdbcType=DECIMAL}
 	</select>
-	<select id="getOrdersByUserId" resultMap="BaseResultMap2">
-		select * from t_order t,t_order_item t1 where t.order_id = t1.order_id
-		and t.user_id = #{userId,jdbcType=DECIMAL} 
+	<select id="getOrdersByUserIdByPage" resultMap="BaseResultMap2">
+		<include refid="Base_Column_List2"/>
+		where t.user_id = #{userId,jdbcType=DECIMAL} 
 		order by t.ORDER_ID DESC
 	</select>
 
-	<select id="getOrdersByUserIdAndStatus" resultMap="BaseResultMap2">
-	    select * from t_order t,t_order_item t1 
-	    where t.order_id = t1.order_id
-	    and t.user_id = #{userId,jdbcType=DECIMAL} 
+	<select id="getOrdersByUserIdAndStatusByPage" resultMap="BaseResultMap2">
+	    <include refid="Base_Column_List2"/>
+	    where t.user_id = #{userId,jdbcType=DECIMAL} 
 	    and t.order_status = #{status,jdbcType=CHAR}
 	    order by t.ORDER_ID DESC
 	</select>

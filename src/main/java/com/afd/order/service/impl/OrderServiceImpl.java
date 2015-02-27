@@ -88,13 +88,15 @@ public class OrderServiceImpl implements IOrderService {
 	}
 
 	@Override
-	public List<Order> getOrdersByUserId(Long userId) {
-		return this.orderMapper.getOrdersByUserId(userId);
+	public Page<Order> getOrdersByUserId(Long userId, Page<Order> page) {
+		page.setResult(this.orderMapper.getOrdersByUserIdByPage(userId, page));
+		return page;
 	}
 
 	@Override
-	public List<Order> getOrdersByUserIdAndStatus(Long userId, String status) {
-		return this.orderMapper.getOrdersByUserIdAndStatus(userId, status);
+	public Page<Order> getOrdersByUserIdAndStatus(Long userId, String status, Page<Order> page) {
+		page.setResult(this.orderMapper.getOrdersByUserIdAndStatusByPage(userId, status, page));
+		return page;
 	}
 
 	@Override
