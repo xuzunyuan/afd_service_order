@@ -81,6 +81,11 @@ public class OrderServiceImpl implements IOrderService {
 	}
 
 	@Override
+	public int updateOrder2Sended(Order order) {
+		return this.orderMapper.updateByPrimaryKeySelective(order);
+	}
+
+	@Override
 	public List<Order> getOrdersByIdsAndUserId(Long[] orderIds, Long userId) {
 		List<Order> orders = this.orderMapper.getOrdersByIdsAndUserId(orderIds,
 				userId);
