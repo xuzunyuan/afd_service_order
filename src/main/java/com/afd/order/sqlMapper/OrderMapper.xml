@@ -741,6 +741,7 @@
 	<select id="getOrdersByUserIdByPage" resultMap="BaseResultMap2">
 		<include refid="Base_Column_List2"/>
 		where t.user_id = #{userId,jdbcType=DECIMAL} 
+		and t.order_status != 'd' 
 		order by t.ORDER_ID DESC
 	</select>
 
