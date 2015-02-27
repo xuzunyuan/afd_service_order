@@ -127,19 +127,18 @@ public class CartServiceImpl implements ICartService{
 		if(null != cartItems && cartItems.size() > 0) {
 			Map<Long,BrandShowDetail> bsDetailMap = getBSDetailMap(cartItems);
 			Map<Long,BrandShow> brandShowMap = this.getBrandShowMap(bsDetailMap.values());
-
 			for(CartItem cartItem : cartItems) {
 				BrandShowDetail bsDetail = bsDetailMap.get(cartItem.getBrandShowDetailId());
 				if(null == bsDetail) {
 					continue;
 				}
 				this.validCartItem(cartItem, bsDetail);
-				if(cartMap.containsKey(bsDetail.getBrandShowId())) {
-					Cart cart = cartMap.get(bsDetail.getBrandShowId());
+				if(cartMap.containsKey(bsDetail.getBrandShowId().longValue())) {
+					Cart cart = cartMap.get(bsDetail.getBrandShowId().longValue());
 					cart.getCartItems().add(cartItem);
 				} else {
 					Cart cart = new Cart();
-					BrandShow brandShow = brandShowMap.get(bsDetail.getBrandShowId());
+					BrandShow brandShow = brandShowMap.get(bsDetail.getBrandShowId().longValue());
 					cart.setBrandShowId(brandShow.getBrandShowId().longValue());
 					cart.setBrandShowTitle(brandShow.getTitle());
 					cart.setSellerId(brandShow.getSellerId().longValue());
@@ -316,7 +315,6 @@ public class CartServiceImpl implements ICartService{
 	private Map<Long,BrandShowDetail> getBSDetailMap(List<CartItem> cartItems) {
 		// 取得所有特卖明细ID
 		List<Integer> bsdIds = this.getBSDIDsByCartItems(cartItems);
-		//TODO stock should be got by redis
 		List<BrandShowDetail> bsDetails = this.brandShowService.getBrandShowDetailsByIds(bsdIds);
 		Set<Integer> skuIds = new LinkedHashSet<Integer>();
 		Set<Integer> prodIds = new LinkedHashSet<Integer>();
