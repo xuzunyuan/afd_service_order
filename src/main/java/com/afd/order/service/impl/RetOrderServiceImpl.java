@@ -113,4 +113,24 @@ public class RetOrderServiceImpl implements IRetOrderService {
 		return returnOrder;
 	}
 
+	@Override
+	public int cancelRetOrderById(Long retOrderId, Long uid) {
+		ReturnOrder retOrder = this.retOrderMapper.getRetOrderByIdUid(retOrderId,uid);
+		//只有等待确认状态下的才可以取消
+		if(retOrder!=null&&OrderConstants.order_return_wait.equals(retOrder.getStatus())){
+			Long itemId = retOrder.getRetOrderItems().get(0).getItemId();
+			OrderItem oi = new OrderItem();
+			oi.setOrderItemId(itemId);
+			oi.setStatus(OrderConstants.ORDERITEM_STATUS_NORMAL);
+			this.orderItemMapper.updateByPrimaryKeySelective(oi);
+			
+			retOrder.setStatus(OrderConstants.order_return_cancel);
+			retOrder.setCancelDate(DateUtils.currentDate());
+			this.retOrderMapper.updateByPrimaryKeySelective(retOrder);
+			return 1;
+		}
+		
+		return 0;
+	}
+
 }

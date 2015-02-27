@@ -30,6 +30,7 @@
 		<result column="confirm_date" property="confirmDate" jdbcType="TIMESTAMP" />
 		<result column="refund_date" property="refundDate" jdbcType="TIMESTAMP" />
 		<result column="reject_date" property="rejectDate" jdbcType="TIMESTAMP" />
+		<result column="cancel_date" property="cancelDate" jdbcType="TIMESTAMP" />
 	</resultMap>
 	<resultMap type="com.afd.model.order.ReturnOrder" id="BaseResultMap2" extends="BaseResultMap">
 		<collection property="retOrderItems" ofType="com.afd.model.order.ReturnOrderItem">
@@ -47,7 +48,8 @@
 		ret_order_id, ret_order_code, order_id, seller_id, user_id, return_type,
 		return_reason,
 		evidence_pic_url, status, create_date, create_ip, logistics_code, logistics_comp_id,
-		logistics_comp_name, audit_date, audit_by_name, reject_reason, remarks,confirm_date,refund_date,reject_date
+		logistics_comp_name, audit_date, audit_by_name, reject_reason, remarks,confirm_date,refund_date,reject_date,
+		cancel_date
 	</sql>
 	<sql id="Base_Column_List2">
 		select t.ret_order_id,
@@ -71,6 +73,7 @@
 	       t.confirm_date,
 	       t.refund_date,
 	       t.reject_date,
+	       t.cancel_date,
 	       t1.ret_order_item_id,
 	       t1.ret_order_id ret_order_id2,
 	       t1.prod_id,
@@ -102,7 +105,7 @@
 		return_reason, evidence_pic_url, status,
 		create_date, create_ip, logistics_code,
 		logistics_comp_id, logistics_comp_name, audit_date,
-		audit_by_name, reject_reason, remarks,confirm_date,refund_date,reject_date
+		audit_by_name, reject_reason, remarks,confirm_date,refund_date,reject_date,cancel_date
 		)
 		values (#{retOrderId,jdbcType=INTEGER}, #{retOrderCode,jdbcType=VARCHAR},
 		#{orderId,jdbcType=INTEGER},
@@ -113,7 +116,8 @@
 		#{logisticsCompId,jdbcType=TINYINT},
 		#{logisticsCompName,jdbcType=VARCHAR}, #{auditDate,jdbcType=TIMESTAMP},
 		#{auditByName,jdbcType=VARCHAR}, #{rejectReason,jdbcType=VARCHAR},
-		#{remarks,jdbcType=VARCHAR}, #{confirmDate,jdbcType=TIMESTAMP}, #{refundDate,jdbcType=TIMESTAMP}, #{rejectDate,jdbcType=TIMESTAMP}
+		#{remarks,jdbcType=VARCHAR}, #{confirmDate,jdbcType=TIMESTAMP}, #{refundDate,jdbcType=TIMESTAMP}, #{rejectDate,jdbcType=TIMESTAMP},
+		#{cancelDate,jdbcType=TIMESTAMP}
 		)
 	</insert>
 	<insert id="insertSelective" keyProperty="retOrderId"
@@ -183,6 +187,9 @@
 			<if test="rejectDate != null">
 				reject_date,
 			</if>
+			<if test="cancelDate != null">
+				cancel_date,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="retOrderId != null">
@@ -248,7 +255,9 @@
 			<if test="rejectDate != null">
 				#{rejectDate,jdbcType=TIMESTAMP},
 			</if>
-			
+			<if test="cancelDate != null">
+				#{cancelDate,jdbcType=TIMESTAMP},
+			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.afd.model.order.ReturnOrder">
@@ -314,6 +323,9 @@
 			<if test="rejectDate != null">
 				reject_date = #{rejectDate,jdbcType=TIMESTAMP},
 			</if>
+			<if test="cancelDate != null">
+				cancel_date = #{cancelDate,jdbcType=TIMESTAMP},
+			</if>
 		</set>
 		where ret_order_id = #{retOrderId,jdbcType=INTEGER}
 	</update>
@@ -338,11 +350,17 @@
 		remarks = #{remarks,jdbcType=VARCHAR},
 		confirm_date = #{confirmDate,jdbcType=TIMESTAMP},
 		refund_date = #{refundDate,jdbcType=TIMESTAMP},
-		reject_date = #{rejectDate,jdbcType=TIMESTAMP}
+		reject_date = #{rejectDate,jdbcType=TIMESTAMP},
+		cancel_date = #{cancelDate,jdbcType=TIMESTAMP}
 		where ret_order_id = #{retOrderId,jdbcType=INTEGER}
 	</update>
 	<select id="getRetOrdersByUserIdPage" resultMap="BaseResultMap2">
 		<include refid="Base_Column_List2"/>
 		and t.user_id = #{userId,jdbcType=INTEGER}
+	</select>
+	<select id="getRetOrderByIdUid" resultMap="BaseResultMap2">
+		<include refid="Base_Column_List2"/>
+		and t.user_id = #{userId,jdbcType=INTEGER}
+		and t.ret_order_id = #{retOrderId,jdbcType=INTEGER}
 	</select>
 </mapper>
