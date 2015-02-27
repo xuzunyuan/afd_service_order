@@ -72,9 +72,9 @@
 	       t.refund_date,
 	       t.reject_date,
 	       t1.ret_order_item_id,
-	       t1.ret_order_id,
+	       t1.ret_order_id ret_order_id2,
 	       t1.prod_id,
-	       t1.seller_id,
+	       t1.seller_id seller_id2,
 	       t1.item_id,
 	       t1.sku_id,
 	       t1.return_number,
@@ -341,7 +341,7 @@
 		reject_date = #{rejectDate,jdbcType=TIMESTAMP}
 		where ret_order_id = #{retOrderId,jdbcType=INTEGER}
 	</update>
-	<select id="getRetOrdersByUserId" resultMap="BaseResultMap2">
+	<select id="getRetOrdersByUserIdPage" resultMap="BaseResultMap2">
 		<include refid="Base_Column_List2"/>
 		and t.user_id = #{userId,jdbcType=INTEGER}
 	</select>

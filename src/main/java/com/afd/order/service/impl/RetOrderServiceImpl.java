@@ -10,6 +10,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.afd.common.mybatis.Page;
 import com.afd.common.util.DateUtils;
 import com.afd.constants.order.OrderConstants;
 import com.afd.model.order.OrderItem;
@@ -38,8 +39,8 @@ public class RetOrderServiceImpl implements IRetOrderService {
 	private ISellerService sellerService;
 
 	@Override
-	public List<ReturnOrder> getRetOrdersByUserId(long userId) {
-		 List<ReturnOrder> retOrders = this.retOrderMapper.getRetOrdersByUserId(userId);
+	public Page<ReturnOrder> getRetOrdersByUserId(long userId,Page<ReturnOrder> page) {
+		 List<ReturnOrder> retOrders = this.retOrderMapper.getRetOrdersByUserIdPage(userId,page);
 		 Set<Long> sellerIds = new HashSet<Long>();
 		 Set<Integer> skuIds = new HashSet<Integer>();
 		 if(retOrders!=null&&retOrders.size()>0){
@@ -69,9 +70,19 @@ public class RetOrderServiceImpl implements IRetOrderService {
 					 }
 				 }
 			 }
+			 
+			 if(sellers!=null&&sellers.size()>0){
+				 Map<Integer,Seller> sellerMap = new HashMap<Integer,Seller>();
+				 for(Seller seller : sellers){
+					 sellerMap.put(seller.getSellerId(), seller);
+				 }
+				 for(ReturnOrder retOrder : retOrders){
+					 retOrder.setSeller(sellerMap.get(retOrder.getSellerId().intValue()));
+				 }
+			 }
 		 }
-		 
-		 return retOrders;
+		 page.setResult(retOrders);
+		 return page;
 	}
 
 	@Override

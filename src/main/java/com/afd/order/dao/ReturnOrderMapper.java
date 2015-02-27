@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.afd.common.mybatis.Page;
 import com.afd.model.order.ReturnOrder;
 
 public interface ReturnOrderMapper {
@@ -19,5 +20,5 @@ public interface ReturnOrderMapper {
 
     int updateByPrimaryKey(ReturnOrder record);
 
-	List<ReturnOrder> getRetOrdersByUserId(@Param("userId")long userId);
+	List<ReturnOrder> getRetOrdersByUserIdPage(@Param("userId")long userId,@Param("page")Page<ReturnOrder> page);
 }

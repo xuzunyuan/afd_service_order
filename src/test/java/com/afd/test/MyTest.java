@@ -29,13 +29,6 @@ public class MyTest {
 
 	@Test
 	public void aaa(){
-		List<ReturnOrder> retOrders = retOrderMapper.getRetOrdersByUserId(13l);
-		for(ReturnOrder ro : retOrders){
-			System.out.println(ro.getSellerId());
-			for(ReturnOrderItem roi : ro.getRetOrderItems()){
-				System.out.println(roi.getSellerId());
-			}
-		}
 	}
 	
 	@Test
