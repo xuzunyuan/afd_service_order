@@ -510,4 +510,27 @@ public class OrderServiceImpl implements IOrderService {
 		return this.orderItemMapper.getOrderItemById(orderItemId);
 	}
 
+	@Override
+	public Order getOrderByIdAndUser(Long orderId, Long userId) {
+		return this.orderMapper.getOrderByIdAndUser(orderId, userId);
+	}
+
+	@Override
+	public int cancelOrderByIdAndUser(Long orderId, Long userId,
+			String userName, String cancelReason) {
+		Date now = new Date();
+		return this.orderMapper.cancelOrderByIdAndUser(orderId, userId, userName, cancelReason, now);
+	}
+
+	@Override
+	public int confirmOrderByUser(Long orderId, Long userId, String userName) {
+		Date now = new Date();
+		return this.orderMapper.confirmOrderByUser(orderId, userId, userName, now);
+	}
+
+	@Override
+	public int deleteOrderByUser(Long orderId, Long userId, String userName) {
+		Date now = new Date();
+		return this.orderMapper.deleteOrderByUser(orderId, userId, userName, now);
+	}
 }

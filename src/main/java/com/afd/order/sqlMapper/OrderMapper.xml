@@ -835,5 +835,44 @@
 			#{orderId}
 		</foreach>
 	</select>
+
+	<select id="getOrderByIdAndUser" resultMap="BaseResultMap2">
+		select * from t_order t,t_order_item t1 
+		where t.order_id = t1.order_id
+		and t.order_id = #{orderId,jdbcType=DECIMAL}
+		and t.user_id = #{userId,jdbcType=DECIMAL}
+	</select>
 	
+	<update id="cancelOrderByIdAndUser">
+	    update t_order
+	    set order_status = '4', 
+		    cancel_by_name = #{userName,jdbcType=VARCHAR},
+		    cancel_reason = #{cancelReason,jdbcType=VARCHAR},
+		    cancel_date = #{now,jdbcType=TIMESTAMP},
+		    last_update_date = #{now,jdbcType=TIMESTAMP},
+		    last_update_by_name = #{userName,jdbcType=VARCHAR} 
+	    where order_id = #{orderId,jdbcType=DECIMAL} 
+	    and user_id = #{userId,jdbcType=DECIMAL}
+	</update>
+	
+	<update id="confirmOrderByUser">
+	    update t_order
+	    set order_status = '8', 
+	    	signed_status = '1',
+	    	signed_type = '0',
+	    	signed_time = #{now,jdbcType=TIMESTAMP},
+		    last_update_date = #{now,jdbcType=TIMESTAMP},
+		    last_update_by_name = #{userName,jdbcType=VARCHAR} 
+	    where order_id = #{orderId,jdbcType=DECIMAL} 
+	    and user_id = #{userId,jdbcType=DECIMAL}
+	</update>
+	
+	<update id="deleteOrderByUser">
+	    update t_order
+	    set order_status = 'd',
+		    last_update_date = #{now,jdbcType=TIMESTAMP},
+		    last_update_by_name = #{userName,jdbcType=VARCHAR} 
+	    where order_id = #{orderId,jdbcType=DECIMAL} 
+	    and user_id = #{userId,jdbcType=DECIMAL}
+	</update>
 </mapper>
