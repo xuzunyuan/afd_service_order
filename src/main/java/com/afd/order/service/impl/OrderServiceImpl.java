@@ -180,15 +180,12 @@ public class OrderServiceImpl implements IOrderService {
 			orderIds.add(order.getOrderId());
 		}
 
-		List<OrderItem> orderItems = this.orderItemMapper
-				.getOrderItemsByOrderIds(orderIds);
+		List<OrderItem> orderItems = this.orderItemMapper.getOrderItemsByOrderIds(orderIds);
 
-		Map<Long, List<OrderItem>> orderItemsMap = new HashMap<Long, List<OrderItem>>(
-				orderItems.size());
+		Map<Long, List<OrderItem>> orderItemsMap = new HashMap<Long, List<OrderItem>>(orders.size());
 		for (OrderItem orderItem : orderItems) {
 			if (!orderItemsMap.containsKey(orderItem.getOrderId())) {
-				orderItemsMap.put(orderItem.getOrderId(),
-						new ArrayList<OrderItem>());
+				orderItemsMap.put(orderItem.getOrderId(), new ArrayList<OrderItem>());
 			}
 			orderItemsMap.get(orderItem.getOrderId()).add(orderItem);
 		}

@@ -764,17 +764,20 @@
 		</if>
 		
 		<where>
+			<if test="cond.orderId != null">
+				and tor.order_id = #{cond.orderId,jdbcType=DECIMAL}
+			</if>
 			<if test="cond.orderCode != null and cond.orderCode != ''">
-				tor.order_code = #{cond.orderCode,jdbcType=DECIMAL}
+				and tor.order_code = #{cond.orderCode,jdbcType=VARCHAR}
 			</if>
 			<if test="cond.userName != null and cond.userName != ''">
 				and tor.user_name like '%'||'${cond.userName}'||'%'
 			</if>
 			<if test="cond.startDt != null" >
-			 	and create_date &gt;= #{cond.startDt,jdbcType=TIMESTAMP}
+			 	and tor.create_date &gt;= #{cond.startDt,jdbcType=TIMESTAMP}
 		    </if>
 		    <if test="cond.endDt != null" >
-			 	and create_date &lt;= #{cond.endDt,jdbcType=TIMESTAMP}
+			 	and tor.create_date &lt;= #{cond.endDt,jdbcType=TIMESTAMP}
 		    </if>
 			<if test="cond.orderStatus != null and cond.orderStatus != '-1'">
 				and tor.order_status = #{cond.orderStatus,jdbcType=CHAR}
@@ -807,6 +810,9 @@
 			<if test="cond.orderId != null">
 				and order_id = #{cond.orderId,jdbcType=DECIMAL}
 			</if>
+			<if test="cond.orderCode != null and cond.orderCode != ''">
+				and order_code = #{cond.orderCode,jdbcType=VARCHAR}
+			</if>
 			<if test="cond.sellerId != null">
 				and seller_id = #{cond.sellerId,jdbcType=DECIMAL}
 			</if>
@@ -823,7 +829,7 @@
 				and brand_show_id = #{cond.brandShowId,jdbcType=DECIMAL}
 			</if>
 		</where>
-		order by created_date desc,order_id desc
+		order by order_id desc
 	</select>
 	
 	<select id="getOrdersByIds" resultMap="BaseResultMap">
