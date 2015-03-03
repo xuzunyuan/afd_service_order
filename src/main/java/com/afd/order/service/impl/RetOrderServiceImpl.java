@@ -39,6 +39,47 @@ public class RetOrderServiceImpl implements IRetOrderService {
 	private ISellerService sellerService;
 
 	@Override
+	public Page<ReturnOrder> getRetOrdersByPage(Map<String, ?> cond, Page<ReturnOrder> page) {
+		List<ReturnOrder> retOrders = this.retOrderMapper.getRetOrdersByPage(cond, page);
+		
+		if(retOrders!=null && retOrders.size()>0){
+			page.setResult(retOrders);
+			
+			//获取订单详情信息
+			List<Long> orderItemIds = new ArrayList<>();
+			
+			for(ReturnOrder retOrder : retOrders){
+				if(retOrder.getRetOrderItems()!=null && retOrder.getRetOrderItems().size()>0){
+					orderItemIds.add(retOrder.getRetOrderItems().get(0).getItemId());
+				}
+			}
+			
+			if(orderItemIds.size() > 0){
+				List<OrderItem> orderItems = this.orderItemMapper.getOrderItemsByItemIds(orderItemIds);
+				if(orderItems!=null && orderItems.size()>0){
+					Map<Long, OrderItem> items = new HashMap<>(orderItems.size());
+					
+					for(OrderItem orderItem : orderItems){
+						items.put(orderItem.getOrderItemId(), orderItem);
+					}
+					
+					for(ReturnOrder retOrder : retOrders){
+						if(retOrder.getRetOrderItems()!=null && retOrder.getRetOrderItems().size()>0){
+							retOrder.getRetOrderItems().get(0).setOrderItem(items.get(retOrder.getRetOrderItems().get(0).getItemId()));
+						}
+					}
+					
+					items.clear();
+				}
+				
+				orderItemIds.clear();
+			}
+		}
+		
+		return page;
+	}
+
+	@Override
 	public Page<ReturnOrder> getRetOrdersByUserId(long userId,Page<ReturnOrder> page) {
 		 List<ReturnOrder> retOrders = this.retOrderMapper.getRetOrdersByUserIdPage(userId,page);
 		 Set<Long> sellerIds = new HashSet<Long>();
@@ -110,6 +151,28 @@ public class RetOrderServiceImpl implements IRetOrderService {
 	@Override
 	public ReturnOrder getRetOrderByRetOrderId(Long retOrderId) {
 		ReturnOrder returnOrder=this.retOrderMapper.selectByPrimaryKey(retOrderId.intValue());
+		return returnOrder;
+	}
+
+	@Override
+	public ReturnOrder getRetOrderInfoByRetOrderId(Long retOrderId) {
+		ReturnOrder returnOrder = this.retOrderMapper.selectByPrimaryKey(retOrderId.intValue());
+		
+		if(returnOrder != null){
+			//获取退单明细
+			List<ReturnOrderItem> retOrderItems = this.retOrderItemMapper.getRetOrderItemsByRetOrderId(returnOrder.getRetOrderId());
+			if(retOrderItems!=null && retOrderItems.size()>0){
+				returnOrder.setRetOrderItems(retOrderItems);
+				
+				//获取订单明细
+				for(ReturnOrderItem returnOrderItem : retOrderItems){
+					OrderItem orderItem = this.orderItemMapper.getOrderItemById(returnOrderItem.getItemId());
+					returnOrderItem.setOrderItem(orderItem);
+				}
+			}
+			
+		}
+		
 		return returnOrder;
 	}
 

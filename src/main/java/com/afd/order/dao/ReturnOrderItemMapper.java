@@ -1,5 +1,7 @@
 package com.afd.order.dao;
 
+import java.util.List;
+
 import com.afd.model.order.ReturnOrderItem;
 
 public interface ReturnOrderItemMapper {
@@ -14,4 +16,6 @@ public interface ReturnOrderItemMapper {
     int updateByPrimaryKeySelective(ReturnOrderItem record);
 
     int updateByPrimaryKey(ReturnOrderItem record);
+    
+    public List<ReturnOrderItem> getRetOrderItemsByRetOrderId(Long retOrderId);
 }

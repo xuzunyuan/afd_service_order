@@ -379,6 +379,17 @@
 			</foreach>
 		</where>
 	</select>
+	<select id="getOrderItemsByItemIds" parameterType="java.util.List" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_order_item
+		<where>
+			order_item_id in
+			<foreach item="itemId" index="index" collection="list" open="(" separator="," close=")">
+				#{itemId}
+			</foreach>
+		</where>
+	</select>
 	<select id="getOrderItemById" resultMap="BaseResultMap2">
 		select t.*,t1.*
 		from t_order t inner join t_order_item t1 on t.order_id = t1.order_id

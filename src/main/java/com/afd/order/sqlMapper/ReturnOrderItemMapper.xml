@@ -3,7 +3,7 @@
 <mapper namespace="com.afd.order.dao.ReturnOrderItemMapper" >
   <resultMap id="BaseResultMap" type="com.afd.model.order.ReturnOrderItem" >
     <id column="ret_order_item_id" property="retOrderItemId" jdbcType="INTEGER" />
-    <result column="ret_order_id" property="retOrderId" jdbcType="INTEGER" />
+    <result column="ret_order_id" property="retOrderId" jdbcType="DECIMAL" />
     <result column="prod_id" property="prodId" jdbcType="INTEGER" />
     <result column="seller_id" property="sellerId" jdbcType="INTEGER" />
     <result column="item_id" property="itemId" jdbcType="INTEGER" />
@@ -126,4 +126,11 @@
       ret_fee = #{retFee,jdbcType=REAL}
     where ret_order_item_id = #{retOrderItemId,jdbcType=INTEGER}
   </update>
+  
+  <select id="getRetOrderItemsByRetOrderId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	select
+	<include refid="Base_Column_List" />
+	where ret_order_id = #{retOrderId, jdbcType=DECIMAL}
+	order by ret_order_item_id desc
+  </select>
 </mapper>

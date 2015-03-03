@@ -31,7 +31,7 @@
 		<result column="refund_date" property="refundDate" jdbcType="TIMESTAMP" />
 		<result column="reject_date" property="rejectDate" jdbcType="TIMESTAMP" />
 		<result column="cancel_date" property="cancelDate" jdbcType="TIMESTAMP" />
-		<result column="brand_show_id" property="brandShowId" jdbcType="INTEGER" />
+		<result column="brand_show_id" property="brandShowId" jdbcType="DECIMAL" />
 	</resultMap>
 	<resultMap type="com.afd.model.order.ReturnOrder" id="BaseResultMap2" extends="BaseResultMap">
 		<collection property="retOrderItems" ofType="com.afd.model.order.ReturnOrderItem">
@@ -376,5 +376,26 @@
 		<include refid="Base_Column_List2"/>
 		and t.user_id = #{userId,jdbcType=INTEGER}
 		and t.ret_order_id = #{retOrderId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getRetOrdersByPage" resultMap="BaseResultMap2">
+		<include refid="Base_Column_List2"/>
+		
+		<if test="cond.retOrderCode != null and cond.retOrderCode != ''">
+			and t.ret_order_code = #{cond.retOrderCode,jdbcType=VARCHAR}
+		</if>
+		<if test="cond.sellerId != null">
+			and t.seller_id  #{cond.sellerId,jdbcType=DECIMAL}
+		</if>
+		<if test="cond.startDate != null" >
+		 	and t.create_date &gt;= #{cond.startDate,jdbcType=TIMESTAMP}
+	    </if>
+	    <if test="cond.endDate != null" >
+		 	and t.create_date &lt;= #{cond.endDate,jdbcType=TIMESTAMP}
+	    </if>
+	    <if test="cond.brandShowId != null">
+			and t.brand_show_id  #{cond.brandShowId,jdbcType=DECIMAL}
+		</if>
+		order by t.ret_order_id desc
 	</select>
 </mapper>

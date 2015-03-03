@@ -82,7 +82,14 @@ public class OrderServiceImpl implements IOrderService {
 
 	@Override
 	public int updateOrder2Sended(Order order) {
-		return this.orderMapper.updateByPrimaryKeySelective(order);
+		int flag = this.orderMapper.updateByPrimaryKeySelective(order);
+		
+		//记录操作日志
+		if(flag > 0){
+			this.updOrderLog(order, OrderConstants.ORDER_STATUS_WAITDELIVERED, order.getStrOrderStatus(), order.getLastUpdateByName());
+		}
+		
+		return flag;
 	}
 
 	@Override

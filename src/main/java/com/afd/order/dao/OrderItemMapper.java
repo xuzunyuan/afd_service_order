@@ -22,6 +22,8 @@ public interface OrderItemMapper {
 	public List<OrderItem> getOrderItemsByOrderId(Integer orderId);
 	
 	public List<OrderItem> getOrderItemsByOrderIds(List<Long> orderIds);
+	
+	public List<OrderItem> getOrderItemsByItemIds(List<Long> orderItemIds);
 
 	OrderItem getOrderItemById(@Param("orderItemId") Long orderItemId);
 
