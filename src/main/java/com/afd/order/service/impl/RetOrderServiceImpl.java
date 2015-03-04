@@ -131,6 +131,8 @@ public class RetOrderServiceImpl implements IRetOrderService {
 		if(retOrder!=null){
 			retOrder.setCreateDate(DateUtils.currentDate());
 			this.retOrderMapper.insertSelective(retOrder);
+			retOrder.setRetOrderCode(retOrder.getRetOrderId().toString());
+			this.retOrderMapper.updateByPrimaryKeySelective(retOrder);
 			List<ReturnOrderItem> retOrderItems = retOrder.getRetOrderItems();
 			if(retOrderItems!=null&&retOrderItems.size()>0){
 				for(ReturnOrderItem roi : retOrderItems){
