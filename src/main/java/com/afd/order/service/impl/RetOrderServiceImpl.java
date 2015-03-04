@@ -168,7 +168,7 @@ public class RetOrderServiceImpl implements IRetOrderService {
 				
 				//获取订单明细
 				for(ReturnOrderItem returnOrderItem : retOrderItems){
-					OrderItem orderItem = this.orderItemMapper.getOrderItemById(returnOrderItem.getItemId());
+					OrderItem orderItem = this.orderItemMapper.selectByPrimaryKey(returnOrderItem.getItemId());
 					returnOrderItem.setOrderItem(orderItem);
 				}
 			}
@@ -198,4 +198,21 @@ public class RetOrderServiceImpl implements IRetOrderService {
 		return 0;
 	}
 
+	@Override
+	public int updateRetOrderByIdSelective(ReturnOrder retOrder) {
+		int re = 0;
+		
+		ReturnOrder temp = this.retOrderMapper.selectByPrimaryKey(retOrder.getRetOrderId().intValue());
+		if(temp != null){
+			//判断状态改变正确性
+			if((retOrder.getStatus()==OrderConstants.order_return_audit && temp.getStatus()==OrderConstants.order_return_wait) ||
+				(retOrder.getStatus()==OrderConstants.order_return_comfirm && temp.getStatus()==OrderConstants.order_return_audit)){
+				re = this.retOrderMapper.updateByPrimaryKeySelective(retOrder);
+			}else{
+				re = -1;
+			}
+		}
+		
+		return re;
+	}
 }

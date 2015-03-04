@@ -385,7 +385,7 @@
 			and t.ret_order_code = #{cond.retOrderCode,jdbcType=VARCHAR}
 		</if>
 		<if test="cond.sellerId != null">
-			and t.seller_id  #{cond.sellerId,jdbcType=DECIMAL}
+			and t.seller_id = #{cond.sellerId,jdbcType=DECIMAL}
 		</if>
 		<if test="cond.startDate != null" >
 		 	and t.create_date &gt;= #{cond.startDate,jdbcType=TIMESTAMP}
@@ -394,7 +394,7 @@
 		 	and t.create_date &lt;= #{cond.endDate,jdbcType=TIMESTAMP}
 	    </if>
 	    <if test="cond.brandShowId != null">
-			and t.brand_show_id  #{cond.brandShowId,jdbcType=DECIMAL}
+			and t.brand_show_id = #{cond.brandShowId,jdbcType=DECIMAL}
 		</if>
 		order by t.ret_order_id desc
 	</select>
