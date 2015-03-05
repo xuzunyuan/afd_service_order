@@ -130,6 +130,7 @@
   <select id="getRetOrderItemsByRetOrderId" resultMap="BaseResultMap" parameterType="java.lang.Long">
 	select
 	<include refid="Base_Column_List" />
+	from t_return_order_items
 	where ret_order_id = #{retOrderId, jdbcType=DECIMAL}
 	order by ret_order_item_id desc
   </select>

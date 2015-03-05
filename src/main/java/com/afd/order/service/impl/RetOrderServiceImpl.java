@@ -131,6 +131,8 @@ public class RetOrderServiceImpl implements IRetOrderService {
 		if(retOrder!=null){
 			retOrder.setCreateDate(DateUtils.currentDate());
 			this.retOrderMapper.insertSelective(retOrder);
+			retOrder.setRetOrderCode(retOrder.getRetOrderId().toString());
+			this.retOrderMapper.updateByPrimaryKeySelective(retOrder);
 			List<ReturnOrderItem> retOrderItems = retOrder.getRetOrderItems();
 			if(retOrderItems!=null&&retOrderItems.size()>0){
 				for(ReturnOrderItem roi : retOrderItems){
@@ -166,7 +168,7 @@ public class RetOrderServiceImpl implements IRetOrderService {
 				
 				//获取订单明细
 				for(ReturnOrderItem returnOrderItem : retOrderItems){
-					OrderItem orderItem = this.orderItemMapper.getOrderItemById(returnOrderItem.getItemId());
+					OrderItem orderItem = this.orderItemMapper.selectByPrimaryKey(returnOrderItem.getItemId());
 					returnOrderItem.setOrderItem(orderItem);
 				}
 			}
@@ -196,4 +198,21 @@ public class RetOrderServiceImpl implements IRetOrderService {
 		return 0;
 	}
 
+	@Override
+	public int updateRetOrderByIdSelective(ReturnOrder retOrder) {
+		int re = 0;
+		
+		ReturnOrder temp = this.retOrderMapper.selectByPrimaryKey(retOrder.getRetOrderId().intValue());
+		if(temp != null){
+			//判断状态改变正确性
+			if((OrderConstants.order_return_audit.equals(retOrder.getStatus()) && OrderConstants.order_return_wait.equals(temp.getStatus())) ||
+				(OrderConstants.order_return_comfirm.equals(retOrder.getStatus()) && OrderConstants.order_return_audit.equals(temp.getStatus()))){
+				re = this.retOrderMapper.updateByPrimaryKeySelective(retOrder);
+			}else{
+				re = -1;
+			}
+		}
+		
+		return re;
+	}
 }
