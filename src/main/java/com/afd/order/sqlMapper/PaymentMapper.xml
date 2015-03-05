@@ -288,6 +288,6 @@
 		from
           T_PAYMENT t
 		where
-		 <![CDATA[ t.create_date <=(sysdate-#{days}) and t.create_date >(sysdate-#{days}*2) and t.status=1]]>        
+		<![CDATA[ t.create_date <= date_add(now(),interval 0-#{days,jdbcType=INTEGER} day) and t.create_date > date_add(now(),interval 0-#{days,jdbcType=INTEGER}*2 day) and t.status=1]]>     
 </select>
 </mapper>
