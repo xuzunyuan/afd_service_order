@@ -32,6 +32,8 @@
 		<result column="reject_date" property="rejectDate" jdbcType="TIMESTAMP" />
 		<result column="cancel_date" property="cancelDate" jdbcType="TIMESTAMP" />
 		<result column="brand_show_id" property="brandShowId" jdbcType="DECIMAL" />
+		<result column="brand_show_title" property="brandShowTitle" jdbcType="VARCHAR" />
+		<result column="order_code" property="orderCode" jdbcType="INTEGER" />
 	</resultMap>
 	<resultMap type="com.afd.model.order.ReturnOrder" id="BaseResultMap2" extends="BaseResultMap">
 		<collection property="retOrderItems" ofType="com.afd.model.order.ReturnOrderItem">
@@ -50,7 +52,7 @@
 		return_reason,
 		evidence_pic_url, status, create_date, create_ip, logistics_code, logistics_comp_id,
 		logistics_comp_name, audit_date, audit_by_name, reject_reason, remarks,confirm_date,refund_date,reject_date,
-		cancel_date,brand_show_id
+		cancel_date,brand_show_id,brand_show_title,order_code
 	</sql>
 	<sql id="Base_Column_List2">
 		select t.ret_order_id,
@@ -76,6 +78,8 @@
 	       t.reject_date,
 	       t.cancel_date,
 	       t.brand_show_id,
+	       t.brand_show_title,
+	       t.order_code,
 	       t1.ret_order_item_id,
 	       t1.ret_order_id ret_order_id2,
 	       t1.prod_id,
@@ -108,7 +112,7 @@
 		create_date, create_ip, logistics_code,
 		logistics_comp_id, logistics_comp_name, audit_date,
 		audit_by_name, reject_reason, remarks,confirm_date,refund_date,reject_date,cancel_date
-		,brand_show_id
+		,brand_show_id,brand_show_title,order_code
 		)
 		values (#{retOrderId,jdbcType=INTEGER}, #{retOrderCode,jdbcType=VARCHAR},
 		#{orderId,jdbcType=INTEGER},
@@ -120,7 +124,8 @@
 		#{logisticsCompName,jdbcType=VARCHAR}, #{auditDate,jdbcType=TIMESTAMP},
 		#{auditByName,jdbcType=VARCHAR}, #{rejectReason,jdbcType=VARCHAR},
 		#{remarks,jdbcType=VARCHAR}, #{confirmDate,jdbcType=TIMESTAMP}, #{refundDate,jdbcType=TIMESTAMP}, #{rejectDate,jdbcType=TIMESTAMP},
-		#{cancelDate,jdbcType=TIMESTAMP},#{brandShowId,jdbcType=INTEGER}
+		#{cancelDate,jdbcType=TIMESTAMP},#{brandShowId,jdbcType=INTEGER},#{brandShowTitle,jdbcType=VARCHAR},
+		#{order_code,jdbcType=INTEGER}
 		)
 	</insert>
 	<insert id="insertSelective" keyProperty="retOrderId"
@@ -196,6 +201,12 @@
 			<if test="brandShowId != null">
 				brand_show_id,
 			</if>
+			<if test="brandShowTitle != null">
+				brand_show_title,
+			</if>
+			<if test="orderCode != null">
+				order_code,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="retOrderId != null">
@@ -266,6 +277,12 @@
 			</if>
 			<if test="brandShowId != null">
 				#{brandShowId,jdbcType=INTEGER},
+			</if>
+			<if test="brandShowTitle != null">
+				#{brandShowTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="orderCode != null">
+				#{orderCode,jdbcType=INTEGER},
 			</if>
 		</trim>
 	</insert>
@@ -338,6 +355,12 @@
 			<if test="brandShowId != null">
 				brand_show_id = #{brandShowId,jdbcType=INTEGER},
 			</if>
+			<if test="brandShowTitle != null">
+				brand_show_title = #{brandShowTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="orderCode != null">
+				order_code = #{orderCode,jdbcType=INTEGER},
+			</if>
 		</set>
 		where ret_order_id = #{retOrderId,jdbcType=INTEGER}
 	</update>
@@ -364,8 +387,10 @@
 		refund_date = #{refundDate,jdbcType=TIMESTAMP},
 		reject_date = #{rejectDate,jdbcType=TIMESTAMP},
 		cancel_date = #{cancelDate,jdbcType=TIMESTAMP},
-		brand_show_id = #{brandShowId,jdbcType=INTEGER}
-		where ret_order_id = #{retOrderId,jdbcType=INTEGER}
+		brand_show_id = #{brandShowId,jdbcType=INTEGER},
+		brand_show_title = #{brandShowId,jdbcType=INTEGER},
+		order_code = #{orderCode,jdbcType=INTEGER}
+		where ret_order_id = #{brandShowTitle,jdbcType=VARCHAR}
 	</update>
 	<select id="getRetOrdersByUserIdPage" resultMap="BaseResultMap2">
 		<include refid="Base_Column_List2"/>
