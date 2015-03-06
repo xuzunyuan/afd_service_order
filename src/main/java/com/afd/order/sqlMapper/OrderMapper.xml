@@ -757,13 +757,14 @@
 		from t_order tor
 		
 		<if test="cond.prodTitle != null and cond.prodTitle != ''">
-			<bind name="prodTitle" value="'%' + cond.prodTitle + '%'" />
-			
-			left outer join t_order_item oi 
-			on tor.order_id = oi.order_id and oi.prod_title like #{prodTitle} 
+			left outer join t_order_item oi on tor.order_id = oi.order_id 
 		</if>
 		
 		<where>
+			<if test="cond.prodTitle != null and cond.prodTitle != ''">
+				<bind name="prodTitle" value="'%' + cond.prodTitle + '%'" />
+				and oi.prod_title like #{prodTitle} 
+			</if>
 			<if test="cond.orderId != null">
 				and tor.order_id = #{cond.orderId,jdbcType=DECIMAL}
 			</if>
@@ -771,13 +772,14 @@
 				and tor.order_code = #{cond.orderCode,jdbcType=VARCHAR}
 			</if>
 			<if test="cond.userName != null and cond.userName != ''">
-				and tor.user_name like '%'||'${cond.userName}'||'%'
+				<bind name="userName" value="'%' + cond.userName + '%'" />
+				and tor.user_name like #{userName,jdbcType=VARCHAR}
 			</if>
 			<if test="cond.startDt != null" >
-			 	and tor.create_date &gt;= #{cond.startDt,jdbcType=TIMESTAMP}
+			 	and tor.created_date &gt;= #{cond.startDt,jdbcType=TIMESTAMP}
 		    </if>
 		    <if test="cond.endDt != null" >
-			 	and tor.create_date &lt;= #{cond.endDt,jdbcType=TIMESTAMP}
+			 	and tor.created_date &lt;= #{cond.endDt,jdbcType=TIMESTAMP}
 		    </if>
 			<if test="cond.orderStatus != null and cond.orderStatus != '-1'">
 				and tor.order_status = #{cond.orderStatus,jdbcType=CHAR}
@@ -795,7 +797,8 @@
 				and tor.pay_status = #{cond.payStatus,jdbcType=CHAR}
 			</if>
 			<if test="cond.brandShowTitle != null and cond.brandShowTitle != ''">
-				and tor.brand_show_title like '%'||'${cond.brandShowTitle}'||'%'
+				<bind name="brandShowTitle" value="'%' + cond.brandShowTitle + '%'" />
+				and tor.brand_show_title like #{brandShowTitle,jdbcType=VARCHAR}
 			</if>
 		</where>
 		
