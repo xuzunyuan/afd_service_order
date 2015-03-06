@@ -206,7 +206,8 @@ public class RetOrderServiceImpl implements IRetOrderService {
 		if(temp != null){
 			//判断状态改变正确性
 			if((OrderConstants.order_return_audit.equals(retOrder.getStatus()) && OrderConstants.order_return_wait.equals(temp.getStatus())) ||
-				(OrderConstants.order_return_comfirm.equals(retOrder.getStatus()) && OrderConstants.order_return_audit.equals(temp.getStatus()))){
+				(OrderConstants.order_return_comfirm.equals(retOrder.getStatus()) && OrderConstants.order_return_audit.equals(temp.getStatus())) ||
+				(OrderConstants.order_return_refund.equals(retOrder.getStatus()) && OrderConstants.order_return_comfirm.equals(temp.getStatus()))){
 				re = this.retOrderMapper.updateByPrimaryKeySelective(retOrder);
 			}else{
 				re = -1;

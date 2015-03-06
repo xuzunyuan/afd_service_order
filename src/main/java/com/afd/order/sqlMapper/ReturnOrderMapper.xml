@@ -388,7 +388,7 @@
 		reject_date = #{rejectDate,jdbcType=TIMESTAMP},
 		cancel_date = #{cancelDate,jdbcType=TIMESTAMP},
 		brand_show_id = #{brandShowId,jdbcType=INTEGER},
-		brand_show_title = #{brandShowId,jdbcType=INTEGER},
+		brand_show_title = #{brandShowId,jdbcType=VARCHAR},
 		order_code = #{orderCode,jdbcType=INTEGER}
 		where ret_order_id = #{brandShowTitle,jdbcType=VARCHAR}
 	</update>
@@ -412,6 +412,9 @@
 		<if test="cond.sellerId != null">
 			and t.seller_id = #{cond.sellerId,jdbcType=DECIMAL}
 		</if>
+		<if test="cond.status != null">
+			and t.status = #{cond.status,jdbcType=VARCHAR}
+		</if>
 		<if test="cond.startDate != null" >
 		 	and t.create_date &gt;= #{cond.startDate,jdbcType=TIMESTAMP}
 	    </if>
@@ -420,6 +423,13 @@
 	    </if>
 	    <if test="cond.brandShowId != null">
 			and t.brand_show_id = #{cond.brandShowId,jdbcType=DECIMAL}
+		</if>
+		<if test="cond.brandShowTitle != null and cond.brandShowTitle != ''">
+			<bind name="brandShowTitle" value="'%' + cond.brandShowTitle + '%'" />
+			and t.brand_show_title like #{brandShowTitle,jdbcType=VARCHAR}
+		</if>
+		<if test="cond.orderCode != null and cond.orderCode != ''">
+			and t.order_code = #{cond.orderCode,jdbcType=VARCHAR}
 		</if>
 		order by t.ret_order_id desc
 	</select>
