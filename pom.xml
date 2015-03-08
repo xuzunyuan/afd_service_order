@@ -13,6 +13,14 @@
 		<version>1.0</version>
 	</parent>
 	
+	<dependencies>
+		<dependency>
+			<groupId>com.afd.service</groupId>
+			<artifactId>afd_service</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+	
 	<build>
 		<finalName>afd_service_order</finalName>
 	</build>
