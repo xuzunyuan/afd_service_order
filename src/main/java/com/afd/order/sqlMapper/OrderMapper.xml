@@ -81,6 +81,7 @@
 		    <result column="prod_spec_id" property="prodSpecId" jdbcType="VARCHAR" />
 		    <result column="prod_spec_name" property="prodSpecName" jdbcType="VARCHAR" />
 		    <result column="prod_title" property="prodTitle" jdbcType="VARCHAR" />
+		    <result column="prod_img" property="prodImg" jdbcType="VARCHAR" />
 		    <result column="bc_id" property="bcId" jdbcType="SMALLINT" />
 		    <result column="seller_id" property="sellerId" jdbcType="DECIMAL" />
 		    <result column="sale_price" property="salePrice" jdbcType="REAL" />
