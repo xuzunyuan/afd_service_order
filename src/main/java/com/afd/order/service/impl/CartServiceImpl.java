@@ -505,8 +505,12 @@ public class CartServiceImpl implements ICartService{
 		Date endDate = bsDetail.getEndDate();
 		if(!"1".equals(bsDetail.getStatus())) {//TODO 状态
 			return -1;
-		}else if(now.after(endDate)) {
-			return -2;
+		}
+		BrandShow brandShow = this.brandShowService.getBrandShowById(bsDetail.getBrandShowId());
+		if(brandShow.getStatus() != ProductConstants.BrandShow$Status.ONLINE){
+			if(now.after(endDate)) {
+				return -2;
+			}
 		}
 		return 1;
 	}
