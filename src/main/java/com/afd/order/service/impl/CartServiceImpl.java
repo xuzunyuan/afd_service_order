@@ -506,8 +506,8 @@ public class CartServiceImpl implements ICartService{
 			return -1;
 		}
 		BrandShow brandShow = this.brandShowService.getBrandShowById(bsDetail.getBrandShowId());
-		if(brandShow.getStatus() != ProductConstants.BrandShow$Status.ONLINE){
-				return -2;
+		if(!ProductConstants.BrandShow$Status.ONLINE.equals(brandShow.getStatus())){	
+			return -2;
 		}
 		return 1;
 	}
