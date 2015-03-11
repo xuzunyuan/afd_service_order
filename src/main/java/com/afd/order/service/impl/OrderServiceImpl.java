@@ -233,7 +233,7 @@ public class OrderServiceImpl implements IOrderService {
 		this.createOrderLog(order, trade);
 
 		this.updateRedisInventory(brandShowStockMapMq);
-		// this.brandShowService.addStock(brandShowStockMapMq);
+		this.brandShowService.addStock(brandShowStockMapMq);
 		orderInfo.setCode(1);
 		orderInfo.setOrder(order);
 		return orderInfo;
