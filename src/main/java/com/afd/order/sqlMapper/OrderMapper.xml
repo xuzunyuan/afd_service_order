@@ -885,4 +885,12 @@
 	    where order_id = #{orderId,jdbcType=DECIMAL} 
 	    and user_id = #{userId,jdbcType=DECIMAL}
 	</update>
+	
+	<select id="getToBeProcessOrderCountOfSeller" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+      	select 
+   			count(*)
+   		from t_order
+	    where seller_id = #{sellerId,jdbcType=INTEGER}
+	    	and order_status = '3'
+   </select>	
 </mapper>

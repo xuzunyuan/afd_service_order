@@ -433,4 +433,12 @@
 		</if>
 		order by t.ret_order_id desc
 	</select>
+	
+	<select id="getToBeProcessRetOrderCountOfSeller" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+      	select 
+   			count(*)
+   		from t_return_order
+	    where seller_id = #{sellerId,jdbcType=INTEGER}
+	    	and status = '1'
+   </select>	
 </mapper>

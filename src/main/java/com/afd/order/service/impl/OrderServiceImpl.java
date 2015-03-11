@@ -83,12 +83,13 @@ public class OrderServiceImpl implements IOrderService {
 	@Override
 	public int updateOrder2Sended(Order order) {
 		int flag = this.orderMapper.updateByPrimaryKeySelective(order);
-		
-		//记录操作日志
-		if(flag > 0){
-			this.updOrderLog(order, OrderConstants.ORDER_STATUS_WAITDELIVERED, order.getStrOrderStatus(), order.getLastUpdateByName());
+
+		// 记录操作日志
+		if (flag > 0) {
+			this.updOrderLog(order, OrderConstants.ORDER_STATUS_WAITDELIVERED,
+					order.getStrOrderStatus(), order.getLastUpdateByName());
 		}
-		
+
 		return flag;
 	}
 
@@ -106,8 +107,10 @@ public class OrderServiceImpl implements IOrderService {
 	}
 
 	@Override
-	public Page<Order> getOrdersByUserIdAndStatus(Long userId, String status, Page<Order> page) {
-		page.setResult(this.orderMapper.getOrdersByUserIdAndStatusByPage(userId, status, page));
+	public Page<Order> getOrdersByUserIdAndStatus(Long userId, String status,
+			Page<Order> page) {
+		page.setResult(this.orderMapper.getOrdersByUserIdAndStatusByPage(
+				userId, status, page));
 		return page;
 	}
 
@@ -187,12 +190,15 @@ public class OrderServiceImpl implements IOrderService {
 			orderIds.add(order.getOrderId());
 		}
 
-		List<OrderItem> orderItems = this.orderItemMapper.getOrderItemsByOrderIds(orderIds);
+		List<OrderItem> orderItems = this.orderItemMapper
+				.getOrderItemsByOrderIds(orderIds);
 
-		Map<Long, List<OrderItem>> orderItemsMap = new HashMap<Long, List<OrderItem>>(orders.size());
+		Map<Long, List<OrderItem>> orderItemsMap = new HashMap<Long, List<OrderItem>>(
+				orders.size());
 		for (OrderItem orderItem : orderItems) {
 			if (!orderItemsMap.containsKey(orderItem.getOrderId())) {
-				orderItemsMap.put(orderItem.getOrderId(), new ArrayList<OrderItem>());
+				orderItemsMap.put(orderItem.getOrderId(),
+						new ArrayList<OrderItem>());
 			}
 			orderItemsMap.get(orderItem.getOrderId()).add(orderItem);
 		}
@@ -523,18 +529,26 @@ public class OrderServiceImpl implements IOrderService {
 	public int cancelOrderByIdAndUser(Long orderId, Long userId,
 			String userName, String cancelReason) {
 		Date now = new Date();
-		return this.orderMapper.cancelOrderByIdAndUser(orderId, userId, userName, cancelReason, now);
+		return this.orderMapper.cancelOrderByIdAndUser(orderId, userId,
+				userName, cancelReason, now);
 	}
 
 	@Override
 	public int confirmOrderByUser(Long orderId, Long userId, String userName) {
 		Date now = new Date();
-		return this.orderMapper.confirmOrderByUser(orderId, userId, userName, now);
+		return this.orderMapper.confirmOrderByUser(orderId, userId, userName,
+				now);
 	}
 
 	@Override
 	public int deleteOrderByUser(Long orderId, Long userId, String userName) {
 		Date now = new Date();
-		return this.orderMapper.deleteOrderByUser(orderId, userId, userName, now);
+		return this.orderMapper.deleteOrderByUser(orderId, userId, userName,
+				now);
+	}
+
+	@Override
+	public int getToBeProcessOrderCountOfSeller(int sellerId) {
+		return orderMapper.getToBeProcessOrderCountOfSeller(sellerId);
 	}
 }
