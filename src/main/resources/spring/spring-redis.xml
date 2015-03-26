@@ -79,7 +79,7 @@
 	
 	<beans profile="product"> 
 		<!-- 库存 -->
-		<bean id="sentinelConfigStock" class="org.springframework.data.redis.connection.RedisSentinelConfigurationEX">  
+		<!-- <bean id="sentinelConfigStock" class="org.springframework.data.redis.connection.RedisSentinelConfigurationEX">  
 		   <property name="masterName" value="${product.stock.master.name}" />
 	       <property name="sentinels">
 		        <set>
@@ -98,7 +98,12 @@
 	    <bean id="jedisConnectionFactoryStock" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" >  
 	        <constructor-arg index="0"  ref="sentinelConfigStock" />
 		    <constructor-arg index="1" ref="jedisPoolConfig" />
-		</bean>
+		</bean> -->
+		<bean id="jedisConnectionFactoryStock" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" >  
+	        <property name="hostName" value="${product.redis.ip}"/>  
+	        <property name="port" value="${product.redis.port}"/> 
+	        <property name="poolConfig" ref="jedisPoolConfig" />  
+		</bean> 
 		<!-- 库存模板 -->
 		<bean id="redisNumber" class="org.springframework.data.redis.core.RedisTemplate">  
 		    <property name="connectionFactory" ref="jedisConnectionFactoryStock"/> 
