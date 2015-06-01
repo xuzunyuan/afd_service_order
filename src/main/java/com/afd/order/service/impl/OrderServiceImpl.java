@@ -485,8 +485,9 @@ public class OrderServiceImpl implements IOrderService {
 			for (OrderItem orderItem : orderItems) {
 				stockMapMq.put(orderItem.getBsdId(), orderItem.getNumber());
 			}
+			
 			this.updateRedisInventory(stockMapMq);
-			// this.brandShowService.addStock(stockMapMq);
+			this.brandShowService.addStock(stockMapMq);
 		}
 	}
 
