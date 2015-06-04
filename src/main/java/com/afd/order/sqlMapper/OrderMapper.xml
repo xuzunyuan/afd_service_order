@@ -739,18 +739,22 @@
 		</foreach>
 		and t.user_id = #{userId,jdbcType=DECIMAL}
 	</select>
-	<select id="getOrdersByUserIdByPage" resultMap="BaseResultMap2">
-		<include refid="Base_Column_List2"/>
-		where t.user_id = #{userId,jdbcType=DECIMAL} 
-		and t.order_status != 'd' 
-		order by t.ORDER_ID DESC
+	<select id="getOrdersByUserIdByPage" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_order
+		where user_id = #{userId,jdbcType=DECIMAL} 
+		and order_status != 'd' 
+		order by ORDER_ID DESC
 	</select>
 
-	<select id="getOrdersByUserIdAndStatusByPage" resultMap="BaseResultMap2">
-	    <include refid="Base_Column_List2"/>
-	    where t.user_id = #{userId,jdbcType=DECIMAL} 
-	    and t.order_status = #{status,jdbcType=CHAR}
-	    order by t.ORDER_ID DESC
+	<select id="getOrdersByUserIdAndStatusByPage" resultMap="BaseResultMap">
+	    select
+		<include refid="Base_Column_List" />
+		from t_order
+	    where user_id = #{userId,jdbcType=DECIMAL} 
+	    and order_status = #{status,jdbcType=CHAR}
+	    order by ORDER_ID DESC
 	</select>
 	
 	<select id="queryOrderByPage" resultMap="BaseResultMap">
